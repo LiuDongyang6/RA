@@ -1,0 +1,12 @@
+﻿################################################################################
+# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
+################################################################################
+
+/proj.win32
+/proj.linux
+/proj.ios_mac
+/proj.android-studio
+/proj.android
+/cocos2d
+.vs
+/.cocos-project.json
