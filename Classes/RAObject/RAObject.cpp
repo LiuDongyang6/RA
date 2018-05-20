@@ -2,7 +2,8 @@
 
 USING_NS_CC;
 
-int RAPlayer::power_ = 1000;
+int RAPlayer::power_ = 200;
+int RAPlayer::capital_ = 10000;
 Widget* RAPlayer::current_UI_ = 0;
 
 //
@@ -26,7 +27,10 @@ bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
 
 bool RAObject::annihilation()
 {
+	removeAllChildrenWithCleanup(true);
 	removeFromParentAndCleanup(true);
+	RAPlayer::power() += power_cost_;
+	RAPlayer::capital() += capital_cost_;
 	//不知是否需要手动删除对象？
 	return true;
 }
@@ -35,6 +39,8 @@ bool RAObject::initWithFile(const std::string& filename)
 {
 	Sprite::initWithFile(filename);
 	hp_ = original_hp_;
+	RAPlayer::power() -= power_cost_;
+	RAPlayer::capital() -= capital_cost_;
 	return true;
 }
 

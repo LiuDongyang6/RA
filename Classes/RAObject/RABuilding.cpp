@@ -51,14 +51,11 @@ bool RABuilding::initWithFile(const std::string original, const std::string dama
 	listener->onTouchBegan = CC_CALLBACK_2(RABuilding::onTouchBegan, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-	RAPlayer::power() += power_cost_;
-
 	return true;
 }
 
 bool RABuilding::annihilation()
 {
-	RAPlayer::power() -= power_cost_;
 	if (RAPlayer::currentUI() == UI_)
 	{
 		RAPlayer::currentUI() = 0;
@@ -123,9 +120,11 @@ RABase* RABase::create()
 	base->autorelease();
 
 	//
-	RAConstructButton<RAPowerStation>::initButton(base->UI_, (std::string)"PowerStation");
+	base->power_station_button_ = base->power_station_button_->create(base->UI_, (std::string)"PowerStation");
+	base->addChild(base->power_station_button_);
 	//
-	RAConstructButton<RABase>::initButton(base->UI_, (std::string)"Button_2");
+	base->base_button_=base->base_button_->create(base->UI_, (std::string)"Button_2");
+	base->addChild(base->base_button_);
 	//
 
 	return base;

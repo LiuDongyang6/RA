@@ -13,21 +13,33 @@ using namespace cocos2d::ui;
 class RAObject : public cocos2d::Sprite
 {
 public:
-	RAObject(int hp) :hp_(hp), original_hp_(hp) {}
+	RAObject(int hp,int power,int capital):
+		hp_(hp), original_hp_(hp),power_cost_(power),capital_cost_(capital) {}
 	~RAObject()override {}
 	virtual bool initWithFile(const std::string& filename)override;
 	virtual bool sufferAttack(int damage);//return survive or not
 	virtual bool annihilation();
 protected:
+	const int power_cost_;
+	const int capital_cost_;
 	bool toBeOrNotToBe();
 	int hp_;
 	const int original_hp_;
 };
 
 template<typename T>
-class RAConstructButton: public Ref
+class RAConstructButton: public Node
 {
 public:
+	RAConstructButton(Widget* UI, std::string& name) :
+		button_((Button*)Helper::seekWidgetByName(UI, name)) {}
+	static RAConstructButton* create(Widget* UI, std::string& name)
+	{
+		RAConstructButton* button = new RAConstructButton(UI,name);
+		button->initButton();
+		button->autorelease();
+		return button;
+	}
 	void onTouchEnded(Touch* touch, Event* type)
 	{
 		auto point = touch->getLocation();
@@ -35,23 +47,40 @@ public:
 		object->setPosition(point);
 		Director::getInstance()->getRunningScene()->getChildByTag(1)->addChild(object);
 	}
-	static void initButton(Widget* UI, std::string& name)
+	void initButton()
 	{
-		Button* button = (Button*)Helper::seekWidgetByName(UI, name);
-		button->setTouchEnabled(0);
+		button_->setTouchEnabled(0);
+
 		auto listener = EventListenerTouchOneByOne::create();
-		RAConstructButton<T>* p = 0;
 		listener->onTouchBegan = [](Touch* touch, Event* event) {
+			auto target = static_cast<Button*>(event->getCurrentTarget());
+			if (!target->isBright())return false;
 			return (RA::containsTouchLocation(touch, event));
 		};
-		listener->onTouchEnded = CC_CALLBACK_2(RAConstructButton<T>::onTouchEnded, p);
+		listener->onTouchEnded = CC_CALLBACK_2(RAConstructButton<T>::onTouchEnded, this);
 		Director::getInstance()->getEventDispatcher()->
-			addEventListenerWithSceneGraphPriority(listener, button);
-	}
-};
+			addEventListenerWithSceneGraphPriority(listener, button_);
 
-template<typename T>
-void RAConstructButton<T>::initButton(Widget* UI, std::string& name);
+		schedule(schedule_selector(RAConstructButton::checkConstructable),0.05f);
+	}
+	void checkConstructable(float delta)
+	{
+		if (button_->isBright())
+		{
+			if ((RAPlayer::capital() < T::capital_cost_) || (RAPlayer::power() < T::power_cost_))//不能建造
+			{
+				button_->setBright(false);
+			}
+		}
+		else
+		{
+			if (!((RAPlayer::capital() < T::capital_cost_) || (RAPlayer::power() < T::power_cost_)))
+				button_->setBright(true);
+		}
+	}
+private:
+	Button * button_;
+};
 
 namespace RA
 {
