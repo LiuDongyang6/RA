@@ -42,6 +42,7 @@ public:
 	}
 	void onTouchEnded(Touch* touch, Event* type)
 	{
+		button_->onTouchEnded(touch, type);
 		auto point = touch->getLocation();
 		auto object = T::create();
 		object->setPosition(point);
@@ -52,15 +53,10 @@ public:
 		button_->setTouchEnabled(0);
 
 		auto listener = EventListenerTouchOneByOne::create();
-		listener->onTouchBegan = [](Touch* touch, Event* event) {
-			auto target = static_cast<Button*>(event->getCurrentTarget());
-			if (!target->isBright())return false;
-			return (RA::containsTouchLocation(touch, event));
-		};
+		listener->onTouchBegan = CC_CALLBACK_2(Button::onTouchBegan, button_);
 		listener->onTouchEnded = CC_CALLBACK_2(RAConstructButton<T>::onTouchEnded, this);
 		Director::getInstance()->getEventDispatcher()->
 			addEventListenerWithSceneGraphPriority(listener, button_);
-
 		schedule(schedule_selector(RAConstructButton::checkConstructable),0.05f);
 	}
 	void checkConstructable(float delta)
