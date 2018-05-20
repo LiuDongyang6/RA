@@ -48,12 +48,16 @@ public:
 		object->setPosition(point);
 		Director::getInstance()->getRunningScene()->getChildByTag(1)->addChild(object);
 	}
+	bool onTouchBegan(Touch* touch, Event* event)
+	{
+		if (!button_->isBright())return false;
+		return (button_->onTouchBegan(touch, event));
+	}
 	void initButton()
 	{
 		button_->setTouchEnabled(0);
-
 		auto listener = EventListenerTouchOneByOne::create();
-		listener->onTouchBegan = CC_CALLBACK_2(Button::onTouchBegan, button_);
+		listener->onTouchBegan = CC_CALLBACK_2(RAConstructButton<T>::onTouchBegan, this);
 		listener->onTouchEnded = CC_CALLBACK_2(RAConstructButton<T>::onTouchEnded, this);
 		Director::getInstance()->getEventDispatcher()->
 			addEventListenerWithSceneGraphPriority(listener, button_);
