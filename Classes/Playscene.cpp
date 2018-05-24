@@ -42,6 +42,8 @@ bool PlayScene::init()
 	powerstation->setPosition(300, 450);
 	fight_layer->addChild(powerstation);
 
+	123123
+
 	return true;
 }
 
