@@ -12,7 +12,7 @@ void RABuilding::changeAppearance()//called after sufferAttack or repair
 	{
 		if ((current_appearance_ != 2))
 		{
-			this->setTexture(appearances[2]);
+			this->setSpriteFrame(appearances[2]);
 			current_appearance_ = 2;
 		}
 	}
@@ -20,7 +20,7 @@ void RABuilding::changeAppearance()//called after sufferAttack or repair
 	{
 		if (current_appearance_ != 1)
 		{
-			this->setTexture(appearances[1]);
+			this->setSpriteFrame(appearances[1]);
 			current_appearance_ = 1;
 		}
 	}
@@ -28,7 +28,7 @@ void RABuilding::changeAppearance()//called after sufferAttack or repair
 	{
 		if (current_appearance_ != 0)
 		{
-			this->setTexture(appearances[0]);
+			this->setSpriteFrame(appearances[0]);
 			current_appearance_ = 0;
 		}
 	}
@@ -119,10 +119,10 @@ RABase* RABase::create()
 
 	base->autorelease();
 
-	//
+	//initial base_button
 	base->power_station_button_ = base->power_station_button_->create(base->UI_, (std::string)"PowerStation");
 	base->addChild(base->power_station_button_);
-	//
+	//initial power_station_button
 	base->base_button_=base->base_button_->create(base->UI_, (std::string)"Button_2");
 	base->addChild(base->base_button_);
 	//

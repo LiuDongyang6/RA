@@ -46,7 +46,7 @@ public:
 		auto point = touch->getLocation();
 		auto object = T::create();
 		object->setPosition(point);
-		Director::getInstance()->getRunningScene()->getChildByTag(1)->addChild(object);
+		Director::getInstance()->getRunningScene()->getChildByTag(1)->addChild(object,object->kind());//0 means building,1 means soldier
 	}
 	bool onTouchBegan(Touch* touch, Event* event)
 	{
@@ -61,20 +61,26 @@ public:
 		listener->onTouchEnded = CC_CALLBACK_2(RAConstructButton<T>::onTouchEnded, this);
 		Director::getInstance()->getEventDispatcher()->
 			addEventListenerWithSceneGraphPriority(listener, button_);
-		schedule(schedule_selector(RAConstructButton::checkConstructable),0.05f);
+		//abandoned,now we use observer patter
+		//schedule(schedule_selector(RAConstructButton::checkConstructable),0.05f);
+		NotificationCenter::getInstance()->addObserver(this,
+			callfuncO_selector(RAConstructButton<T>::checkConstructable),
+			"RESOURCE_CHANGE",
+			NULL);
 	}
-	void checkConstructable(float delta)
+	//judge if capital and power can afford the object
+	void checkConstructable(Ref* pSender)
 	{
 		if (button_->isBright())
 		{
-			if ((RAPlayer::capital() < T::capital_cost_) || (RAPlayer::power() < T::power_cost_))//不能建造
+			if ((RAPlayer::getCapital() < T::capital_cost_) || (RAPlayer::getPower() < T::power_cost_))//不能建造
 			{
 				button_->setBright(false);
 			}
 		}
 		else
 		{
-			if (!((RAPlayer::capital() < T::capital_cost_) || (RAPlayer::power() < T::power_cost_)))
+			if (!((RAPlayer::getCapital() < T::capital_cost_) || (RAPlayer::getPower() < T::power_cost_)))
 				button_->setBright(true);
 		}
 	}
