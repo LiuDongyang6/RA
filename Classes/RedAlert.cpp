@@ -8,7 +8,7 @@ RedAlert* RedAlert::getinstance()
 }
 void RedAlert::initAll()
 {
-	RAUtility::RAObjectProperty=FileUtils::getInstance()->getStringFromFile("D:/codes/RA/RA/Classes/RAObjectProperty.json");
+	RAUtility::RAObjectProperty=FileUtils::getInstance()->getStringFromFile("RAObjectProperty.json");
 
 	auto &wiki = RAConstructButton::CreateWiki;
 	wiki.insert({ 0,RABase::create });

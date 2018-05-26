@@ -17,7 +17,7 @@
         "capital": 100,
         "texture":["PowerStation0.png","PowerStation1.png","PowerStation2.png"],
         "UI": [],
-        "UIFile":"PowerStation/PowerStation.ExportJson",
+        "UIFile":"PowerStation/PowerStationUi.ExportJson",
         "category":0
     }, {
         "id": 2,
