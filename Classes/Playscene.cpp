@@ -27,7 +27,7 @@ bool PlayScene::init()
         return false;
     }
 
-	RAPlayer::initial();
+	RedAlert::getinstance()->initAll();
 
 	auto fight_layer = LayerColor::create(Color4B(0, 128, 128, 255), 1200, 900);
 	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);

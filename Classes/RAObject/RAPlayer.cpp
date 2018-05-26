@@ -3,11 +3,7 @@ int RAPlayer::power_ = 200;
 int RAPlayer::capital_ = 10000;
 Widget* RAPlayer::current_UI_ = 0;
 
-void RAPlayer::initial()
-{
-	auto framecache = SpriteFrameCache::getInstance();
-	framecache->addSpriteFramesWithFile("Buildings.plist");
-}
+
 void RAPlayer::consumeCapital(int quantity)
 {
 	NotificationCenter::getInstance()->postNotification("RESOURCE_CHANGE",NULL);
