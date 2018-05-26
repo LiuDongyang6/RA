@@ -24,7 +24,6 @@ public:
 	static void consumePower(const int quantity);
 
 	static Widget*& currentUI() { return current_UI_; }
-	static void initial();
 private:
 	static int capital_;
 	static int power_;
