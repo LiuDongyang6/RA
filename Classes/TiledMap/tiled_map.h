@@ -1,45 +1,43 @@
-#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
+#ifndef __RAMAP__H__
+#define __RAMAP__H__
 
 #include "cocos2d.h"
 
-class TiledMap : public cocos2d::Scene
+class RAMap:public cocos2d::Node
 {
 public:
-    static cocos2d::Scene* createScene();
+    static bool init();
 
-    virtual bool init();
+	static cocos2d::Point glCoordToTileCoord(cocos2d::Point gl_cood);
 
-	// OpenGL坐标转换为Tiledmap坐标
-	cocos2d::Point glCoordToTileCoord(cocos2d::Point gl_cood);
+	static bool cannotBuildNormal(cocos2d::Point build_point, int size);
 
-	//判断是否可以建造普通建筑
-	bool cannotBuildNormal(cocos2d::Point build_point, int size);
+	static cocos2d::Point cannotBuildOil(cocos2d::Point build_point, int size);
 
-	//将建造建筑的瓦片设为不可通过
-	void sureToBuild(cocos2d::Point build_point, int size);
+	void moveMap(float dt);
 
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
+	static void testForCoord(void);
 
-	//移动地图
-	void moveMap(void);
-    
-	//测试坐标
-	void testForCoord(void);
+	static void setMovePosition(void);
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(TiledMap);
+	static void mapInit(void);
+
+	static void sureToBuildNormal(cocos2d::Point pos, int size);
+
+	static void sureToBuildOil(cocos2d::Point pos, int size);
 
 	//地图移动速度
-	const float speed = 30;
+	static const float speed;
 
-	const int accurancy = 200;
+	static const int accurancy;
 
-private:
-	cocos2d::TMXTiledMap *_tiledMap;
-	cocos2d::TMXLayer *_collision;
-	cocos2d::Point diff;
+	static cocos2d::TMXTiledMap* &getMap() { return _tiledMap; };
+
+protected:
+	static cocos2d::TMXTiledMap *_tiledMap;
+	static cocos2d::Point diff;
+	static std::map<cocos2d::Point, bool> collision;
+	static std::map<cocos2d::Point, bool> oil;
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif // __AB__

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="32" infinite="0" nextobjectid="1">
+ <tileset firstgid="1" name="手绘的山石-2d石头素材-00177_爱给网_aigei_com" tilewidth="64" tileheight="32" tilecount="9" columns="3">
+  <image source="手绘的山石-2d石头素材-00177.png" width="206" height="103"/>
+ </tileset>
+ <tileset firstgid="10" name="手绘的山石-2d石头素材-00263" tilewidth="64" tileheight="83" tilecount="6" columns="3">
+  <image source="手绘的山石-2d石头素材-00263.png" width="233" height="241"/>
+ </tileset>
+ <tileset firstgid="16" name="iso-test" tilewidth="64" tileheight="115" tilecount="16" columns="8">
+  <image source="iso-test.png" width="512" height="256"/>
+  <tile id="0">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="32" name="2A65D046331BC3EDDB497C7D23CE72EA" tilewidth="64" tileheight="32" tilecount="4" columns="2">
+  <image source="2A65D046331BC3EDDB497C7D23CE72EA.png" width="179" height="90"/>
+ </tileset>
+ <tileset firstgid="36" name="2A65D046331BC3EDDB497C7D23CE72EA" tilewidth="64" tileheight="32" tilecount="4" columns="2">
+  <image source="2A65D046331BC3EDDB497C7D23CE72EA.png" width="179" height="90"/>
+ </tileset>
+ <tileset firstgid="40" name="手绘的山石-2d石头素材-00139" tilewidth="64" tileheight="64" tilecount="1" columns="1">
+  <image source="手绘的山石-2d石头素材-00139.png" width="65" height="64"/>
+ </tileset>
+ <layer name="ground" width="128" height="128">
+  <data encoding="base64" compression="zlib">
+   eJztwwENAAAMw6DOv+kLOSSsmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu8fYC1AAQ==
+  </data>
+ </layer>
+ <layer name="rocks" width="128" height="128">
+  <data encoding="base64" compression="zlib">
+   eJzt20EKg0AQAEHPviT/f2EOOQUMCG6SXbsK5u7YCCq6b9u2m/TQpH+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfNqL/Y8SB8Bf6t+nfpn+b/m36t92x/2zHMzP92/Rv079N/7a79v80vLtjf87Tv03/Nv3b9G/z/U+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m0j+/vv/mWlfX9x/a90PkZYaV/9x1tpX/3HW2lf/cdbaV/9x1vpPlj/Ns//bfq36d+mf5v+bfq36d+mf5v+bfq36T+/b74/139++rfp36Z/m/5t+rfp36Z/m/5t+rfp36Z/m/7nrfTvxVn6X6f/Mf3np/91+h/Tf376X6f/Mf3np3+b/nyL/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nftpv8PAF5zCGZ
+  </data>
+ </layer>
+ <layer name="oil" width="128" height="128">
+  <data encoding="base64" compression="zlib">
+   eJzt3TEKg1AURNFZyhTuf42xi0kd0DDnwO+Fy/uvEU0AAAAAAAAAAAAAAADgN/p12NLzHJfDlkb/ZY3+Sxr7fllj3pc1+i9r9F/S2PfLmves99Yn4Q6N+35Zo/+Sxr5f1nzOPFsa9/2yRv8ljX2/rLHvlzXu+2WN/ksa+35ZY96XNfova/Rf0tj3yxrzvqzRf1mjPwAAAAAAAAAAAP+v8T70skb/ZY3v2S1rvA+9pHHfL2vM+7JG/2WN/ksa+35ZY96XNfova/Rf0tj3yxrzvqzRf1mj/5LGvl/WmPdljf7LGv2XNPb9ssa8L2v0X9bov6Sx75c1/ke2rHHfL2v0BwAAAAAAAAAAAAAAAADgWV72WR3Z
+  </data>
+ </layer>
+ <layer name="collision" width="128" height="128" opacity="0">
+  <data encoding="base64" compression="zlib">
+   eJzt3FFqg0AUQNEsoftfbf8FS9qo86b3HPB38M01IIr5er1eX470QZP+bfq36d+mf5v+bfq36d+mf5v+bfq36d+mf5v+bfq36d/2aX/Xzt6u6O8a2Jf+bfq36d+mf5v+bf+x/7TzmWy3/u98t6D/+/Rv079N/7bp/f/ynaLvHN/3H/vzPv3b9G+b1l/vZ12xz/rva9o+6/+safus/7NW77Pea63ed/3XWr3v+q+1et/1X2vi+xueo3+b/m36t3l/06Z/m/5t+rd5f9+mf5v+bfq36dSmf5v+bfq36d+mf5v+bfq3Xdn/+Oyn+hxop3mf6LPTflxhp3n1v95O8+p/vZ3m1f96O82r//V2ug/Wv23qdckz9G/Tv03/e7n/a9O/Tf82/Vum9z7a5Tx3oX+b/m139L+zj/6feeL3rv9c+rfp36Z/y4r7e/3n0L9N/zb9WyY8z9N/Hf3b9G/Tfy/HXr9tN6H3kf6f0/987Slz3kn/87WnzHkn/c/XnjLnnc5mnNj7SP/P6X++9tS5r6T/+dpT536C/nPn5n76t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn/bT/+X42gc30CDNFE=
+  </data>
+ </layer>
+</map>
