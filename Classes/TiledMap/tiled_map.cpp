@@ -10,6 +10,7 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+
 const float RAMap::speed = 50;
 const int RAMap::accurancy = 50;
 TMXTiledMap * RAMap::_tiledMap;
@@ -17,14 +18,16 @@ Point RAMap::diff;
 std::map<cocos2d::Point, bool> RAMap::collision;
 std::map<cocos2d::Point, bool> RAMap::oil;
 
+
 // on "init" you need to initialize your instance
 bool RAMap::init()
 {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//´´½¨µØÍ¼
+	//åˆ›å»ºåœ°å›¾
 	_tiledMap = TMXTiledMap::create("map1.tmx");
+
 	mapInit();
 	testForCoord();
 	setMovePosition();
@@ -32,7 +35,7 @@ bool RAMap::init()
     return true;
 }
 
-//»ñÈ¡ËùÓĞµØÍ¼ĞÅÏ¢
+//è·å–æ‰€æœ‰åœ°å›¾ä¿¡æ¯
 void RAMap::mapInit(void) {
 	TMXLayer *_collision = _tiledMap->getLayer("collision");
 	TMXLayer *_oil = _tiledMap->getLayer("oil");
@@ -54,8 +57,9 @@ void RAMap::mapInit(void) {
 	}
 }
 
-//²âÊÔ×ø±ê
+//æµ‹è¯•åæ ‡
 void RAMap::testForCoord(void) {
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [&](Touch* touch, Event* event) {
 		Point pos1 = touch->getLocation();
@@ -66,27 +70,28 @@ void RAMap::testForCoord(void) {
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
 }
 
-// OpenGL×ø±ê×ª»»ÎªTiledmap×ø±ê
+// OpenGLåæ ‡è½¬æ¢ä¸ºTiledmapåæ ‡
+
 Point RAMap::glCoordToTileCoord(Point gl_coord) {
-	//ÇómapÔ­µã×ø±ê  
+	//æ±‚mapåŸç‚¹åæ ‡  
 	int map_width = _tiledMap->getMapSize().width;
 	int map_height = _tiledMap->getMapSize().height;
 	float map_zero_x = _tiledMap->getPosition().x + _tiledMap->getContentSize().width / 2;
 	float map_zero_y = _tiledMap->getPosition().y + _tiledMap->getContentSize().height;
 	int tile_width = (map_zero_x - _tiledMap->getPosition().x) / map_width * 2;
 	int tile_height = (map_zero_y - _tiledMap->getPosition().y) / map_height;
-	//OÎªµØÍ¼µÄÔ­µã£¬AÊÇÒªÇóµÄµã£¬oaÏòÁ¿µÄÖµ  
+	//Oä¸ºåœ°å›¾çš„åŸç‚¹ï¼ŒAæ˜¯è¦æ±‚çš„ç‚¹ï¼Œoaå‘é‡çš„å€¼  
 	float OA_x = gl_coord.x - map_zero_x;
 	float OA_y = gl_coord.y - map_zero_y;
-	//×î´ó×ø±ê
+	//æœ€å¤§åæ ‡
 	int max_coord = _tiledMap->getContentSize().height / tile_height;
-	//½«GL×ø±êÏµÖĞx,yÖáµÄµ¥Î»ÏòÁ¿·Ö½âµ½ÍßÆ¬×ø±êÏµ
-	//ÏòÁ¿i=(tile_width/2, -tile_height/2)
-	//ÏòÁ¿j=(-tile_width/2, -tile_height/2)
-	//ÏòÁ¿OA=mi+nj
+	//å°†GLåæ ‡ç³»ä¸­x,yè½´çš„å•ä½å‘é‡åˆ†è§£åˆ°ç“¦ç‰‡åæ ‡ç³»
+	//å‘é‡i=(tile_width/2, -tile_height/2)
+	//å‘é‡j=(-tile_width/2, -tile_height/2)
+	//å‘é‡OA=mi+nj
 	float m = OA_x / tile_width - OA_y / tile_height;
 	float n = -(OA_x / tile_width + OA_y / tile_height);
-	//Ô½½ç¼ì²â
+	//è¶Šç•Œæ£€æµ‹
 	if (m<0 || n<0 || m>max_coord || n>max_coord) {
 		m = -1;
 		n = -1;
@@ -102,11 +107,12 @@ Point RAMap::glCoordToTileCoord(Point gl_coord) {
 	return Point(m, n);
 }
 
-//ÉèÖÃµØÍ¼ÒÆ¶¯·½Ïò
+
+//è®¾ç½®åœ°å›¾ç§»åŠ¨æ–¹å‘
 void RAMap::setMovePosition(void) {
-	//´´½¨ÍÏ¶¯¼àÌı
+	//åˆ›å»ºæ‹–åŠ¨ç›‘å¬
 	auto listener_map_move = EventListenerMouse::create();
-	////°ó¶¨´¥Ãş&¼ÆËãÍÏ¶¯µÄÆ«ÒÆÁ¿
+	////ç»‘å®šè§¦æ‘¸&è®¡ç®—æ‹–åŠ¨çš„åç§»é‡
 	listener_map_move->onMouseMove = [=](Event* event) {
 		EventMouse* cursor = static_cast<EventMouse*>(event);
 		float cursor_x = cursor->getCursorX();
@@ -145,12 +151,13 @@ void RAMap::setMovePosition(void) {
 			}
 		}
 	};
-	//¶ÔµØÍ¼Ìí¼Ó¼àÌı
+	//å¯¹åœ°å›¾æ·»åŠ ç›‘å¬
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener_map_move, _tiledMap);
 }
 
-//ÒÆ¶¯µØÍ¼
+//ç§»åŠ¨åœ°å›¾
 void RAMap::moveMap(float dt) {
+
 	auto node = _tiledMap;
 	auto currentPos = node->getPosition();
 	Point mapPos = _tiledMap->getPosition();
@@ -169,9 +176,11 @@ void RAMap::moveMap(float dt) {
 	node->setPosition(currentPos + speed * diff);
 }
 
-//ÅĞ¶ÏÊÇ·ñ¿ÉÒÔ½¨ÔìÆÕÍ¨½¨Öş
-bool RAMap::cannotBuildNormal(cocos2d::Point build_point/*GL ×ø±ê*/, int size) {
-	//´ÓGL×ø±ê×ª»¯ÎªÍßÆ¬×ø±ê  
+
+//åˆ¤æ–­æ˜¯å¦å¯ä»¥å»ºé€ æ™®é€šå»ºç­‘
+
+bool RAMap::cannotBuildNormal(cocos2d::Point build_point/*GL åæ ‡*/, int size) {
+	//ä»GLåæ ‡è½¬åŒ–ä¸ºç“¦ç‰‡åæ ‡  
 	Point tile_coord = glCoordToTileCoord(build_point);
 	if (tile_coord.x <= 0)
 		return false;
@@ -188,9 +197,10 @@ bool RAMap::cannotBuildNormal(cocos2d::Point build_point/*GL ×ø±ê*/, int size) {
 	return true;
 }
 
-//ÅĞ¶ÏÊÇ·ñ¿ÉÒÔ½¨ÔìÓÍ¾®
+
+//åˆ¤æ–­æ˜¯å¦å¯ä»¥å»ºé€ æ²¹äº•
 Point RAMap::cannotBuildOil(cocos2d::Point build_point, int size) {
-	//´ÓGL×ø±ê×ª»¯ÎªÍßÆ¬×ø±ê  
+	//ä»GLåæ ‡è½¬åŒ–ä¸ºç“¦ç‰‡åæ ‡  
 	Point tile_coord = glCoordToTileCoord(build_point);
 	if (tile_coord.x <= 0)
 		return false;
@@ -208,20 +218,21 @@ Point RAMap::cannotBuildOil(cocos2d::Point build_point, int size) {
 		return Point(-1000, -1000);
 }
 
-//È·¶¨½¨ÔìÆÕÍ¨½¨Öş
+//ç¡®å®šå»ºé€ æ™®é€šå»ºç­‘
 void RAMap::sureToBuildNormal(cocos2d::Point build_point, int size) {
 	Point tile_coord = glCoordToTileCoord(build_point);
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
 			collision[tile_coord] = 1;
 			tile_coord.y--;
+
 		}
 		tile_coord.y += size;
 		tile_coord.x--;
 	}
 }
 
-//È·¶¨½¨ÔìÓÍ¾®
+//ç¡®å®šå»ºé€ æ²¹äº•
 void RAMap::sureToBuildOil(cocos2d::Point build_point, int size) {
 	Point tile_coord = glCoordToTileCoord(build_point);
 	for (int x = 0; x < size; x++) {
@@ -233,3 +244,4 @@ void RAMap::sureToBuildOil(cocos2d::Point build_point, int size) {
 		tile_coord.x--;
 	}
 }
+

@@ -34,19 +34,23 @@ void RABuilding::changeAppearance()//called after sufferAttack or repair
 	}
 }
 
-bool RABuilding::initWithFile(const std::string original, const std::string damaged, const std::string dying, const char* UIName)
+bool RABuilding::initWithId(int id)
 {
-	RAObject::initWithFile(original);
-
-	appearances.push_back(original);
-	appearances.push_back(damaged);
-	appearances.push_back(dying);
+	//initial texture
+	auto s = RAUtility::RAgetProperty(id, "texture");
+	RAObject::initWithFile(s[0].asString());
+	for (int i = 0; i != 3; ++i)
+		appearances.push_back(s[i].asString());
 	current_appearance_ = 0;
-
-	UI_ = GUIReader::getInstance()->widgetFromJsonFile(UIName);
+	//initial UI
+	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id,"UIFile").asCString());
 	UI_->setPosition(Point(0, 0));
 	UI_->retain();
-
+	//initial buttons
+	auto u = RAUtility::RAgetProperty(id, "UI");
+	for (int i = 0; i != u.size(); ++i)
+		RAConstructButton::create(this, UI_, u[i].asInt());
+	//initial onclick
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(RABuilding::onTouchBegan, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
@@ -77,7 +81,7 @@ bool  RABuilding::sufferAttack(int damage)
 
 bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 {
-	if (!RA::containsTouchLocation(touch,event))
+	if (!RAUtility::containsTouchLocation(touch,event))
 		return false;
 	else
 	{
@@ -91,14 +95,11 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 //
 //RAPowerstation
 //
-RAPowerStation* RAPowerStation::create()
+Sprite* RAPowerStation::create()
 {
 	RAPowerStation* powerstation = new RAPowerStation();
 	
-	powerstation->initWithFile("PowerStation0.png", 
-		"PowerStation1.png",
-		"PowerStation2.png",
-		"PowerStation/PowerStationUi.ExportJson");
+	powerstation->initWithId(id);
 	
 	powerstation->autorelease();
 	return powerstation;
@@ -107,25 +108,14 @@ RAPowerStation* RAPowerStation::create()
 //
 //RABase
 //
-RABase* RABase::create()
+Sprite* RABase::create()
 {
 	RABase* base = new RABase();
 
-	base->initWithFile("Base0.png", 
-		"Base1.png",
-		"Base2.png", 
-		"Base/BaseUi.ExportJson");
+	base->initWithId(id);
 	//Initial UI
 
 	base->autorelease();
-
-	//initial base_button
-	base->power_station_button_ = base->power_station_button_->create(base->UI_, (std::string)"PowerStation");
-	base->addChild(base->power_station_button_);
-	//initial power_station_button
-	base->base_button_=base->base_button_->create(base->UI_, (std::string)"Button_2");
-	base->addChild(base->base_button_);
-	//
 
 	return base;
 }

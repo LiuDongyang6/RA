@@ -11,14 +11,10 @@ class RABuilding : public RAObject
 {
 public:
 
-	RABuilding(int hp, int power_cost,int capital_cost) :
-		RAObject(hp, power_cost, capital_cost){}
+	RABuilding(int id) :
+		RAObject(id){}
 
-	bool initWithFile(const std::string original,
-		const std::string damaged,
-		const std::string dying,
-		const char* UIName
-	);
+	bool initWithId(int id);
 	//when attacked or repaired;
 	void changeAppearance();
 	//delete the building and remove power cost
@@ -48,13 +44,11 @@ protected:
 class RAPowerStation :public RABuilding
 {
 public:
-	RAPowerStation(int hp = original_hp_, int power_cost = power_cost_,int capital_cost=capital_cost_) :
-		RABuilding(hp, power_cost,capital_cost) {}
+	RAPowerStation() :
+		RABuilding(id) {}
 
-	static RAPowerStation* create();
-	static const int original_hp_ = 500;
-	static const int power_cost_ = -100;
-	static const int capital_cost_ = 100;
+	static Sprite* create();
+	static const int id = 1;
 };
 
 //
@@ -63,17 +57,11 @@ public:
 class RABase :public RABuilding
 {
 public:
-	RABase(int hp = original_hp_, int power_cost = power_cost_,int capital_cost=capital_cost_) :
-		RABuilding(hp, power_cost,capital_cost) {}
+	RABase() :
+		RABuilding(id) {}
 
-	static RABase* create();
-	static const int original_hp_ = 500;
-	static const int power_cost_ = 100;
-	static const int capital_cost_ = 100;
-
-private:
-	RAConstructButton<RAPowerStation>* power_station_button_;
-	RAConstructButton<RABase>* base_button_;
+	static Sprite* create();
+	static const int id = 0;
 
 };
 

@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 
+
 class RAMap:public cocos2d::Node
 {
 public:
@@ -26,7 +27,8 @@ public:
 
 	static void sureToBuildOil(cocos2d::Point pos, int size);
 
-	//地图移动速度
+
+	//鍦板浘绉诲姩閫熷害
 	static const float speed;
 
 	static const int accurancy;
@@ -41,3 +43,4 @@ protected:
 };
 
 #endif // __AB__
+

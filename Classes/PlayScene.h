@@ -1,13 +1,7 @@
 #ifndef __PLAY_SCENE_H__
 #define __PLAY_SCENE_H__
 
-#include "cocos2d.h"
-#include"cocostudio\CocoStudio.h"
-#include"ui\CocosGUI.h"
-
-#include"Classes\RAObject\RABuilding.h"
-#include"Classes\RAObject\RAObject.h"
-#include"Classes\RAObject\RAPlayer.h"
+#include"RedAlert.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -27,9 +21,6 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(PlayScene);
 
-	//void onClick(Ref*, TouchEventType type);
-
-	Button* ps;
 };
 
 #endif // __PLAY_SCENE_H__
