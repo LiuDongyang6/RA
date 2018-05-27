@@ -3,37 +3,44 @@
 
 #include "cocos2d.h"
 
-class RAMap
+
+class RAMap:public cocos2d::Node
 {
 public:
     static bool init();
 
-	// OpenGL坐标转换为Tiledmap坐标
 	static cocos2d::Point glCoordToTileCoord(cocos2d::Point gl_cood);
 
-	//判断是否可以建造普通建筑
 	static bool cannotBuildNormal(cocos2d::Point build_point, int size);
 
-	//将建造建筑的瓦片设为不可通过
-	static void sureToBuild(cocos2d::Point build_point, int size);
+	static cocos2d::Point cannotBuildOil(cocos2d::Point build_point, int size);
 
-	//移动地图
-	static void moveMap(void);
-    
-	//测试坐标
+	void moveMap(float dt);
+
 	static void testForCoord(void);
 
-	//地图移动速度
+	static void setMovePosition(void);
+
+	static void mapInit(void);
+
+	static void sureToBuildNormal(cocos2d::Point pos, int size);
+
+	static void sureToBuildOil(cocos2d::Point pos, int size);
+
+
+	//鍦板浘绉诲姩閫熷害
 	static const float speed;
 
 	static const int accurancy;
 
 	static cocos2d::TMXTiledMap* &getMap() { return _tiledMap; };
 
-private:
+protected:
 	static cocos2d::TMXTiledMap *_tiledMap;
-	static cocos2d::TMXLayer *_collision;
 	static cocos2d::Point diff;
+	static std::map<cocos2d::Point, bool> collision;
+	static std::map<cocos2d::Point, bool> oil;
 };
 
-#endif // __ABMYXJJ__
+#endif // __AB__
+

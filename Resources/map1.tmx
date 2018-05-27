@@ -2,27 +2,19 @@
 <map version="1.0" tiledversion="1.1.5" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="32" infinite="0" nextobjectid="1">
  <tileset firstgid="1" name="Untitled" tilewidth="64" tileheight="115" spacing="2" margin="2" tilecount="14" columns="7">
   <image source="iso-test.png" width="512" height="256"/>
-  <tile id="0">
-   <properties>
-    <property name="occupation" type="bool" value="false"/>
-   </properties>
-  </tile>
   <tile id="1">
    <properties>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="15" name="producer.rb_1" tilewidth="310" tileheight="250" tilecount="1" columns="1">
-  <image source="producer.rb_1.png" width="350" height="280"/>
+ <tileset firstgid="15" name="2A65D046331BC3EDDB497C7D23CE72EA" tilewidth="64" tileheight="32" tilecount="4" columns="2">
+  <image source="2A65D046331BC3EDDB497C7D23CE72EA.png" width="179" height="90"/>
   <tile id="0">
    <properties>
-    <property name="collision" type="bool" value="true"/>
+    <property name="oil" type="bool" value="true"/>
    </properties>
   </tile>
- </tileset>
- <tileset firstgid="16" name="producer.rb_11" tilewidth="310" tileheight="250" tilecount="1" columns="1">
-  <image source="producer.rb_11.png" width="350" height="280"/>
  </tileset>
  <layer name="ground" width="128" height="128">
   <data encoding="base64" compression="gzip">
@@ -31,7 +23,7 @@
  </layer>
  <layer name="oil" width="128" height="128">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3csQ0AIAgEQDZw/23tbbRQwXg3ASYkTyw+AgAAAAAAAIBftOwBAIDr5D+VvL6P4/yvvwcAAAAAAAAAAAAAAAAAAADIpbsAAAAAgCyznk1/VwBkkkNnyH8A+I/8BwAAAAAAAAAAAAAAAAAAAKhBzwPAfjp1AAD2cFcBAAAAAAAAALCiAzZ+au4AAAEA
+   H4sIAAAAAAAACu3cMQrDMBBEUd8g979tepMiwiiZ1bwHrr3ms+BGui4AAAAAoNnr9tBF/276d9MfeqXtf9o8qz7Nn/xNabOlzbNK/2fS5lml/zNp86ya1h8AAAAAAAAAAAAAAAAAgDmcW+2mfzf9u+kPACT59p4l/zBn0r+b/t30h15T9v/f7z+V/t3076Y/9Jqy/+yhfzf9u+kPAAAAAAAAAAAAAAAAAAB5nO/tpn83/feYcpdC4kwnmNKfPfTvpj8AAAAAAAAAAAAAAPzGG47P3ywAAAEA
   </data>
  </layer>
  <layer name="trees" width="128" height="128">
@@ -41,7 +33,7 @@
  </layer>
  <layer name="collision" width="128" height="128" opacity="0">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3c0UrDYBAF4dL3f2gR76SmLTbZs2fmg1xn/50oGK332+1290JfYrI/m/3Z7M9mfzb7s9mfzf5s9md7tb/vizrZn83+bPZnsz/b1v5p87wr5fex9p9h//9Jm+dd2/qnsf9n5xCT/dnsz2Z/Nvuz2Z9tsr/P3byp/n7fyTDRwfY5fN/EdmUP2+e5qontM13Rxfa5zm5j+2xn9iG133rOsxqR2n/bet4z+9NsfAY2zpxs2z63zbvBpp1umnWTLXvdMudGG3a7YcbN0vebPl+D5B0nz9Ykdc+pczVK3HXiTM3S9p02D0HSvu3PZn+2T/Tf/llcMvuz2Z/N/mw2Y7M/m/3Z7M9mf7b2/r9/Nnl20bSf2/7H2s9t/2Pt597Sf2qO6XOfzf6v3beV/V+7byv7v3bfVlv6T2k/t/2PtZ/b/sfaz23/Y+3ntv8x6rn1w/5s9mezP9vE+ybl8H0j20QPn4EcUy18BjJMdvAZmDfdYPr+dAn7T5iBKmX3KXPQJO09aRaKtJ2nzdMucd+JM7Vy12z2Z7M/m/3Z7M9m/8/YukP7/9/mHW6ePcH2/W2ff1LD7hrOMKFlby3nuFLTzprOcoW2fbWd50yNu2o801ka90TpT/+c718o+7D/Y5R92P+xT+xjw/9USJwpAaW/HrM/m/3ZbJTriq8r++eyP5v92eyvs9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/Nvuz2Z/t2d8YefVfX/FaBqAAAAEA
+   H4sIAAAAAAAACu3cwU7DQAwG4arv/9CIY1EaUqW7/u2ZT8qFS7yeFqFAeT4ej6cX+hKT/dnsz2Z/Nvuz2Z/N/mz2Z7M/29X+Pi+ayf5s9mezP5s92bq+/9Pm+dTR/BVnsn8N+9+TNs+n7H9P2jyf6tZfM9mfzf5s9mezP5v92Sr7+7qrV9Xf7zsZKjrYPsfuFrbP4rNGtl1NbJ9pRxfb51rdxvbZVvYhte96zlWNSO1/dT3vyv40HV8DHWdO1m2f3ebtoNNOO83aSZe9dpmzow677TBjZ+n7TZ9vguQdJ882SeqeU+eaKHHXiTNNlrbvtHkIkvZtfzb7s32jf/fP4pLZn83+bPZnsxmb/dnszza9/9HPJle/RjD9vPY/N/289j83/bz2P0c7r15N79/l/V91f/u//9pO9l/D/tfuO5X9r91XTNP7d3n/V5l+Xvufm35e+5+bfl77n6OdV6/sz2Z/NvuzVTxvUg6fN7JV9PA1kKP69x2qVdnB10C96gbV96dL2H/CDFQpu0+ZgyZp70mzUKTtPG2e6RL3nTjTVO6azf5s9mezP5v92ez/HV13aP/7Ou+w8+wJuu+v+/yVJuxuwhkqTNnblHPsNGlnk86yw7R9TTvPShN3NfFMq0zcE6U/9fO9/6Hsw/7HKPuw/7G7++jyvxQSZ0pA6a9j9mezP5uNcu14b9k/l/3Z7M9mf61mfzb7s9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/tr9/T+TFu34AtypbbAAAAQA=
   </data>
  </layer>
 </map>
