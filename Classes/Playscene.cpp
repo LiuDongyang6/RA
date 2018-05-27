@@ -29,7 +29,7 @@ bool PlayScene::init()
 
 	RedAlert::getinstance()->initAll();
 
-	auto fight_layer = LayerColor::create(Color4B(0, 128, 128, 255), 1200, 900);
+	auto fight_layer = RAMap::getMap();
 	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);
 	fight_layer->setPosition(0,0);
 	ui_layer->setPosition(1200,0);
@@ -37,7 +37,7 @@ bool PlayScene::init()
 	addChild(ui_layer, 2, 2);
 
 	auto base = RABase::create();
-	base->setPosition(600, 450);
+	base->setPosition(3000, 3000);
 	fight_layer->addChild(base);
 
 	auto powerstation = RAPowerStation::create();

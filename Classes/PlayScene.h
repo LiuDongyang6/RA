@@ -21,9 +21,6 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(PlayScene);
 
-	//void onClick(Ref*, TouchEventType type);
-
-	Button* ps;
 };
 
 #endif // __PLAY_SCENE_H__

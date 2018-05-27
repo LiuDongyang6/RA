@@ -3,11 +3,6 @@
 
 USING_NS_CC;
 
-Scene* TiledMap::createScene()
-{
-    return TiledMap::create();
-}
-
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
@@ -15,22 +10,20 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-// on "init" you need to initialize your instance
-bool TiledMap::init()
-{
-    //////////////////////////////
-    // 1. super init first
-    if ( !Scene::init() )
-    {
-        return false;
-    }
+const float RAMap::speed = 30;
+const int RAMap::accurancy = 200;
+TMXTiledMap * RAMap::_tiledMap;
+TMXLayer *RAMap::_collision;
+Point RAMap::diff;
 
+// on "init" you need to initialize your instance
+bool RAMap::init()
+{
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//创建地图
 	_tiledMap = TMXTiledMap::create("map1.tmx");
-	this->addChild(_tiledMap, -10, 1);
 	testForCoord();
 	//创建拖动监听
 	auto listener_map_move = EventListenerMouse::create();
@@ -39,7 +32,7 @@ bool TiledMap::init()
 		EventMouse* cursor = static_cast<EventMouse*>(event);
 		float cursor_x = cursor->getCursorX();
 		float cursor_y = cursor->getCursorY();
-		auto node = getChildByTag(1);
+		auto node = _tiledMap;
 		auto currentPos = node->getPosition();
 		Size winSize = Director::getInstance()->getWinSize();
 		if (cursor) {
@@ -75,66 +68,12 @@ bool TiledMap::init()
 		//移动地图
 		moveMap();
 	};
-	//拖动方法移动地图 problem 会显得有点卡
-	//listener_map_move->onMouseMove = [=](Event* event) {
-	//	EventMouse* click = static_cast<EventMouse*>(event);
-	//	if (click->getMouseButton() == EventMouse::MouseButton::BUTTON_MIDDLE) {
-	//		float click_x = click->getCursorX();
-	//		float click_y = click->getCursorY();
-	//		pre_pos = Point(click_x, click_y);
-	//		auto now_pos = click->getDelta();
-	//		auto diff = now_pos - pre_pos;
-	//		log("diff: %f, %f", diff.x, diff.y);
-	//		log("now: %f, %f", now_pos.x, now_pos.y);
-	//		auto node = getChildByTag(1);
-	//		auto currentPos = node->getPosition();
-	//		Point mapPos = _tiledMap->getPosition();
-	//		Point viewPos = mapPos + diff;
-	//		Size winSize = Director::getInstance()->getWinSize();
-	//		Size mapSize = _tiledMap->getMapSize();
-	//		Size tileSize = _tiledMap->getTileSize();
-	//		if (viewPos.x < winSize.width - 105 * tileSize.width || viewPos.x > 0)
-	//		{
-	//			diff.x = 0;
-	//		}
-	//		if (viewPos.y < winSize.height - 106 * tileSize.height || viewPos.y >0)
-	//		{
-	//			diff.y = 0;
-	//		}
-	//		node->setPosition(currentPos + diff);
-	//	}
-	//};
-	/*listener_map_move->onMouseUp = [&](Event* event) {
-		EventMouse* loosen = static_cast<EventMouse*>(event);
-		if (loosen->getMouseButton() == EventMouse::MouseButton::BUTTON_MIDDLE) {
-			float loosen_x = loosen->getCursorX();
-			float loosen_y = loosen->getCursorY();
-			auto diff = Point(loosen_x, loosen_y) - pre_pos;
-			log("diff: %f, %f", diff.x, diff.y);
-			auto node = getChildByTag(1);
-			auto currentPos = node->getPosition();
-			Point mapPos = _tiledMap->getPosition();
-			Point viewPos = mapPos + diff;
-			Size winSize = Director::getInstance()->getWinSize();
-			Size mapSize = _tiledMap->getMapSize();
-			Size tileSize = _tiledMap->getTileSize();
-			if (viewPos.x < winSize.width - 105 * tileSize.width || viewPos.x > 0)
-			{
-				diff.x = 0;
-			}
-
-			if (viewPos.y < winSize.height - 106 * tileSize.height || viewPos.y >0)
-			{
-				diff.y = 0;
-			}
-			node->setPosition(currentPos + diff);
-		}
-	};*/
 	//对地图添加监听
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener_map_move, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener_map_move, _tiledMap);
     return true;
 }
-void TiledMap::testForCoord() {
+
+void RAMap::testForCoord() {
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [&](Touch* touch, Event* event) {
 		Point pos1 = touch->getLocation();
@@ -142,10 +81,10 @@ void TiledMap::testForCoord() {
 		log("%d", tf);
 		return true;
 	};
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
 }
 
-Point TiledMap::glCoordToTileCoord(Point gl_coord) {
+Point RAMap::glCoordToTileCoord(Point gl_coord) {
 	//求map原点坐标  
 	int map_width = _tiledMap->getMapSize().width;
 	int map_height = _tiledMap->getMapSize().height;
@@ -180,8 +119,8 @@ Point TiledMap::glCoordToTileCoord(Point gl_coord) {
 	return Point(m, n);
 }
 
-void TiledMap::moveMap(void) {
-	auto node = getChildByTag(1);
+void RAMap::moveMap(void) {
+	auto node = _tiledMap;
 	auto currentPos = node->getPosition();
 	Point mapPos = _tiledMap->getPosition();
 	Point viewPos = mapPos + speed * diff;
@@ -200,9 +139,9 @@ void TiledMap::moveMap(void) {
 	node->setPosition(currentPos + speed * diff);
 }
 
-bool TiledMap::cannotBuildNormal(cocos2d::Point build_point/*GL 坐标*/, int size) {
+bool RAMap::cannotBuildNormal(cocos2d::Point build_point/*GL 坐标*/, int size) {
 	//从GL坐标转化为瓦片坐标  
-	Point tile_coord = this->glCoordToTileCoord(build_point);
+	Point tile_coord = glCoordToTileCoord(build_point);
 	if (tile_coord.x <= 0)
 		return false;
 	_collision = _tiledMap->getLayer("collision");
@@ -230,32 +169,16 @@ bool TiledMap::cannotBuildNormal(cocos2d::Point build_point/*GL 坐标*/, int size
 	return true;
 }
 
-void TiledMap::sureToBuild(cocos2d::Point build_point, int size) {
+void RAMap::sureToBuild(cocos2d::Point build_point, int size) {
 	auto tile_size = _tiledMap->getTileSize();
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
 			build_point.x += x * tile_size.width;
 			build_point.y += y * tile_size.height;
 			//从GL坐标转化为瓦片坐标  
-			Point tileCoord = this->glCoordToTileCoord(build_point);
+			Point tileCoord = glCoordToTileCoord(build_point);
 
 		}
 	}
 }
 
-void TiledMap::menuCloseCallback(Ref* pSender)
-{
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
-
-    #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
-#endif
-
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
-}

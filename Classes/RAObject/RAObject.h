@@ -5,6 +5,7 @@
 #include"cocostudio\CocoStudio.h"
 #include"ui\CocosGUI.h"
 #include"RAUtility.h"
+#include"TiledMap\tiled_map.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -48,17 +49,18 @@ public:
 	}
 	void onTouchEnded(Touch* touch, Event* type)
 	{
+		Vec2 origin = RAMap::getMap()->getPosition();
 		button_->onTouchEnded(touch, type);
 		Sprite* object = CreateWiki[id]();
 		int category = (RAUtility::RAgetProperty(id,"category").asInt());
 		if (category == 0)
 		{
 			auto point = touch->getLocation();
-			object->setPosition(point);
+			object->setPosition(point-origin);
 		}
 		else
-			object->setPosition(0,0);
-		Director::getInstance()->getRunningScene()->getChildByTag(1)->addChild(object,category);
+			object->setPosition(-1*origin);
+		RAMap::getMap()->addChild(object,category);
 	}
 	bool onTouchBegan(Touch* touch, Event* event)
 	{

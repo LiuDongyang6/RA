@@ -9,11 +9,13 @@ RedAlert* RedAlert::getinstance()
 void RedAlert::initAll()
 {
 	RAUtility::RAObjectProperty=FileUtils::getInstance()->getStringFromFile("RAObjectProperty.json");
-
+	//initial create_function wiki
 	auto &wiki = RAConstructButton::CreateWiki;
 	wiki.insert({ 0,RABase::create });
 	wiki.insert({{1,RAPowerStation::create } });
 
 	auto framecache = SpriteFrameCache::getInstance();
 	framecache->addSpriteFramesWithFile("Buildings.plist");
+	//
+	RAMap::init();
 }
