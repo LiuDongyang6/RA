@@ -16,11 +16,11 @@ class RAObject : public cocos2d::Sprite
 public:
 	RAObject(int id) :
 		original_hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
-		hp_(original_hp_),
+		hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
 		power_cost_(RAUtility::RAgetProperty(id, "power").asInt()),
 		capital_cost_(RAUtility::RAgetProperty(id, "capital").asInt()){}
 	~RAObject()override {}
-	virtual bool initWithFile(const std::string& filename)override;
+	virtual bool initWithSpriteFrameName(const std::string& filename)override;
 	virtual bool sufferAttack(int damage);//return survive or not
 	virtual bool annihilation();
 protected:
@@ -59,7 +59,7 @@ public:
 			object->setPosition(point-origin);
 		}
 		else
-			object->setPosition(-1*origin);
+			object->setPosition(this->getParent()->getPosition()-Vec2(50,50));
 		RAMap::getMap()->addChild(object,category);
 	}
 	bool onTouchBegan(Touch* touch, Event* event)
@@ -70,13 +70,15 @@ public:
 	void initButton()
 	{
 		button_->setTouchEnabled(0);
+		//touch
 		auto listener = EventListenerTouchOneByOne::create();
 		listener->onTouchBegan = CC_CALLBACK_2(RAConstructButton::onTouchBegan, this);
 		listener->onTouchEnded = CC_CALLBACK_2(RAConstructButton::onTouchEnded, this);
 		Director::getInstance()->getEventDispatcher()->
 			addEventListenerWithSceneGraphPriority(listener, button_);
-		//abandoned,now we use observer patter
-		//schedule(schedule_selector(RAConstructButton::checkConstructable),0.05f);
+		//
+		checkConstructable(this);
+		//½ðÇ®±ä»¯
 		NotificationCenter::getInstance()->addObserver(this,
 			callfuncO_selector(RAConstructButton::checkConstructable),
 			"RESOURCE_CHANGE",

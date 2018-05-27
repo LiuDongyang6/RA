@@ -8,6 +8,8 @@ USING_NS_CC;
 using namespace cocostudio;
 using namespace cocos2d::ui;
 
+class RASoldier;
+
 class RAPlayer
 {
 public:
@@ -24,12 +26,12 @@ public:
 	static void consumePower(const int quantity);
 
 	static Widget*& currentUI() { return current_UI_; }
-	static void initial();
+
+	static Vector<RASoldier*> selected_soldiers_;
 private:
 	static int capital_;
 	static int power_;
 	static Widget* current_UI_;
-	//static Vector<RASoldier> selected_soldiers_;
 };
 
 #endif // !_RA_PLAYER_H_

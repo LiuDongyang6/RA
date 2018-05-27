@@ -32,7 +32,7 @@ bool RAObject::annihilation()
 	return true;
 }
 
-bool RAObject::initWithFile(const std::string& filename)
+bool RAObject::initWithSpriteFrameName(const std::string& filename)
 {
 	Sprite::initWithSpriteFrameName(filename);
 	RAPlayer::consumePower(power_cost_) ;

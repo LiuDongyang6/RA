@@ -1,7 +1,9 @@
 #include"RAPlayer.h"
+#include"RASoldier.h"
 int RAPlayer::power_ = 200;
 int RAPlayer::capital_ = 10000;
 Widget* RAPlayer::current_UI_ = 0;
+Vector<RASoldier*> RAPlayer::selected_soldiers_;
 
 
 void RAPlayer::consumeCapital(int quantity)

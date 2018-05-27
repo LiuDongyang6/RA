@@ -13,6 +13,8 @@ void RedAlert::initAll()
 	auto &wiki = RAConstructButton::CreateWiki;
 	wiki.insert({ 0,RABase::create });
 	wiki.insert({{1,RAPowerStation::create } });
+	wiki.insert({ 2,RABarrack::create });
+	wiki.insert({ 3,RAFairy::create });
 
 	auto framecache = SpriteFrameCache::getInstance();
 	framecache->addSpriteFramesWithFile("Buildings.plist");

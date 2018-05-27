@@ -23,8 +23,6 @@ public:
 	virtual bool sufferAttack(int damage)override;
 
 	bool onTouchBegan(Touch* touch, Event* event);
-	//kind() returns 0 when building
-	static int kind() { return 0; };
 
 	~RABuilding()override { 
 		UI_->release();
@@ -62,6 +60,19 @@ public:
 
 	static Sprite* create();
 	static const int id = 0;
+
+};
+//
+//RABarrack
+//
+class RABarrack :public RABuilding
+{
+public:
+	RABarrack() :
+		RABuilding(id) {}
+
+	static Sprite* create();
+	static const int id = 2;
 
 };
 

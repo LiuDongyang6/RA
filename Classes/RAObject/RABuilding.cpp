@@ -38,7 +38,7 @@ bool RABuilding::initWithId(int id)
 {
 	//initial texture
 	auto s = RAUtility::RAgetProperty(id, "texture");
-	RAObject::initWithFile(s[0].asString());
+	RAObject::initWithSpriteFrameName(s[0].asString());
 	for (int i = 0; i != 3; ++i)
 		appearances.push_back(s[i].asString());
 	current_appearance_ = 0;
@@ -111,6 +111,21 @@ Sprite* RAPowerStation::create()
 Sprite* RABase::create()
 {
 	RABase* base = new RABase();
+
+	base->initWithId(id);
+	//Initial UI
+
+	base->autorelease();
+
+	return base;
+}
+
+//
+//RABarrack
+//
+Sprite* RABarrack::create()
+{
+	RABarrack* base = new RABarrack();
 
 	base->initWithId(id);
 	//Initial UI
