@@ -1,10 +1,11 @@
 #ifndef __RA_OBJECT__
 #define __RA_OBJECT__
 
-#include "cocos2d.h"
 #include"RAPlayer.h"
 #include"cocostudio\CocoStudio.h"
 #include"ui\CocosGUI.h"
+#include"RAUtility.h"
+#include"TiledMap\tiled_map.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -13,40 +14,53 @@ using namespace cocos2d::ui;
 class RAObject : public cocos2d::Sprite
 {
 public:
-	RAObject(int hp,int power,int capital):
-		hp_(hp), original_hp_(hp),power_cost_(power),capital_cost_(capital) {}
+	RAObject(int id) :
+		original_hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
+		hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
+		power_cost_(RAUtility::RAgetProperty(id, "power").asInt()),
+		capital_cost_(RAUtility::RAgetProperty(id, "capital").asInt()){}
 	~RAObject()override {}
-	virtual bool initWithFile(const std::string& filename)override;
+	virtual bool initWithSpriteFrameName(const std::string& filename)override;
 	virtual bool sufferAttack(int damage);//return survive or not
 	virtual bool annihilation();
 protected:
 	const int power_cost_;
 	const int capital_cost_;
-	bool toBeOrNotToBe();
 	int hp_;
 	const int original_hp_;
+	bool toBeOrNotToBe();
 };
 
-template<typename T>
 class RAConstructButton: public Node
 {
 public:
-	RAConstructButton(Widget* UI, std::string& name) :
-		button_((Button*)Helper::seekWidgetByName(UI, name)) {}
-	static RAConstructButton* create(Widget* UI, std::string& name)
+	RAConstructButton(Widget* UI, int IdToConstruct) :
+		button_((Button*)Helper::seekWidgetByTag(UI, IdToConstruct)),
+		id(IdToConstruct),
+		power_cost_(RAUtility::RAgetProperty(id, "power").asInt()),
+		capital_cost_(RAUtility::RAgetProperty(id, "capital").asInt()){}
+	static RAConstructButton* create(Node* parent,Widget* UI, int IdToConstruct)
 	{
-		RAConstructButton* button = new RAConstructButton(UI,name);
+		RAConstructButton* button = new RAConstructButton(UI, IdToConstruct);
 		button->initButton();
 		button->autorelease();
+		parent->addChild(button);
 		return button;
 	}
 	void onTouchEnded(Touch* touch, Event* type)
 	{
+		Vec2 origin = RAMap::getMap()->getPosition();
 		button_->onTouchEnded(touch, type);
-		auto point = touch->getLocation();
-		auto object = T::create();
-		object->setPosition(point);
-		Director::getInstance()->getRunningScene()->getChildByTag(1)->addChild(object);
+		Sprite* object = CreateWiki[id]();
+		int category = (RAUtility::RAgetProperty(id,"category").asInt());
+		if (category == 0)
+		{
+			auto point = touch->getLocation();
+			object->setPosition(point-origin);
+		}
+		else
+			object->setPosition(this->getParent()->getPosition()-Vec2(50,50));
+		RAMap::getMap()->addChild(object,category);
 	}
 	bool onTouchBegan(Touch* touch, Event* event)
 	{
@@ -56,35 +70,48 @@ public:
 	void initButton()
 	{
 		button_->setTouchEnabled(0);
+		//touch
 		auto listener = EventListenerTouchOneByOne::create();
-		listener->onTouchBegan = CC_CALLBACK_2(RAConstructButton<T>::onTouchBegan, this);
-		listener->onTouchEnded = CC_CALLBACK_2(RAConstructButton<T>::onTouchEnded, this);
+		listener->onTouchBegan = CC_CALLBACK_2(RAConstructButton::onTouchBegan, this);
+		listener->onTouchEnded = CC_CALLBACK_2(RAConstructButton::onTouchEnded, this);
 		Director::getInstance()->getEventDispatcher()->
 			addEventListenerWithSceneGraphPriority(listener, button_);
-		schedule(schedule_selector(RAConstructButton::checkConstructable),0.05f);
+		//
+		checkConstructable(this);
+		//金钱变化
+		NotificationCenter::getInstance()->addObserver(this,
+			callfuncO_selector(RAConstructButton::checkConstructable),
+			"RESOURCE_CHANGE",
+			NULL);
 	}
-	void checkConstructable(float delta)
+	//judge if capital and power can afford the object
+	void checkConstructable(Ref* pSender)
 	{
 		if (button_->isBright())
 		{
-			if ((RAPlayer::capital() < T::capital_cost_) || (RAPlayer::power() < T::power_cost_))//不能建造
+			if ((RAPlayer::getCapital() < capital_cost_) || (RAPlayer::getPower() < power_cost_))//不能建造
 			{
 				button_->setBright(false);
 			}
 		}
 		else
 		{
-			if (!((RAPlayer::capital() < T::capital_cost_) || (RAPlayer::power() < T::power_cost_)))
+			if (!((RAPlayer::getCapital() < capital_cost_) || (RAPlayer::getPower() < power_cost_)))
 				button_->setBright(true);
 		}
 	}
+	//a map containing all creat functions
+	//initialized in RAInitialAll
+	typedef Sprite*(*CreateType)();
+	static std::unordered_map<int, CreateType> CreateWiki;
 private:
 	Button * button_;
+	//id of object the button constructs
+	const int id;
+	//
+	int capital_cost_;
+	//
+	int power_cost_;
 };
-
-namespace RA
-{
-	bool containsTouchLocation(Touch* touch, Event* event);
-}
 
 #endif // __RA_SOLDIER__

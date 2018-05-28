@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>Fairy(1).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-10.5,-10.5}</string>
+                <key>spriteSize</key>
+                <string>{115,143}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{1039,1},{115,143}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>2 0 1 4 2 3 4 5 0 4 0 2 0 5 6</string>
+                <key>vertices</key>
+                <string>172 74 167 182 115 182 66 156 57 107 111 47 144 39</string>
+                <key>verticesUV</key>
+                <string>1154 36 1149 144 1097 144 1048 118 1039 69 1093 9 1126 1</string>
+            </dict>
+            <key>Fairy(10).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-37.5,-10.5}</string>
+                <key>spriteSize</key>
+                <string>{121,147}</string>
+                <key>spriteSourceSize</key>
+                <string>{300,200}</string>
+                <key>textureRect</key>
+                <string>{{657,1},{121,147}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>2 0 1 4 5 0 2 3 4 4 0 2 0 5 6</string>
+                <key>vertices</key>
+                <string>173 76 167 183 116 184 52 148 69 96 111 49 142 37</string>
+                <key>verticesUV</key>
+                <string>778 40 772 147 721 148 657 112 674 60 716 13 747 1</string>
+            </dict>
+            <key>Fairy(11).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-32.5,-8}</string>
+                <key>spriteSize</key>
+                <string>{111,150}</string>
+                <key>spriteSourceSize</key>
+                <string>{300,200}</string>
+                <key>textureRect</key>
+                <string>{{544,1},{111,150}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>0 4 5 2 3 4 0 1 2 0 2 4</string>
+                <key>vertices</key>
+                <string>173 75 167 183 116 180 62 153 62 98 131 33</string>
+                <key>verticesUV</key>
+                <string>655 43 649 151 598 148 544 121 544 66 613 1</string>
+            </dict>
+            <key>Fairy(12).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-12,-16.5}</string>
+                <key>spriteSize</key>
+                <string>{146,157}</string>
+                <key>spriteSourceSize</key>
+                <string>{300,200}</string>
+                <key>textureRect</key>
+                <string>{{121,1},{146,157}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>6 7 8 4 5 6 0 2 6 4 6 2 4 2 3 0 1 2 0 6 8</string>
+                <key>vertices</key>
+                <string>211 83 207 137 167 152 155 195 66 150 65 98 110 77 121 47 164 38</string>
+                <key>verticesUV</key>
+                <string>267 46 263 100 223 115 211 158 122 113 121 61 166 40 177 10 220 1</string>
+            </dict>
+            <key>Fairy(13).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-6,-10.5}</string>
+                <key>spriteSize</key>
+                <string>{156,145}</string>
+                <key>spriteSourceSize</key>
+                <string>{300,200}</string>
+                <key>textureRect</key>
+                <string>{{269,1},{156,145}}</string>
+                <key>textureRotated</key>
+                <true/>
+                <key>triangles</key>
+                <string>5 3 4 5 6 3 3 6 7 0 2 3 0 1 2 0 3 7</string>
+                <key>vertices</key>
+                <string>171 48 222 104 203 136 165 155 158 183 95 173 66 105 141 38</string>
+                <key>verticesUV</key>
+                <string>404 106 348 157 316 138 297 100 269 93 279 30 347 1 414 76</string>
+            </dict>
+            <key>Fairy(14).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-6,-10.5}</string>
+                <key>spriteSize</key>
+                <string>{156,145}</string>
+                <key>spriteSourceSize</key>
+                <string>{300,200}</string>
+                <key>textureRect</key>
+                <string>{{269,1},{156,145}}</string>
+                <key>textureRotated</key>
+                <true/>
+                <key>triangles</key>
+                <string>5 3 4 5 6 3 3 6 7 0 2 3 0 1 2 0 3 7</string>
+                <key>vertices</key>
+                <string>171 48 222 104 203 136 165 155 158 183 95 173 66 105 141 38</string>
+                <key>verticesUV</key>
+                <string>404 106 348 157 316 138 297 100 269 93 279 30 347 1 414 76</string>
+            </dict>
+            <key>Fairy(2).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-5.5,-9.5}</string>
+                <key>spriteSize</key>
+                <string>{123,145}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{780,1},{123,145}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 6 7 5 6 1 2 3 4 1 2 4 5 1 4 0 1 7</string>
+                <key>vertices</key>
+                <string>181 63 163 102 177 152 150 182 114 180 67 156 58 104 125 37</string>
+                <key>verticesUV</key>
+                <string>903 27 885 66 899 116 872 146 836 144 789 120 780 68 847 1</string>
+            </dict>
+            <key>Fairy(3).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,-12.5}</string>
+                <key>spriteSize</key>
+                <string>{118,159}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{1,1},{118,159}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 1 3 4 1 4 5 1 5 6 0 1 6</string>
+                <key>vertices</key>
+                <string>184 68 165 108 180 153 141 192 66 153 66 100 131 33</string>
+                <key>verticesUV</key>
+                <string>119 36 100 76 115 121 76 160 1 121 1 68 66 1</string>
+            </dict>
+            <key>Fairy(4).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-7.5,-11.5}</string>
+                <key>spriteSize</key>
+                <string>{113,141}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{1416,1},{113,141}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>3 1 2 5 3 4 5 6 1 5 1 3 0 1 6 0 6 7</string>
+                <key>vertices</key>
+                <string>174 75 174 139 164 181 120 182 64 151 61 107 112 49 147 41</string>
+                <key>verticesUV</key>
+                <string>1529 35 1529 99 1519 141 1475 142 1419 111 1416 67 1467 9 1502 1</string>
+            </dict>
+            <key>Fairy(5).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-9,-8}</string>
+                <key>spriteSize</key>
+                <string>{126,150}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{416,1},{126,150}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>0 4 5 1 2 3 4 0 1 4 1 3</string>
+                <key>vertices</key>
+                <string>179 81 179 131 151 183 89 172 53 111 137 33</string>
+                <key>verticesUV</key>
+                <string>542 49 542 99 514 151 452 140 416 79 500 1</string>
+            </dict>
+            <key>Fairy(6).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-3,-9}</string>
+                <key>spriteSize</key>
+                <string>{132,144}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{905,1},{132,144}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>3 1 2 3 4 1 1 4 5 0 1 5</string>
+                <key>vertices</key>
+                <string>188 57 163 138 162 181 85 181 56 111 134 37</string>
+                <key>verticesUV</key>
+                <string>1037 21 1012 102 1011 145 934 145 905 75 983 1</string>
+            </dict>
+            <key>Fairy(7).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-2.5,-11.5}</string>
+                <key>spriteSize</key>
+                <string>{131,141}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{1156,1},{131,141}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 3 4 1 2 3 0 1 4</string>
+                <key>vertices</key>
+                <string>188 56 151 181 80 182 57 106 134 41</string>
+                <key>verticesUV</key>
+                <string>1287 16 1250 141 1179 142 1156 66 1233 1</string>
+            </dict>
+            <key>Fairy(8).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-6,-12.5}</string>
+                <key>spriteSize</key>
+                <string>{122,139}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{1531,1},{122,139}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>5 6 7 4 2 3 5 2 4 5 7 2 1 2 7 1 7 8 0 1 8</string>
+                <key>vertices</key>
+                <string>172 44 180 80 163 135 163 182 81 180 58 135 73 85 98 78 123 43</string>
+                <key>verticesUV</key>
+                <string>1645 2 1653 38 1636 93 1636 140 1554 138 1531 93 1546 43 1571 36 1596 1</string>
+            </dict>
+            <key>Fairy(9).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-6.5,-10.5}</string>
+                <key>spriteSize</key>
+                <string>{125,141}</string>
+                <key>spriteSourceSize</key>
+                <string>{250,200}</string>
+                <key>textureRect</key>
+                <string>{{1289,1},{125,141}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 4 2 3 4 1 4 5 0 1 5</string>
+                <key>vertices</key>
+                <string>171 53 181 81 151 181 84 181 56 109 133 40</string>
+                <key>verticesUV</key>
+                <string>1404 14 1414 42 1384 142 1317 142 1289 70 1366 1</string>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>3</integer>
+            <key>pixelFormat</key>
+            <string>RGBA8888</string>
+            <key>premultiplyAlpha</key>
+            <false/>
+            <key>realTextureFileName</key>
+            <string>Fairy.png</string>
+            <key>size</key>
+            <string>{1654,161}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:ff12d9fcf4c5114b1e0fc9e4d229f43a:15c494d4730c915fe58fd3b30bbec900:f8aa18f1f0cf4a9856917cb111bbdf90$</string>
+            <key>textureFileName</key>
+            <string>Fairy.png</string>
+        </dict>
+    </dict>
+</plist>
