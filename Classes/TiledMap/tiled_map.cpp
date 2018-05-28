@@ -29,7 +29,7 @@ bool RAMap::init()
 	_tiledMap = TMXTiledMap::create("map1.tmx");
 
 	mapInit();
-	testForCoord();
+	//testForCoord();
 	setMovePosition();
 	_tiledMap->schedule(schedule_selector(RAMap::moveMap));
     return true;

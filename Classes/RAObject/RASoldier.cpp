@@ -39,6 +39,7 @@ bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 		RAPlayer::selected_soldiers_.clear();
 
 		RAPlayer::selected_soldiers_.pushBack(this);
+		stopAllActions();
 		return true;
 	}
 	else

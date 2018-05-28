@@ -53,7 +53,7 @@ public:
 		button_->onTouchEnded(touch, type);
 		Sprite* object = CreateWiki[id]();
 		int category = (RAUtility::RAgetProperty(id,"category").asInt());
-		if (category == 0)
+		if (category == 100)//building
 		{
 			auto point = touch->getLocation();
 			object->setPosition(point-origin);
