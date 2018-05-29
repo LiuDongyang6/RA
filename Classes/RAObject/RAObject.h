@@ -49,18 +49,24 @@ public:
 	}
 	void onTouchEnded(Touch* touch, Event* type)
 	{
-		Vec2 origin = RAMap::getMap()->getPosition();
+		//revert
 		button_->onTouchEnded(touch, type);
-		Sprite* object = CreateWiki[id]();
-		int category = (RAUtility::RAgetProperty(id,"category").asInt());
-		if (category == 100)//building
+		//
+		auto point = touch->getLocation();
+		if (RAMap::cannotBuildNormal(point, 4))
 		{
-			auto point = touch->getLocation();
-			object->setPosition(point-origin);
+			Vec2 origin = RAMap::getMap()->getPosition();
+			Sprite* object = CreateWiki[id]();
+			int category = (RAUtility::RAgetProperty(id, "category").asInt());
+			if (category == 100)//building
+			{
+				object->setPosition(point - origin);
+			}
+			else
+				object->setPosition(this->getParent()->getPosition() - Vec2(50, 50));
+			RAMap::getMap()->addChild(object, category);
+			RAMap::sureToBuildNormal(point, 4);
 		}
-		else
-			object->setPosition(this->getParent()->getPosition()-Vec2(50,50));
-		RAMap::getMap()->addChild(object,category);
 	}
 	bool onTouchBegan(Touch* touch, Event* event)
 	{

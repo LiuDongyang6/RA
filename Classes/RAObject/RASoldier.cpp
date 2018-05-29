@@ -23,6 +23,7 @@ bool RASoldier::initWithId(int id)
 	//initial onClick
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = (CC_CALLBACK_2(RASoldier::onTouchBegan, this));
+	listener->setSwallowTouches(true);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 	auto animation = Animation::createWithSpriteFrames(animation_[1],0.2f);
@@ -54,7 +55,6 @@ bool RASoldier::annihilation()
 		RAPlayer::selected_soldiers_.erase(it);
 	auto remove = [&]() {removeFromParent(); };
 	auto seq = Sequence::create(animate, remove);
-	runAction(seq);
 	return true;
 }
 

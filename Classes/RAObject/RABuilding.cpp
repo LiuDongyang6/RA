@@ -52,6 +52,7 @@ bool RABuilding::initWithId(int id)
 		RAConstructButton::create(this, UI_, u[i].asInt());
 	//initial onclick
 	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(RABuilding::onTouchBegan, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 

@@ -15,9 +15,10 @@ void RedAlert::initAll()
 	wiki.insert({{1,RAPowerStation::create } });
 	wiki.insert({ 2,RABarrack::create });
 	wiki.insert({ 3,RAFairy::create });
-
+	//initial building sprite frame
 	auto framecache = SpriteFrameCache::getInstance();
 	framecache->addSpriteFramesWithFile("Buildings.plist");
-	//
+	//initial on touch
+	auto listener = EventListenerTouchOneByOne::create();
 	RAMap::init();
 }
