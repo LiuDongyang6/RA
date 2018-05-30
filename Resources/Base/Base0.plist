@@ -4,176 +4,176 @@
 	<dict>
 		<key>frames</key>
 		<dict>
-			<key>Resources/PowerStation0.png</key>
+			<key>PowerStation0.png</key>
 			<dict>
 				<key>width</key>
 				<integer>166</integer>
 				<key>height</key>
-				<integer>167</integer>
+				<integer>158</integer>
 				<key>originalWidth</key>
-				<integer>424</integer>
+				<integer>166</integer>
 				<key>originalHeight</key>
-				<integer>375</integer>
+				<integer>158</integer>
 				<key>x</key>
 				<integer>0</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-2</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>38</real>
+				<real>0</real>
 			</dict>
-			<key>Resources/PowerStation1.png</key>
+			<key>PowerStation1.png</key>
 			<dict>
 				<key>width</key>
-				<integer>168</integer>
+				<integer>160</integer>
 				<key>height</key>
-				<integer>165</integer>
+				<integer>156</integer>
 				<key>originalWidth</key>
-				<integer>424</integer>
+				<integer>160</integer>
 				<key>originalHeight</key>
-				<integer>375</integer>
+				<integer>156</integer>
 				<key>x</key>
 				<integer>168</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-1</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>37</real>
+				<real>0</real>
 			</dict>
-			<key>Resources/PowerStation2.png</key>
+			<key>PowerStation2.png</key>
 			<dict>
 				<key>width</key>
 				<integer>166</integer>
 				<key>height</key>
-				<integer>118</integer>
+				<integer>108</integer>
 				<key>originalWidth</key>
-				<integer>424</integer>
+				<integer>166</integer>
 				<key>originalHeight</key>
-				<integer>375</integer>
+				<integer>108</integer>
 				<key>x</key>
-				<integer>338</integer>
+				<integer>330</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-2</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>13.5</real>
+				<real>0</real>
 			</dict>
-			<key>basic6_1_body.png</key>
+			<key>Barrack0.png</key>
 			<dict>
 				<key>width</key>
 				<integer>133</integer>
 				<key>height</key>
 				<integer>108</integer>
 				<key>originalWidth</key>
-				<integer>227</integer>
+				<integer>133</integer>
 				<key>originalHeight</key>
-				<integer>236</integer>
+				<integer>108</integer>
 				<key>x</key>
-				<integer>506</integer>
+				<integer>498</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-1</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>26</real>
+				<real>0</real>
 			</dict>
-			<key>basic6_1_damagedbody.png</key>
+			<key>Barrack1.png</key>
 			<dict>
 				<key>width</key>
 				<integer>131</integer>
 				<key>height</key>
 				<integer>102</integer>
 				<key>originalWidth</key>
-				<integer>227</integer>
+				<integer>131</integer>
 				<key>originalHeight</key>
-				<integer>236</integer>
+				<integer>102</integer>
 				<key>x</key>
-				<integer>641</integer>
+				<integer>633</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-1</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>25</real>
+				<real>0</real>
 			</dict>
-			<key>basic6_1_destroyedbody.png</key>
+			<key>Barrack3.png</key>
 			<dict>
 				<key>width</key>
-				<integer>129</integer>
+				<integer>126</integer>
 				<key>height</key>
 				<integer>79</integer>
 				<key>originalWidth</key>
-				<integer>227</integer>
+				<integer>126</integer>
 				<key>originalHeight</key>
-				<integer>236</integer>
+				<integer>79</integer>
 				<key>x</key>
-				<integer>774</integer>
+				<integer>766</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-1</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>12.5</real>
+				<real>0</real>
 			</dict>
-			<key>Resources/Base0.png</key>
+			<key>Base0.png</key>
 			<dict>
 				<key>width</key>
 				<integer>361</integer>
 				<key>height</key>
 				<integer>286</integer>
 				<key>originalWidth</key>
-				<integer>449</integer>
+				<integer>361</integer>
 				<key>originalHeight</key>
-				<integer>443</integer>
+				<integer>286</integer>
 				<key>x</key>
 				<integer>0</integer>
 				<key>y</key>
-				<integer>169</integer>
+				<integer>160</integer>
 				<key>offsetX</key>
-				<real>-2</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>57.5</real>
+				<real>0</real>
 			</dict>
-			<key>Resources/Base1.png</key>
+			<key>Base1.png</key>
 			<dict>
 				<key>width</key>
 				<integer>361</integer>
 				<key>height</key>
-				<integer>288</integer>
+				<integer>280</integer>
 				<key>originalWidth</key>
-				<integer>449</integer>
+				<integer>361</integer>
 				<key>originalHeight</key>
-				<integer>443</integer>
+				<integer>280</integer>
 				<key>x</key>
 				<integer>363</integer>
 				<key>y</key>
-				<integer>169</integer>
+				<integer>160</integer>
 				<key>offsetX</key>
-				<real>-1</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>55.5</real>
+				<real>0</real>
 			</dict>
-			<key>Resources/Base2.png</key>
+			<key>Base2.png</key>
 			<dict>
 				<key>width</key>
 				<integer>356</integer>
 				<key>height</key>
 				<integer>233</integer>
 				<key>originalWidth</key>
-				<integer>449</integer>
+				<integer>356</integer>
 				<key>originalHeight</key>
-				<integer>443</integer>
+				<integer>233</integer>
 				<key>x</key>
 				<integer>0</integer>
 				<key>y</key>
-				<integer>459</integer>
+				<integer>448</integer>
 				<key>offsetX</key>
-				<real>1.5</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>28</real>
+				<real>0</real>
 			</dict>
 		</dict>
 		<key>metadata</key>

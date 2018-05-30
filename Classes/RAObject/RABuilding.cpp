@@ -61,14 +61,17 @@ bool RABuilding::initWithId(int id)
 
 bool RABuilding::annihilation()
 {
+	auto ui = RAPlayer::currentUI();
 	if (RAPlayer::currentUI() == UI_)
 	{
 		RAPlayer::currentUI() = 0;
 	}
-	UI_->removeFromParent();
+	UI_->removeAllChildrenWithCleanup(true);
+	UI_->removeFromParentAndCleanup(false);
+	//because UI_ may be orphan, so cleanup again;
+	UI_->cleanup();
 	UI_->release();
 	RAObject::annihilation();
-	//release
 	return true;
 }
 

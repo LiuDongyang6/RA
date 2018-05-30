@@ -24,11 +24,14 @@ bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
 
 bool RAObject::annihilation()
 {
+	//顺序不能颠倒
+
+	//remove children后会导致construct button析构函数触发，停止观察者模式
 	removeAllChildrenWithCleanup(true);
-	removeFromParentAndCleanup(true);
+	//恢复资源，发布消息
 	RAPlayer::resumePower(power_cost_);
-	RAPlayer::resumeCapital(capital_cost_);
-	//不知是否需要手动删除对象？
+	//2，3颠倒会delete自己，则power_cost_会变为未知
+	removeFromParentAndCleanup(true);
 	return true;
 }
 

@@ -1,4 +1,5 @@
 #include"RAUtility.h"
+#include"TiledMap\tiled_map.h"
 //
 //RAUtility
 //
@@ -34,4 +35,15 @@ Json::Value RAUtility::RAgetProperty(const int id, const char* property)
 		cocos2d::log("unable to open RAObjectProperty");
 		return -1;
 	}
+}
+Point RAUtility::getPositionInMap(Point point)
+{
+	point -= RAMap::getMap()->getPosition();
+	return point;
+}
+Point RAUtility::getBottumHalfPoint(Sprite* sprite)
+{
+	auto halfHeight = (sprite->getContentSize().height) / 2;
+	Vec2 halfPoint = sprite->getPosition() - Vec2(0, halfHeight);
+	return halfPoint;
 }

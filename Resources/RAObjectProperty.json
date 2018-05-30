@@ -33,12 +33,51 @@
         "id": 3,
         "name": "Fairy",
         "original_hp":300,
-        "power": 50,
+        "power": 0,
         "capital": 150,
         "frame_upper_bound":[5,9,14],//die move attack
         "category":101,
         "range":50,
-        "speed":30,
+        "speed":200,
+        "hit":100,
+        "attack_speed":0.5
+    },
+    {
+        "id": 4,
+        "name": "Assassin",
+        "original_hp":100,
+        "power": 0,
+        "capital": 150,
+        "frame_upper_bound":[5,9,14],//die move attack
+        "category":101,
+        "range":20,
+        "speed":400,
+        "hit":500,
+        "attack_speed":0.5
+    },
+    {
+        "id": 5,
+        "name": "Lancer",
+        "original_hp":700,
+        "power": 0,
+        "capital": 150,
+        "frame_upper_bound":[5,9,14],//die move attack
+        "category":101,
+        "range":60,
+        "speed":150,
+        "hit":80,
+        "attack_speed":0.5
+    },
+    {
+        "id": 6,
+        "name": "General",
+        "original_hp":1000,
+        "power": 0,
+        "capital": 150,
+        "frame_upper_bound":[5,9,14],//die move attack
+        "category":101,
+        "range":20,
+        "speed":150,
         "hit":100,
         "attack_speed":0.5
     }

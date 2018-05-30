@@ -4,6 +4,7 @@
 #include<json\json.h>
 USING_NS_CC;
 
+class RAMap;
 
 class RAUtility
 {
@@ -13,5 +14,9 @@ public:
 	static std::string RAObjectProperty;
 	//
 	static Json::Value RAgetProperty(const int id, const char* property);
+	//parameter£ºa point which is the absolute position in GL
+	//return the position relative to map
+	static Point getPositionInMap(Point point);
+	static Point getBottumHalfPoint(Sprite* sprite);
 };
 #endif // !__RA_UTILITY_H__

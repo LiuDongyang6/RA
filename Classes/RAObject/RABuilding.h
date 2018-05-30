@@ -24,9 +24,7 @@ public:
 
 	bool onTouchBegan(Touch* touch, Event* event);
 
-	~RABuilding()override { 
-		UI_->release();
-	}
+	~RABuilding()override {}
 	
 	Widget* UI_;
 

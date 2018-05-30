@@ -27,7 +27,7 @@ bool PlayScene::init()
         return false;
     }
 
-	RedAlert::getinstance()->initAll();
+	RedAlert::getInstance()->initAll();
 
 	auto fight_layer = RAMap::getMap();
 	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);

@@ -35,6 +35,8 @@ public:
 		animation_.clear();
 	}
 
+	void runTo(Point point);
+
 	Widget* UI_;
 
 private:
@@ -53,6 +55,36 @@ public:
 
 	static Sprite* create();
 	static const int id = 3;
+	static bool lauched;
+};
+class RAAssassin :public RASoldier
+{
+public:
+	RAAssassin() :
+		RASoldier(id) {}
+
+	static Sprite* create();
+	static const int id = 4;
+	static bool lauched;
+};
+class RALancer :public RASoldier
+{
+public:
+	RALancer() :
+		RASoldier(id) {}
+
+	static Sprite* create();
+	static const int id = 5;
+	static bool lauched;
+};
+class RAGeneral :public RASoldier
+{
+public:
+	RAGeneral() :
+		RASoldier(id) {}
+
+	static Sprite* create();
+	static const int id = 6;
 	static bool lauched;
 };
 #endif // !__RASOLDIER_H__

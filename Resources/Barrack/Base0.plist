@@ -4,138 +4,233 @@
 	<dict>
 		<key>frames</key>
 		<dict>
-			<key>11.png</key>
+			<key>fairy (1).png</key>
 			<dict>
 				<key>width</key>
 				<integer>108</integer>
 				<key>height</key>
-				<integer>131</integer>
+				<integer>135</integer>
 				<key>originalWidth</key>
-				<integer>300</integer>
+				<integer>108</integer>
 				<key>originalHeight</key>
-				<integer>200</integer>
+				<integer>135</integer>
 				<key>x</key>
 				<integer>0</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-33</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>-14.5</real>
+				<real>0</real>
 			</dict>
-			<key>05.png</key>
+			<key>fairy (12).png</key>
+			<dict>
+				<key>width</key>
+				<integer>142</integer>
+				<key>height</key>
+				<integer>136</integer>
+				<key>originalWidth</key>
+				<integer>142</integer>
+				<key>originalHeight</key>
+				<integer>136</integer>
+				<key>x</key>
+				<integer>110</integer>
+				<key>y</key>
+				<integer>0</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>0</real>
+			</dict>
+			<key>fairy (5).png</key>
 			<dict>
 				<key>width</key>
 				<integer>114</integer>
 				<key>height</key>
 				<integer>130</integer>
 				<key>originalWidth</key>
-				<integer>250</integer>
+				<integer>114</integer>
 				<key>originalHeight</key>
-				<integer>200</integer>
+				<integer>130</integer>
 				<key>x</key>
-				<integer>110</integer>
+				<integer>254</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-4</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>-15</real>
+				<real>0</real>
 			</dict>
-			<key>pic/player_0041/10.png</key>
+			<key>Assassin (1).png</key>
 			<dict>
 				<key>width</key>
-				<integer>134</integer>
+				<integer>143</integer>
 				<key>height</key>
-				<integer>134</integer>
+				<integer>143</integer>
 				<key>originalWidth</key>
-				<integer>300</integer>
+				<integer>143</integer>
 				<key>originalHeight</key>
-				<integer>200</integer>
+				<integer>143</integer>
 				<key>x</key>
-				<integer>226</integer>
+				<integer>370</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>7</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>-13</real>
+				<real>0</real>
 			</dict>
-			<key>pic/player_0041/05.png</key>
+			<key>Assassin (12).png</key>
+			<dict>
+				<key>width</key>
+				<integer>193</integer>
+				<key>height</key>
+				<integer>133</integer>
+				<key>originalWidth</key>
+				<integer>193</integer>
+				<key>originalHeight</key>
+				<integer>133</integer>
+				<key>x</key>
+				<integer>515</integer>
+				<key>y</key>
+				<integer>0</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>0</real>
+			</dict>
+			<key>Assassin (5).png</key>
 			<dict>
 				<key>width</key>
 				<integer>124</integer>
 				<key>height</key>
 				<integer>132</integer>
 				<key>originalWidth</key>
-				<integer>250</integer>
+				<integer>124</integer>
 				<key>originalHeight</key>
-				<integer>200</integer>
+				<integer>148</integer>
 				<key>x</key>
-				<integer>362</integer>
+				<integer>710</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-8</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>-13</real>
+				<real>-8</real>
 			</dict>
-			<key>pic/player_0012/01.png</key>
+			<key>Lancer (1).png</key>
 			<dict>
 				<key>width</key>
 				<integer>170</integer>
 				<key>height</key>
 				<integer>152</integer>
 				<key>originalWidth</key>
-				<integer>250</integer>
+				<integer>170</integer>
 				<key>originalHeight</key>
-				<integer>200</integer>
+				<integer>152</integer>
 				<key>x</key>
-				<integer>488</integer>
+				<integer>836</integer>
 				<key>y</key>
 				<integer>0</integer>
 				<key>offsetX</key>
-				<real>-5</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>-6</real>
+				<real>0</real>
 			</dict>
-			<key>pic/player_0012/05.png</key>
+			<key>Lancer (14).png</key>
+			<dict>
+				<key>width</key>
+				<integer>292</integer>
+				<key>height</key>
+				<integer>137</integer>
+				<key>originalWidth</key>
+				<integer>292</integer>
+				<key>originalHeight</key>
+				<integer>151</integer>
+				<key>x</key>
+				<integer>0</integer>
+				<key>y</key>
+				<integer>154</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>-7</real>
+			</dict>
+			<key>Lancer (5).png</key>
 			<dict>
 				<key>width</key>
 				<integer>223</integer>
 				<key>height</key>
 				<integer>129</integer>
 				<key>originalWidth</key>
-				<integer>250</integer>
+				<integer>223</integer>
 				<key>originalHeight</key>
-				<integer>200</integer>
+				<integer>129</integer>
 				<key>x</key>
-				<integer>660</integer>
-				<key>y</key>
-				<integer>0</integer>
-				<key>offsetX</key>
-				<real>1.5</real>
-				<key>offsetY</key>
-				<real>-16.5</real>
-			</dict>
-			<key>pic/player_0004/02.png</key>
-			<dict>
-				<key>width</key>
-				<integer>145</integer>
-				<key>height</key>
-				<integer>174</integer>
-				<key>originalWidth</key>
-				<integer>250</integer>
-				<key>originalHeight</key>
-				<integer>200</integer>
-				<key>x</key>
-				<integer>0</integer>
+				<integer>294</integer>
 				<key>y</key>
 				<integer>154</integer>
 				<key>offsetX</key>
-				<real>-14.5</real>
+				<real>0</real>
 				<key>offsetY</key>
-				<real>4</real>
+				<real>0</real>
+			</dict>
+			<key>General (1).png</key>
+			<dict>
+				<key>width</key>
+				<integer>136</integer>
+				<key>height</key>
+				<integer>174</integer>
+				<key>originalWidth</key>
+				<integer>136</integer>
+				<key>originalHeight</key>
+				<integer>174</integer>
+				<key>x</key>
+				<integer>519</integer>
+				<key>y</key>
+				<integer>154</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>0</real>
+			</dict>
+			<key>General (14).png</key>
+			<dict>
+				<key>width</key>
+				<integer>262</integer>
+				<key>height</key>
+				<integer>149</integer>
+				<key>originalWidth</key>
+				<integer>262</integer>
+				<key>originalHeight</key>
+				<integer>149</integer>
+				<key>x</key>
+				<integer>657</integer>
+				<key>y</key>
+				<integer>154</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>0</real>
+			</dict>
+			<key>General (5).png</key>
+			<dict>
+				<key>width</key>
+				<integer>115</integer>
+				<key>height</key>
+				<integer>179</integer>
+				<key>originalWidth</key>
+				<integer>115</integer>
+				<key>originalHeight</key>
+				<integer>179</integer>
+				<key>x</key>
+				<integer>0</integer>
+				<key>y</key>
+				<integer>330</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>0</real>
 			</dict>
 		</dict>
 		<key>metadata</key>

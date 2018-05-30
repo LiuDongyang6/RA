@@ -6,8 +6,10 @@
 class RedAlert
 {
 public:
-	static RedAlert* getinstance();
+	static RedAlert* getInstance();
+	void selectedSoldiersMove(Touch* touch);
 	void initAll();
+	bool onTouchBegan(Touch* touch, Event* event);
 private:
 	static RedAlert* instance_;
 	RedAlert() {}
