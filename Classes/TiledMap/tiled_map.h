@@ -2,6 +2,7 @@
 #define __RAMAP__H__
 
 #include "cocos2d.h"
+class RASoldier;
 
 
 class RAMap:public cocos2d::Node
@@ -30,16 +31,15 @@ public:
 	static std::map<cocos2d::Point, int> tryEightdirection(cocos2d::Point position,
 		cocos2d::Point dest);
 
-	static std::map<cocos2d::Point, cocos2d::Point> findRoutine(
-		std::vector<cocos2d::Point> positions, cocos2d::Point dest);
+	static std::vector<float> findRoutine(RASoldier* soldier, cocos2d::Point dest);
 
 	static void destroyNormalBuildings(cocos2d::Point pos, int size);
 
 	static void destroyOilBuildings(cocos2d::Point pos, int size);
 
-	static void setSoilderCollision(cocos2d::Point pos);
+	static void setSoldierCollision(cocos2d::Point pos);
 
-	static void removeSoilderCollision(cocos2d::Point pos);
+	static void removeSoldierCollision(cocos2d::Point pos);
 	//地图移动速度
 	static const float speed;
 
@@ -52,8 +52,6 @@ protected:
 	static cocos2d::Point diff;
 	static std::map<cocos2d::Point, bool> collision;
 	static std::map<cocos2d::Point, bool> oil;
-	static std::vector<cocos2d::Point> pre_positions;
-	static std::vector<cocos2d::Point> dests;
 };
 
 #endif // __AB__

@@ -1,4 +1,5 @@
 #include "tiled_map.h"
+#include"RAObject/RASoldier.h"
 #include "SimpleAudioEngine.h"
 
 USING_NS_CC;
@@ -17,8 +18,6 @@ TMXTiledMap * RAMap::_tiledMap;
 Point RAMap::diff;
 std::map<Point, bool> RAMap::collision;
 std::map<Point, bool> RAMap::oil;
-std::vector<Point> RAMap::pre_positions;
-std::vector<Point> RAMap::dests;
 
 // on "init" you need to initialize your instance
 bool RAMap::init()
@@ -270,13 +269,13 @@ void RAMap::destroyOilBuildings(Point des_pos, int size) {
 }
 
 //士兵占据这格
-void RAMap::setSoilderCollision(Point pos) {
+void RAMap::setSoldierCollision(Point pos) {
 	Point tile_coord = glCoordToTileCoord(pos);
 	collision[tile_coord] = 1;
 }
 
 //士兵离开这格
-void RAMap::removeSoilderCollision(cocos2d::Point pos) {
+void RAMap::removeSoldierCollision(cocos2d::Point pos) {
 	Point tile_coord = glCoordToTileCoord(pos);
 	collision[tile_coord] = 0;
 }
@@ -328,68 +327,70 @@ std::map<Point, int> RAMap::tryEightdirection(Point position, Point dest) {
 }
 
 //寻路
-std::map<Point, Point> RAMap::findRoutine(std::vector<Point> positions, Point dest) {
-	std::map<Point, Point> routine;
-	if (dests[0] != dest) {
-		pre_positions = positions;
-		dests.clear();
-		dests.push_back(dest);
-	}//如果选定了新的终点
-	dest = *(dests.end() - 1);//获取新的终点
-	for (auto position : positions) {
-		if (find(dests.begin(), dests.end() - 1, position) != dests.end()) {
-			routine[position] = position;
-		}
-		auto position_tile = glCoordToTileCoord(position);
-		auto dest_tile = glCoordToTileCoord(dest);
-		auto open_list = tryEightdirection(position_tile, dest_tile);
-		auto next_step = open_list.begin();
-		auto start = open_list.begin();
-		for (start; start != open_list.end(); start++) {
-			if (start->second < next_step->second)
-				next_step = start;
-		}
-		if (next_step->first == dest_tile) {//dest的collision一定是0
-			routine[position] = dest;
-			for (int i = 0; i + position_tile.x < 128; i++) {
-				auto open_list_2 = tryEightdirection(Point(position_tile.x + i, position_tile.y),
-					Point(0, 0));
-				auto next_dest = open_list_2.begin();
-				auto start_2 = open_list_2.begin();
-				for (start_2; start_2 != open_list_2.end(); start_2++) {
-					if (start_2->second < next_dest->second)
-						next_dest = start_2;
-				}
-				if (next_dest->second != 10000) {
-					dests.push_back(_tiledMap->getLayer("collision")->getPositionAt(next_dest->first));
-					dest = _tiledMap->getLayer("collision")->getPositionAt(next_dest->first);
-					dest_tile = glCoordToTileCoord(dest);
-					break;
+std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point dest) {
+	std::vector<float> answer;
+	Point dest_tile = glCoordToTileCoord(
+		Point(dest.x + _tiledMap->getPosition().x, dest.y + _tiledMap->getPosition().y));
+	if (collision[dest] == 1) {
+		for (int x = dest_tile.x; x < 128; x++) {
+			for (int y = dest_tile.y; y < 128; y++) {
+				if (collision[Point(x, y)] == 0) {
+					dest_tile = Point(x, y);
+					goto a;
 				}
 			}
-			if (dest_tile == position_tile) {//运气很背，前面都没找到的话
-				for (int i = 0; i + position_tile.x > 0; i--) {
-					auto open_list_2 = tryEightdirection(Point(position_tile.x + i, position_tile.y),
-						Point(0, 0));
-					auto next_dest = open_list_2.begin();
-					auto start_2 = open_list_2.begin();
-					for (start_2; start_2 != open_list_2.end(); start_2++) {
-						if (start_2->second < next_dest->second)
-							next_dest = start_2;
-					}
-					if (next_dest->second != 10000) {
-						dests.push_back(_tiledMap->getLayer("collision")->getPositionAt(next_dest->first));
-						dest = _tiledMap->getLayer("collision")->getPositionAt(next_dest->first);
-						break;
-					}
-				}
-			}
-			continue;
 		}
-		if (next_step->second == 10000) 
-			routine[position] = position;
-		else 
-			routine[position] = _tiledMap->getLayer("collision")->getPositionAt(next_step->first);
 	}
-	return routine;
+a:	Point so_tilecoord = glCoordToTileCoord(Point(soldier->getPosition().x + 
+		_tiledMap->getPosition().x, soldier->getPosition().y + _tiledMap->getPosition().y));
+	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile);
+	auto next_step = open_list_1.begin();
+	auto start = open_list_1.begin();
+	for (start; start != open_list_1.end(); start++) {
+		if (start->second < next_step->second)
+			next_step = start;
+	}
+	if (next_step->second == 10000) {
+		answer.push_back(soldier->getPosition().x);
+		answer.push_back(soldier->getPosition().y);
+		answer.push_back(0);
+		return answer;
+	}
+	auto open_list_2 = tryEightdirection(next_step->first, dest);
+	auto third_step = open_list_2.begin();
+	auto start_2 = open_list_2.begin();
+	for (start_2; start_2 != open_list_2.end(); start_2++) {
+		if (start_2->second < third_step->second)
+			third_step = start_2;
+	}
+	bool isfind = 0;
+	for (auto pos : open_list_1) {
+		if (pos.first == third_step->first) {
+			isfind = 1;
+			break;
+		}
+	}
+	if (isfind) {
+		answer.push_back(_tiledMap->getLayer("ground")->getPositionAt(third_step->first).x + 
+			_tiledMap->getPosition().x);
+		answer.push_back(_tiledMap->getLayer("ground")->getPositionAt(third_step->first).y +
+			_tiledMap->getPosition().y);
+		if (third_step->first == dest_tile)
+			answer.push_back(1);
+		else
+			answer.push_back(0);
+		return answer;
+	}
+	else {
+		answer.push_back(_tiledMap->getLayer("ground")->getPositionAt(next_step->first).x +
+			_tiledMap->getPosition().x);
+		answer.push_back(_tiledMap->getLayer("ground")->getPositionAt(next_step->first).y +
+			_tiledMap->getPosition().y);
+		if (next_step->first == dest_tile)
+			answer.push_back(1);
+		else
+			answer.push_back(0);
+		return answer;
+	}
+	return answer;
 }
