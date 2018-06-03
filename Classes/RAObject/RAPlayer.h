@@ -3,6 +3,7 @@
 #include"cocos2d.h"
 #include"cocostudio\CocoStudio.h"
 #include"ui\CocosGUI.h"
+#include<unordered_set>
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -27,7 +28,8 @@ public:
 
 	static Widget*& currentUI() { return current_UI_; }
 
-	static Vector<RASoldier*> selected_soldiers_;
+	static std::unordered_set<RASoldier*> selected_soldiers_;
+	static std::unordered_set<RASoldier*> all_soldiers_;
 private:
 	static int capital_;
 	static int power_;

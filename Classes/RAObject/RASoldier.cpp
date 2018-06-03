@@ -25,7 +25,9 @@ bool RASoldier::initWithId(int id)
 	listener->onTouchBegan = (CC_CALLBACK_2(RASoldier::onTouchBegan, this));
 	listener->setSwallowTouches(true);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
+	
+	//record in archives
+	RAPlayer::all_soldiers_.insert(this);
 
 	return true;
 }
@@ -35,7 +37,7 @@ bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 	{
 		RAPlayer::selected_soldiers_.clear();
 
-		RAPlayer::selected_soldiers_.pushBack(this);
+		RAPlayer::selected_soldiers_.insert(this);
 		stopAllActions();
 		return true;
 	}
@@ -44,6 +46,10 @@ bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 }
 bool RASoldier::annihilation()
 {
+	//remove from archives
+	RAPlayer::all_soldiers_.erase(this);
+	RAPlayer::selected_soldiers_.erase(this);
+	//die animation
 	auto animation = Animation::createWithSpriteFrames(animation_[0], 1.0f / 8);
 	auto animate = Animate::create(animation);
 	//一定要以CallFunc的形式调用
@@ -60,18 +66,41 @@ bool RASoldier::annihilation()
 }
 void RASoldier::runTo(Point point)
 {
+	//如不停止会以矢量和移动
 	stopAllActions();
+	//保存目的地
+	destination = point;
 	//
-	auto animation = Animation::createWithSpriteFrames(animation_[1], 0.2f);
+	auto repeat = getAction(1, 0.2f);
+	runAction(repeat);
+	//
+	findRoadAndLetGo();
+
+}
+Action* RASoldier::getAction(int number, float dt)
+{
+	auto animation = Animation::createWithSpriteFrames(animation_[number], dt);
 	auto animate = Animate::create(animation);
 	auto repeat = RepeatForever::create(animate);
-	//
-	auto move = MoveTo::create(getPosition().getDistance(point)/speed_, point);
-
-	runAction(repeat);
-	runAction(move);
+	return repeat;
 }
-
+void RASoldier::findRoadAndLetGo()
+{
+	auto vec = RAMap::findRoutine(this,destination);
+	if (vec[2] == 0)
+	{
+		Point point = RAUtility::getPositionInMap(Point(vec[0], vec[1]));
+		auto move = MoveTo::create(getPosition().getDistance(point) / speed_, point);
+		auto call = [&]() {findRoadAndLetGo(); };
+		CallFunc* callFunc = CallFunc::create(call);
+		auto sequence = Sequence::create(move, callFunc, NULL);
+		runAction(sequence);
+	}
+	else
+	{
+		int a = 0;
+	}
+}
 //
 //RAFairy
 //

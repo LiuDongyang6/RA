@@ -22,12 +22,13 @@ public:
 
 	//virtual bool sufferAttack(int damage)override;
 
-	bool doMove(Point);
-
+	void findRoadAndLetGo();
 
 	bool onTouchBegan(Touch* touch, Event* event);
 
 	bool doAttack();
+
+	Action* getAction(int number, float dt);
 
 	~RASoldier()override {
 		for (auto vec : animation_)
@@ -45,6 +46,7 @@ private:
 	const int speed_;
 	const int hit_;
 	const int attack_speed_;
+	Point destination;
 };
 
 class RAFairy :public RASoldier

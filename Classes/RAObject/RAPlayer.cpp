@@ -3,18 +3,18 @@
 int RAPlayer::power_ = 200;
 int RAPlayer::capital_ = 10000;
 Widget* RAPlayer::current_UI_ = 0;
-Vector<RASoldier*> RAPlayer::selected_soldiers_;
-
+std::unordered_set<RASoldier*> RAPlayer::selected_soldiers_;
+std::unordered_set<RASoldier*> RAPlayer::all_soldiers_;
 
 void RAPlayer::consumeCapital(int quantity)
 {
-	NotificationCenter::getInstance()->postNotification("RESOURCE_CHANGE",NULL);
 	capital_ -= quantity;
+	NotificationCenter::getInstance()->postNotification("RESOURCE_CHANGE",NULL);
 }
 void RAPlayer::consumePower(int quantity)
 {
+	power_ -= quantity;
 	NotificationCenter::getInstance()->postNotification("RESOURCE_CHANGE",NULL);
-	power_-=quantity;
 }
 void RAPlayer::resumeCapital(int quantity)
 {

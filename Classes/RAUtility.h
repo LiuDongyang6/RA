@@ -17,6 +17,7 @@ public:
 	//parameter£ºa point which is the absolute position in GL
 	//return the position relative to map
 	static Point getPositionInMap(Point point);
+	//
 	static Point getBottumHalfPoint(Sprite* sprite);
 };
 #endif // !__RA_UTILITY_H__

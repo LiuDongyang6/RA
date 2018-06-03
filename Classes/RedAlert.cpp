@@ -24,9 +24,15 @@ void RedAlert::initAll()
 	framecache->addSpriteFramesWithFile("Buildings.plist");
 	//
 	RAMap::init();
+	//initial selectBox
+	selectBox = LayerColor::create(Color4B(145, 150, 134, 255));
+	selectBox->setOpacity(70);
+	selectBox->retain();
 	//initial on touch
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(RedAlert::onTouchBegan, this);
+	listener->onTouchMoved = CC_CALLBACK_2(RedAlert::onTouchMoved, this);
+	listener->onTouchEnded = CC_CALLBACK_2(RedAlert::onTouchEnded, this);
 	Director::getInstance()->getEventDispatcher()->
 		addEventListenerWithSceneGraphPriority(listener, RAMap::getMap()->getChildByTag(1));
 }
@@ -40,6 +46,34 @@ void RedAlert::selectedSoldiersMove(Touch* touch)
 }
 bool RedAlert::onTouchBegan(Touch* touch, Event* event)
 {
-	selectedSoldiersMove(touch);
-	return false;
+	selectBox->setPosition(RAUtility::getPositionInMap(touch->getLocation()));
+	selectBox->setContentSize(Size(0, 0));
+	RAMap::getMap()->addChild(selectBox);
+	
+	return true;
+}
+void RedAlert::onTouchMoved(Touch* touch, Event* event)
+{
+	selectBox->setContentSize(Size(touch->getLocation() - touch->getStartLocation()));
+}
+void RedAlert::onTouchEnded(Touch* touch, Event* event)
+{
+	//unmoved
+	if (touch->getStartLocation() == touch->getLocation())
+		selectedSoldiersMove(touch);
+	//moved
+	else
+	{
+		RAPlayer::selected_soldiers_.clear();
+		auto position = selectBox->getPosition();
+		auto size = selectBox->getContentSize();
+		auto rect = Rect(MIN(position.x,position.x+size.width),MIN(position.y, position.y + size.height),abs(size.width),abs(size.height));
+		for (auto soldier : RAPlayer::all_soldiers_)
+		{
+			auto position = soldier->getPosition();
+			if (rect.containsPoint(soldier->getPosition()))
+				RAPlayer::selected_soldiers_.insert(soldier);
+		}
+	}
+	RAMap::getMap()->removeChild(selectBox);
 }
