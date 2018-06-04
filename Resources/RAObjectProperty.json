@@ -2,33 +2,33 @@
     {
         "id": 0,
         "name": "Base",
-        "original_hp":500,
+        "original_hp":5000,
         "power": 100,
         "capital": 100,
-        "texture":["Base0.png","base1.png","base2.png"],
         "UI": [0, 1, 2],
         "UIFile":"Base/BaseUi.ExportJson",
-        "category":100
+        "category":100,
+        "covering":6
     }, {
         "id": 1,
         "name": "PowerStation",
-        "original_hp":300,
+        "original_hp":3000,
         "power": -100,
         "capital": 100,
-        "texture":["PowerStation0.png","PowerStation1.png","PowerStation2.png"],
         "UI": [],
         "UIFile":"PowerStation/PowerStationUi.ExportJson",
-        "category":100
+        "category":100,
+        "covering":4
     }, {
         "id": 2,
         "name": "Barrack",
-        "original_hp":300,
+        "original_hp":3000,
         "power": 50,
         "capital": 150,
-        "texture":["Barrack0.png","Barrack1.png","Barrack2.png"],
         "UI": [3,4,5,6],
         "UIFile":"Barrack/Barrack.ExportJson",
-        "category":100
+        "category":100,
+        "covering":2
     },{
         "id": 3,
         "name": "Fairy",
@@ -37,10 +37,11 @@
         "capital": 150,
         "frame_upper_bound":[5,9,14],//die move attack
         "category":101,
-        "range":50,
+        "range":400,
         "speed":200,
         "hit":100,
-        "attack_speed":0.5
+        "attack_speed":0.5,
+        "covering":2
     },
     {
         "id": 4,
@@ -50,10 +51,11 @@
         "capital": 150,
         "frame_upper_bound":[5,9,14],//die move attack
         "category":101,
-        "range":20,
+        "range":50,
         "speed":400,
         "hit":500,
-        "attack_speed":0.5
+        "attack_speed":0.5,
+        "covering":2
     },
     {
         "id": 5,
@@ -63,10 +65,11 @@
         "capital": 150,
         "frame_upper_bound":[5,9,14],//die move attack
         "category":101,
-        "range":60,
+        "range":100,
         "speed":150,
         "hit":80,
-        "attack_speed":0.5
+        "attack_speed":0.5,
+        "covering":2
     },
     {
         "id": 6,
@@ -76,9 +79,10 @@
         "capital": 150,
         "frame_upper_bound":[5,9,14],//die move attack
         "category":101,
-        "range":20,
+        "range":50,
         "speed":150,
         "hit":100,
-        "attack_speed":0.5
+        "attack_speed":0.5,
+        "covering":2
     }
 ]

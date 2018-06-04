@@ -12,10 +12,13 @@ public:
 		range_(RAUtility::RAgetProperty(id, "range").asInt()),
 		speed_(RAUtility::RAgetProperty(id, "speed").asInt()),
 		hit_(RAUtility::RAgetProperty(id, "hit").asInt()),
-		attack_speed_(RAUtility::RAgetProperty(id, "attack_speed").asInt()),
-	    animation_(3,Vector<SpriteFrame*>(0)){}
+		attack_speed_(RAUtility::RAgetProperty(id, "attack_speed").asFloat()),
+	    animation_(3,Vector<SpriteFrame*>(0)),
+		power_cost_(RAUtility::RAgetProperty(id, "power").asInt()),
+		capital_cost_(RAUtility::RAgetProperty(id, "capital").asInt())
+	    {}
 
-	bool initWithId(int id);
+	bool initWithIdAndLocation(int id,Point location);
 
 	//delete the building and remove power cost
 	virtual bool annihilation()override;
@@ -23,12 +26,11 @@ public:
 	//virtual bool sufferAttack(int damage)override;
 
 	void findRoadAndLetGo();
+	void findRoadAndLetGoForFight();
 
 	bool onTouchBegan(Touch* touch, Event* event);
 
-	bool doAttack();
-
-	Action* getAction(int number, float dt);
+	void doAttack();
 
 	~RASoldier()override {
 		for (auto vec : animation_)
@@ -37,7 +39,7 @@ public:
 	}
 
 	void runTo(Point point);
-
+	void runToFight(RAObject* object);
 	Widget* UI_;
 
 private:
@@ -45,8 +47,13 @@ private:
 	const int range_;
 	const int speed_;
 	const int hit_;
-	const int attack_speed_;
+	const float attack_speed_;
+	const int power_cost_;
+	const int capital_cost_;
 	Point destination;
+	RAObject* AimEnemy;
+	//get a repeat forever action
+	Action* getAction(int number, float dt);
 };
 
 class RAFairy :public RASoldier
@@ -55,7 +62,7 @@ public:
 	RAFairy() :
 		RASoldier(id) {}
 
-	static Sprite* create();
+	static Sprite* create(Point location);
 	static const int id = 3;
 	static bool lauched;
 };
@@ -65,7 +72,7 @@ public:
 	RAAssassin() :
 		RASoldier(id) {}
 
-	static Sprite* create();
+	static Sprite* create(Point location);
 	static const int id = 4;
 	static bool lauched;
 };
@@ -75,7 +82,7 @@ public:
 	RALancer() :
 		RASoldier(id) {}
 
-	static Sprite* create();
+	static Sprite* create(Point location);
 	static const int id = 5;
 	static bool lauched;
 };
@@ -85,7 +92,7 @@ public:
 	RAGeneral() :
 		RASoldier(id) {}
 
-	static Sprite* create();
+	static Sprite* create(Point location);
 	static const int id = 6;
 	static bool lauched;
 };

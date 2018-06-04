@@ -12,15 +12,18 @@ class RABuilding : public RAObject
 public:
 
 	RABuilding(int id) :
-		RAObject(id){}
+		RAObject(id),
+		power_cost_(RAUtility::RAgetProperty(id, "power").asInt()),
+		capital_cost_(RAUtility::RAgetProperty(id, "capital").asInt())
+	{}
 
-	bool initWithId(int id);
+	bool initWithIdAndLocation(int id,Point location);
 	//when attacked or repaired;
 	void changeAppearance();
 	//delete the building and remove power cost
 	virtual bool annihilation()override;
 
-	virtual bool sufferAttack(int damage)override;
+	//virtual bool sufferAttack(int damage)override;
 
 	bool onTouchBegan(Touch* touch, Event* event);
 
@@ -30,7 +33,10 @@ public:
 
 protected:
 	std::vector<std::string> appearances;
+	//取值0，1或2，为appearances脚标
 	int current_appearance_;
+	const int power_cost_;
+	const int capital_cost_;
 };
 
 
@@ -43,7 +49,7 @@ public:
 	RAPowerStation() :
 		RABuilding(id) {}
 
-	static Sprite* create();
+	static Sprite* create(Point location);
 	static const int id = 1;
 };
 
@@ -56,7 +62,7 @@ public:
 	RABase() :
 		RABuilding(id) {}
 
-	static Sprite* create();
+	static Sprite* create(Point location);
 	static const int id = 0;
 
 };
@@ -69,7 +75,7 @@ public:
 	RABarrack() :
 		RABuilding(id) {}
 
-	static Sprite* create();
+	static Sprite* create(Point location);
 	static const int id = 2;
 
 };

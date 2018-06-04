@@ -1,0 +1,4 @@
+fight_layer's z_order:
+1:RedAlert士兵移动、框选的touch检测
+5：temp object
+100：建筑

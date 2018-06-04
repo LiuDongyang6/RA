@@ -17,15 +17,15 @@ public:
 	RAObject(int id) :
 		original_hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
 		hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
-		power_cost_(RAUtility::RAgetProperty(id, "power").asInt()),
-		capital_cost_(RAUtility::RAgetProperty(id, "capital").asInt()){}
+		covering_(RAUtility::RAgetProperty(id,"covering").asInt()){}
 	~RAObject()override {}
-	virtual bool initWithSpriteFrameName(const std::string& filename)override;
-	virtual bool sufferAttack(int damage);//return survive or not
+	bool initWithSpriteFrameNameAndLocation(const std::string& filename,Point location);
+	//decrease Hp
+	bool sufferAttack(float attack_speed,int damage);
+	bool stopSufferAttack();
 	virtual bool annihilation();
 protected:
-	const int power_cost_;
-	const int capital_cost_;
+	const int covering_;
 	int hp_;
 	const int original_hp_;
 	bool toBeOrNotToBe();
@@ -40,7 +40,8 @@ public:
 		id(IdToConstruct),
 		power_cost_(RAUtility::RAgetProperty(id, "power").asInt()),
 		capital_cost_(RAUtility::RAgetProperty(id, "capital").asInt()),
-		category_((RAUtility::RAgetProperty(IdToConstruct, "category").asInt()))
+		category_((RAUtility::RAgetProperty(IdToConstruct, "category").asInt())),
+		covering_((RAUtility::RAgetProperty(IdToConstruct, "covering").asInt()))
 	{}
 	static RAConstructButton* create(Node* parent, Widget* UI, int IdToConstruct);
 	void onTouchMoved(Touch* touch, Event* type);
@@ -51,10 +52,12 @@ public:
 	void checkConstructable(Ref* pSender);
 	//a map containing all creat functions
 	//initialized in RAInitialAll
-	typedef Sprite*(*CreateType)();
+	typedef Sprite*(*CreateType)(Point);
 	static std::unordered_map<int, CreateType> CreateWiki;
 	~RAConstructButton()
 	{ NotificationCenter::getInstance()->removeAllObservers(this); }
+	static std::unordered_set<int>LaunchRecord;
+	static bool LaunchTest(int id);
 private:
 	Button * button_;
 	//id of object the button constructs
@@ -66,7 +69,8 @@ private:
 	//
 	int category_;
 	//
+	int covering_;
 	Sprite* tempObject;
 };
 
-#endif // __RA_SOLDIER__
+#endif // __RA_SOLDIER__ 

@@ -34,14 +34,15 @@ void RABuilding::changeAppearance()//called after sufferAttack or repair
 	}
 }
 
-bool RABuilding::initWithId(int id)
+bool RABuilding::initWithIdAndLocation(int id,Point location)
 {
 	//initial texture
-	auto s = RAUtility::RAgetProperty(id, "texture");
-	RAObject::initWithSpriteFrameName(s[0].asString());
-	for (int i = 0; i != 3; ++i)
-		appearances.push_back(s[i].asString());
+	auto  strName = RAUtility::RAgetProperty(id, "name").asString();
+	const char* name = strName.c_str();
+	for (int i = 1; i != 4; ++i)
+		appearances.push_back(StringUtils::format("%s(%d).png", name,i));
 	current_appearance_ = 0;
+	RAObject::initWithSpriteFrameNameAndLocation(appearances[0],location);
 	//initial UI
 	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id,"UIFile").asCString());
 	UI_->setPosition(Point(0, 0));
@@ -55,7 +56,9 @@ bool RABuilding::initWithId(int id)
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(RABuilding::onTouchBegan, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
+	//cost resources
+	RAPlayer::consumePower(power_cost_);
+	RAPlayer::consumeCapital(capital_cost_);
 	return true;
 }
 
@@ -71,17 +74,19 @@ bool RABuilding::annihilation()
 	//because UI_ may be orphan, so cleanup again;
 	UI_->cleanup();
 	UI_->release();
+	//恢复资源，发布消息
+	RAPlayer::resumePower(power_cost_);
 	RAObject::annihilation();
 	return true;
 }
 
-bool  RABuilding::sufferAttack(int damage)
-{
-	bool survive = RAObject::sufferAttack(damage);
-	if (survive)
-		changeAppearance();
-	return survive;
-}
+//bool  RABuilding::sufferAttack(int damage)
+//{
+//	bool survive = RAObject::sufferAttack(damage);
+//	if (survive)
+//		changeAppearance();
+//	return survive;
+//}
 
 bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 {
@@ -99,11 +104,11 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 //
 //RAPowerstation
 //
-Sprite* RAPowerStation::create()
+Sprite* RAPowerStation::create(Point location)
 {
 	RAPowerStation* powerstation = new RAPowerStation();
 	
-	powerstation->initWithId(id);
+	powerstation->initWithIdAndLocation(id,location);
 	
 	powerstation->autorelease();
 	return powerstation;
@@ -112,11 +117,11 @@ Sprite* RAPowerStation::create()
 //
 //RABase
 //
-Sprite* RABase::create()
+Sprite* RABase::create(Point location)
 {
 	RABase* base = new RABase();
 
-	base->initWithId(id);
+	base->initWithIdAndLocation(id, location);
 	//Initial UI
 
 	base->autorelease();
@@ -127,11 +132,11 @@ Sprite* RABase::create()
 //
 //RABarrack
 //
-Sprite* RABarrack::create()
+Sprite* RABarrack::create(Point location)
 {
 	RABarrack* base = new RABarrack();
 
-	base->initWithId(id);
+	base->initWithIdAndLocation(id, location);
 	//Initial UI
 
 	base->autorelease();

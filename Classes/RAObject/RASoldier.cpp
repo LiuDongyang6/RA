@@ -2,18 +2,18 @@
 //
 //RASoldier
 //
-bool RASoldier::initWithId(int id)
+bool RASoldier::initWithIdAndLocation(int id, Point location)
 {
 	//super initial
 	auto  strName = RAUtility::RAgetProperty(id, "name").asString();
 	const char* name = strName.c_str();
-	RAObject::initWithSpriteFrameName(StringUtils::format("%s(1).png", name));
+	RAObject::initWithSpriteFrameNameAndLocation(StringUtils::format("%s(1).png", name),location);
 	//initial animation
 	auto frame = RAUtility::RAgetProperty(id, "frame_upper_bound");
 	auto cache = SpriteFrameCache::getInstance();
 	
 	int j = 1;
-	for (int i = 0; i != 2; ++i)
+	for (int i = 0; i != 3; ++i)
 		for (; j != frame[i].asInt() + 1; ++j)
 		{
 			auto aFrame = cache->getSpriteFrameByName(StringUtils::format("%s(%d).png", name, j));
@@ -28,7 +28,9 @@ bool RASoldier::initWithId(int id)
 	
 	//record in archives
 	RAPlayer::all_soldiers_.insert(this);
-
+	//resources cost
+	RAPlayer::consumePower(power_cost_);
+	RAPlayer::consumeCapital(capital_cost_);
 	return true;
 }
 bool RASoldier::onTouchBegan(Touch* touch, Event* event)
@@ -77,6 +79,19 @@ void RASoldier::runTo(Point point)
 	findRoadAndLetGo();
 
 }
+void RASoldier::runToFight(RAObject* object)
+{
+	//如不停止会以矢量和移动
+	stopAllActions();
+	//保存目的地
+	AimEnemy = object;
+	//
+	auto repeat = getAction(1, 0.2f);
+	runAction(repeat);
+	//
+	findRoadAndLetGoForFight();
+
+}
 Action* RASoldier::getAction(int number, float dt)
 {
 	auto animation = Animation::createWithSpriteFrames(animation_[number], dt);
@@ -98,27 +113,57 @@ void RASoldier::findRoadAndLetGo()
 	}
 	else
 	{
-		int a = 0;
 	}
+}
+void RASoldier::findRoadAndLetGoForFight()
+{
+	if (getPosition().distance(AimEnemy->getPosition()) <= range_)
+	{
+		doAttack();
+	}
+	else
+	{
+		auto vec = RAMap::findRoutine(this, AimEnemy->getPosition());
+		if (vec[2] == 0)
+		{
+			Point point = RAUtility::getPositionInMap(Point(vec[0], vec[1]));
+			auto move = MoveTo::create(getPosition().getDistance(point) / speed_, point);
+			auto call = [&]() {findRoadAndLetGoForFight(); };
+			CallFunc* callFunc = CallFunc::create(call);
+			auto sequence = Sequence::create(move, callFunc, NULL);
+			runAction(sequence);
+		}
+	}
+}
+void RASoldier::doAttack()
+{
+	stopAllActions();
+
+	auto FightAction = getAction(2, 0.2f);
+
+	runAction(FightAction);
+
+	AimEnemy->sufferAttack(attack_speed_, hit_);
+
+	auto func= [&](float dt){
+		if (getPosition().distance(this->AimEnemy->getPosition()) > range_)
+		{
+			AimEnemy->stopSufferAttack();
+			stopAllActions();
+			unschedule(std::string("isAimInRange"));
+		}
+	};
+	schedule(func, 0.2f, std::string("isAimInRange"));
 }
 //
 //RAFairy
 //
 bool RAFairy::lauched = 0;
-Sprite* RAFairy::create()
+Sprite* RAFairy::create(Point location)
 {
-	if (!lauched)
-	{
-		//asCstring has some bug
-		auto strName = RAUtility::RAgetProperty(id, "name").asString();
-		const char* name = strName.c_str();
-		SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
-			StringUtils::format("%s/%s.plist",name,name));
-		lauched = 1;
-	}
 	RAFairy* fairy = new RAFairy();
 
-	fairy->initWithId(id);
+	fairy->initWithIdAndLocation(id,location);
 
 	fairy->autorelease();
 	return fairy;
@@ -127,21 +172,11 @@ Sprite* RAFairy::create()
 //RAAssassin
 //
 bool RAAssassin::lauched = 0;
-Sprite* RAAssassin::create()
+Sprite* RAAssassin::create(Point location)
 {
-	if (!lauched)
-	{
-		//asCstring has some bug
-		auto strName = RAUtility::RAgetProperty(id, "name").asString();
-		auto test = SpriteFrameCache::getInstance();
-		const char* name = strName.c_str();
-		SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
-			StringUtils::format("%s/%s.plist", name, name));
-		lauched = 1;
-	}
 	RAAssassin* assassin = new RAAssassin();
 
-	assassin->initWithId(id);
+	assassin->initWithIdAndLocation(id, location);
 
 	assassin->autorelease();
 	return assassin;
@@ -150,21 +185,11 @@ Sprite* RAAssassin::create()
 //RAGeneral
 //
 bool RALancer::lauched = 0;
-Sprite* RALancer::create()
+Sprite* RALancer::create(Point location)
 {
-	if (!lauched)
-	{
-		//asCstring has some bug
-		auto strName = RAUtility::RAgetProperty(id, "name").asString();
-		auto test = SpriteFrameCache::getInstance();
-		const char* name = strName.c_str();
-		SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
-			StringUtils::format("%s/%s.plist", name, name));
-		lauched = 1;
-	}
 	RALancer* lancer = new RALancer();
 
-	lancer->initWithId(id);
+	lancer->initWithIdAndLocation(id, location);
 
 	lancer->autorelease();
 	return lancer;
@@ -173,21 +198,11 @@ Sprite* RALancer::create()
 //RAGeneral
 //
 bool RAGeneral::lauched = 0;
-Sprite* RAGeneral::create()
+Sprite* RAGeneral::create(Point location)
 {
-	if (!lauched)
-	{
-		//asCstring has some bug
-		auto strName = RAUtility::RAgetProperty(id, "name").asString();
-		auto test = SpriteFrameCache::getInstance();
-		const char* name = strName.c_str();
-		SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
-			StringUtils::format("%s/%s.plist", name, name));
-		lauched = 1;
-	}
 	RAGeneral* general = new RAGeneral();
 
-	general->initWithId(id);
+	general->initWithIdAndLocation(id, location);
 
 	general->autorelease();
 

@@ -2,14 +2,23 @@
 
 USING_NS_CC;
 
-
+int myrandom=0;
 //
 //RAObject
 //
-bool RAObject::sufferAttack(int damage)
+bool RAObject::sufferAttack(float attack_speed,int damage)
 {
-	hp_ -= damage;
-	return toBeOrNotToBe();
+	auto func = [&,damage](float dt)
+	{
+		this->hp_ -= damage;
+		this->toBeOrNotToBe();
+	};
+	schedule(func, attack_speed,StringUtils::format("%d%d",myrandom++,myrandom++));
+	return true;
+}
+bool RAObject::stopSufferAttack()
+{
+	return 0;
 }
 
 bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
@@ -28,27 +37,43 @@ bool RAObject::annihilation()
 
 	//remove children后会导致construct button析构函数触发，停止观察者模式
 	removeAllChildrenWithCleanup(true);
-	//恢复资源，发布消息
-	RAPlayer::resumePower(power_cost_);
 	//2，3颠倒会delete自己，则power_cost_会变为未知
 	removeFromParentAndCleanup(true);
+	//释放tilemap占地
 	return true;
 }
 
-bool RAObject::initWithSpriteFrameName(const std::string& filename)
+bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, Point location)
 {
+	//
 	Sprite::initWithSpriteFrameName(filename);
-	RAPlayer::consumePower(power_cost_) ;
-	RAPlayer::consumeCapital(capital_cost_);
+	//
+	setPosition(location);
+	auto halfPoint = location - Point(0, getContentSize().height / 2);
+	RAMap::sureToBuildNormal(halfPoint + RAMap::getMap()->getPosition(), covering_);
 	return true;
 }
 
 //
 //RAConstructButton
 //
-typedef Sprite*(*CreateType)();
+typedef Sprite*(*CreateType)(Point);
 std::unordered_map<int, CreateType> RAConstructButton::CreateWiki;
-
+std::unordered_set<int> RAConstructButton::LaunchRecord;
+bool RAConstructButton::LaunchTest(int id)
+{
+	if (LaunchRecord.find(id) == LaunchRecord.end())
+	{
+		auto strName = RAUtility::RAgetProperty(id, "name").asString();
+		const char* name = strName.c_str();
+		SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
+			StringUtils::format("%s/%s.plist", name, name));
+		LaunchRecord.insert(id);
+		return false;
+	}
+	else
+		return true;
+}
 RAConstructButton* RAConstructButton::create(Node* parent, Widget* UI, int IdToConstruct)
 {
 	RAConstructButton* button = new RAConstructButton(UI, IdToConstruct);
@@ -62,7 +87,11 @@ bool RAConstructButton::onTouchBegan(Touch* touch, Event* event)
 	if (!button_->isBright())return false;
 	if (button_->onTouchBegan(touch, event))
 	{
-		tempObject = CreateWiki[id]();
+		auto test=LaunchTest(id);
+		std::string ObjectNameS = RAUtility::RAgetProperty(id, "name").asString();
+		auto ObjectName = ObjectNameS.c_str();
+		std::string SpriteFrameName = StringUtils::format("%s(1).png", ObjectName);
+		tempObject = Sprite::createWithSpriteFrameName(SpriteFrameName);
 		tempObject->setPosition(touch->getLocation());
 		//透明可以保证只要不移动就不能建造
 		tempObject->setVisible(false);
@@ -81,7 +110,7 @@ void RAConstructButton::onTouchMoved(Touch* touch, Event* type)
 		auto halfHeight = (tempObject->getContentSize().height) / 2;
 		Vec2 halfPoint = point - Vec2(0, halfHeight);
 		//if constructable
-		if (RAMap::cannotBuildNormal(halfPoint, 4))
+		if (RAMap::cannotBuildNormal(halfPoint, covering_))
 		{
 			tempObject->setPosition(point);
 			tempObject->setVisible(true);
@@ -100,34 +129,20 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 	if (category_ == 100)//building
 		if (tempObject->isVisible())
 		{
-			tempObject->retain();
-			tempObject->removeFromParentAndCleanup(false);
-			tempObject->setPosition(RAUtility::getPositionInMap(tempObject->getPosition()));
-			RAMap::getMap()->addChild(tempObject, category_);
-			tempObject->release();
-			auto halfPoint = touch->getLocation();
-			auto height = tempObject->getContentSize().height / 2;
-			halfPoint -= Vec2(0, height);
-			RAMap::sureToBuildNormal(halfPoint, 4);
+			auto object = CreateWiki[id](RAUtility::getPositionInMap(tempObject->getPosition()));
+
+			RAMap::getMap()->addChild(object, category_);
 		}
 		else
 		{
-			auto it = static_cast<RAObject*>(tempObject);
-			it->annihilation();
-			RAPlayer::resumeCapital(capital_cost_);
 
 		}
 	else //soldier
 	{
-		tempObject->setPosition(this->getParent()->getPosition() - Vec2(50, 50));
-		tempObject->retain();
-		tempObject->removeFromParentAndCleanup(false);
-		RAMap::getMap()->addChild(tempObject, category_);
-		tempObject->release();
-		tempObject->setVisible(true);
-		//
-		//RAMap::setSoilderCollision(tempObject->getPosition() + RAMap::getMap()->getPosition());
+		auto object = CreateWiki[id](this->getParent()->getPosition()-Vec2(50, 50));
+		RAMap::getMap()->addChild(object, category_);
 	}
+	tempObject->removeFromParentAndCleanup(true);
 	tempObject = NULL;
 }
 void RAConstructButton::initButton()

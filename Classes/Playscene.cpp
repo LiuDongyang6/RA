@@ -36,14 +36,13 @@ bool PlayScene::init()
 	addChild(fight_layer, 1, 1);
 	addChild(ui_layer, 2, 2);
 
-	auto base = RABase::create();
-	base->setPosition(3000, 3000);
+	auto base = RABase::create(Point(3000, 3000));
 	fight_layer->addChild(base,100);
 
-	auto powerstation = RAPowerStation::create();
-	powerstation->setPosition(300, 450);
+	auto powerstation = RAPowerStation::create(Point(300, 450));
 	fight_layer->addChild(powerstation);
 
+	auto badbase = RAHostileObject::Appear(0,Point(3000,2500));
 
 	return true;
 }
