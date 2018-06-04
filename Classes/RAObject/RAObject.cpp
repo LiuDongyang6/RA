@@ -40,6 +40,7 @@ bool RAObject::annihilation()
 	//2，3颠倒会delete自己，则power_cost_会变为未知
 	removeFromParentAndCleanup(true);
 	//释放tilemap占地
+	//RAMap::destroyNormalBuildings()
 	return true;
 }
 
@@ -92,7 +93,8 @@ bool RAConstructButton::onTouchBegan(Touch* touch, Event* event)
 		auto ObjectName = ObjectNameS.c_str();
 		std::string SpriteFrameName = StringUtils::format("%s(1).png", ObjectName);
 		tempObject = Sprite::createWithSpriteFrameName(SpriteFrameName);
-		tempObject->setPosition(touch->getLocation());
+		tempObject->setAnchorPoint(Vec2(0.5, 0));
+		tempObject->setPosition(touch->getLocation()-Vec2(0,tempObject->getContentSize().height/2));
 		//透明可以保证只要不移动就不能建造
 		tempObject->setVisible(false);
 		//z order 5 used for tempObject
