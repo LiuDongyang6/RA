@@ -2,6 +2,7 @@
 #include"RAObject/RASoldier.h"
 #include "SimpleAudioEngine.h"
 
+#define random(a,b) (rand()%(b-a+1)+a)
 USING_NS_CC;
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -12,7 +13,7 @@ static void problemLoading(const char* filename)
 }
 
 
-const float RAMap::speed = 50;
+const float RAMap::speed = 30;
 const int RAMap::accurancy = 50;
 TMXTiledMap * RAMap::_tiledMap;
 Point RAMap::diff;
@@ -62,9 +63,11 @@ void RAMap::testForCoord(void) {
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [&](Touch* touch, Event* event) {
-		Point pos1 = touch->getLocation();
-		Point tf = cannotBuildOil(pos1, 3);
-		log("%f, %f", tf.x, tf.y);
+		RASoldier a(1);
+		a.setPosition(Point(50 * 64, 25 * 127));
+		auto b = &a;
+		auto dest = touch->getLocation();
+		auto vect = findRoutine(b, dest, 1);
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
@@ -82,6 +85,56 @@ Point RAMap::glCoordToTileCoord(Point gl_coord) {
 	//O为地图的原点，A是要求的点，oa向量的值  
 	float OA_x = gl_coord.x - map_zero_x;
 	float OA_y = gl_coord.y - map_zero_y;
+	//最大坐标
+	int max_coord = _tiledMap->getContentSize().height / tile_height;
+	//将GL坐标系中x,y轴的单位向量分解到瓦片坐标系
+	//向量i=(tile_width/2, -tile_height/2)
+	//向量j=(-tile_width/2, -tile_height/2)
+	//向量OA=mi+nj
+	float m = OA_x / tile_width - OA_y / tile_height;
+	float n = -(OA_x / tile_width + OA_y / tile_height);
+	//越界检测
+	if (m<0 || n<0 || m>max_coord || n>max_coord) {
+		m = -1;
+		n = -1;
+	}
+	if (m - static_cast<int>(m) > 0.5)
+		m = static_cast<int>(m) + 1;
+	else
+		m = static_cast<int>(m);
+	if (n - static_cast<int>(n) > 0.5)
+		n = static_cast<int>(n) + 1;
+	else
+		n = static_cast<int>(n);
+	return Point(m, n);
+}
+
+//瓦片坐标转相对坐标
+Point RAMap::tileCoordToRelatedCoord(Point tile_coord) {
+	//求map原点坐标  
+	int map_width = _tiledMap->getMapSize().width;
+	int map_height = _tiledMap->getMapSize().height;
+	float map_zero_x = _tiledMap->getContentSize().width / 2;
+	float map_zero_y = _tiledMap->getContentSize().height;
+	//显示尺寸与属性不同
+	int tile_width = map_zero_x / map_width * 2;
+	int tile_height = map_zero_y / map_height;
+	return Point((map_zero_x + tile_coord.x * tile_width - tile_coord.y * tile_width),
+		(map_zero_y - tile_coord.x * tile_height - tile_coord.y * tile_height));
+}
+
+//相对坐标转瓦片坐标
+Point RAMap::relatedCoordToTileCoord(Point related_coord) {
+	//求map原点坐标  
+	int map_width = _tiledMap->getMapSize().width;
+	int map_height = _tiledMap->getMapSize().height;
+	float map_zero_x = _tiledMap->getContentSize().width / 2;
+	float map_zero_y = _tiledMap->getContentSize().height;
+	int tile_width = (map_zero_x - _tiledMap->getPosition().x) / map_width * 2;
+	int tile_height = (map_zero_y - _tiledMap->getPosition().y) / map_height;
+	//O为地图的原点，A是要求的点，oa向量的值  
+	float OA_x = related_coord.x - map_zero_x;
+	float OA_y = related_coord.y - map_zero_y;
 	//最大坐标
 	int max_coord = _tiledMap->getContentSize().height / tile_height;
 	//将GL坐标系中x,y轴的单位向量分解到瓦片坐标系
@@ -182,7 +235,6 @@ bool RAMap::cannotBuildNormal(Point build_point/*GL 坐标*/, int size) {
 		return false;
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
-			log("%f, %f", tile_coord.x,tile_coord.y);
 			if (collision[tile_coord])
 				return false;
 			tile_coord.y--;
@@ -269,56 +321,136 @@ void RAMap::destroyOilBuildings(Point des_pos, int size) {
 }
 
 //士兵占据这格
-void RAMap::setSoldierCollision(Point pos) {
+void RAMap::setSoldierCollision(Point pos, const int size) {
 	Point tile_coord = glCoordToTileCoord(pos);
-	collision[tile_coord] = 1;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			collision[Point(tile_coord.x + x, tile_coord.y + y)] = 1;
+		}
+	}
 }
 
 //士兵离开这格
-void RAMap::removeSoldierCollision(cocos2d::Point pos) {
+void RAMap::removeSoldierCollision(Point pos, const int size) {
 	Point tile_coord = glCoordToTileCoord(pos);
-	collision[tile_coord] = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			collision[Point(tile_coord.x + x, tile_coord.y + y)] = 0;
+		}
+	}
 }
 
 //不想解释
-std::map<Point, int> RAMap::tryEightdirection(Point position, Point dest) {
+std::map<Point, int> RAMap::tryEightdirection(Point position, Point dest, const int size) {
 	std::map<Point, int> open_list;
-	if (collision[Point(position.x - 1, position.y)])//1
+	bool cannotmove = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(position.x - 1 + x, position.y + y)]) {
+				cannotmove = 1;
+				goto left;
+			}
+		}
+	}
+left:	if (cannotmove)//1
 		open_list[Point(position.x - 1, position.y)] = 10000;
 	else
 		open_list[Point(position.x - 1, position.y)] =
 		10 + 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y));
-	if (collision[Point(position.x + 1, position.y)])//2
+	cannotmove = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(position.x + 1 + x, position.y + y)]) {
+				cannotmove = 1;
+				goto right;
+			}
+		}
+	}
+right:	if (cannotmove)//2
 		open_list[Point(position.x + 1, position.y)] = 10000;
 	else
 		open_list[Point(position.x + 1, position.y)] =
 		10 + 10 * (abs(dest.x - position.x - 1) + abs(dest.y - position.y));
-	if (collision[Point(position.x, position.y - 1)])//3
+	cannotmove = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(position.x + x, position.y - 1 + y)]) {
+				cannotmove = 1;
+				goto down;
+			}
+		}
+	}
+down:	if (cannotmove)//3
 		open_list[Point(position.x, position.y - 1)] = 10000;
 	else
 		open_list[Point(position.x, position.y - 1)] =
 		10 + 10 * (abs(dest.x - position.x) + abs(dest.y - position.y + 1));
-	if (collision[Point(position.x, position.y + 1)])//4
+	cannotmove = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(position.x + x, position.y + 1 + y)]) {
+				cannotmove = 1;
+				goto up;
+			}
+		}
+	}
+up:	if (cannotmove)//4
 		open_list[Point(position.x, position.y + 1)] = 10000;
 	else
 		open_list[Point(position.x, position.y + 1)] =
 		10 + 10 * (abs(dest.x - position.x) + abs(dest.y - position.y - 1));
-	if (collision[Point(position.x + 1, position.y + 1)])//5
+	cannotmove = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(position.x + 1 + x, position.y + 1 + y)]) {
+				cannotmove = 1;
+				goto upright;
+			}
+		}
+	}
+upright:	if (cannotmove)//5
 		open_list[Point(position.x + 1, position.y + 1)] = 10000;
 	else
 		open_list[Point(position.x + 1, position.y + 1)] =
 		14 + 10 * (abs(dest.x - position.x - 1) + abs(dest.y - position.y - 1));
-	if (collision[Point(position.x - 1, position.y - 1)])//6
+	cannotmove = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(position.x - 1 + x, position.y - 1 + y)]) {
+				cannotmove = 1;
+				goto downleft;
+			}
+		}
+	}
+downleft:	if (cannotmove)//6
 		open_list[Point(position.x - 1, position.y - 1)] = 10000;
 	else
 		open_list[Point(position.x - 1, position.y - 1)] =
 		14 + 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y + 1));
-	if (collision[Point(position.x - 1, position.y + 1)])//7
+	cannotmove = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(position.x -1 + x, position.y + 1 + y)]) {
+					cannotmove = 1;
+					goto upleft;
+			}
+		}
+	}
+upleft:	if (cannotmove)//7
 		open_list[Point(position.x - 1, position.y + 1)] = 10000;
 	else
 		open_list[Point(position.x - 1, position.y + 1)] =
 		14 + 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y - 1));
-	if (collision[Point(position.x + 1, position.y - 1)])//8
+	cannotmove = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(position.x + 1 + x, position.y - 1 + y)]) {
+				cannotmove = 1;
+				goto downright;
+			}
+		}
+	}
+downright:	if (cannotmove)//8
 		open_list[Point(position.x + 1, position.y - 1)] = 10000;
 	else
 		open_list[Point(position.x + 1, position.y - 1)] =
@@ -326,24 +458,35 @@ std::map<Point, int> RAMap::tryEightdirection(Point position, Point dest) {
 	return open_list;
 }
 
-//寻路
-std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point dest) {
+//士兵寻路
+std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point dest, const int size) {
 	std::vector<float> answer;
-	Point dest_tile = glCoordToTileCoord(
-		Point(dest.x + _tiledMap->getPosition().x, dest.y + _tiledMap->getPosition().y));
-	if (collision[dest] == 1) {
-		for (int x = dest_tile.x; x < 128; x++) {
-			for (int y = dest_tile.y; y < 128; y++) {
+	Point dest_tile = relatedCoordToTileCoord(dest);
+	if (collision[dest_tile] == 1) {
+		for (int x = dest_tile.x; x < 128 - size; x++) {
+			for (int y = dest_tile.y; y < 128 - size; y++) {
 				if (collision[Point(x, y)] == 0) {
-					dest_tile = Point(x, y);
-					goto a;
+					bool cannotmove = 0;
+					for (int i = 0; i != size; i++) {
+						for (int j = 0; j != size; j++) {
+							if (collision[Point(dest_tile.x + i, dest_tile.y + j)]) {
+								cannotmove = 1;
+								goto out;
+							}
+						}
+					}
+				out:	if (cannotmove)
+							continue;
+						else {
+							dest_tile = Point(x, y);
+							goto a;
+						}
 				}
 			}
 		}
 	}
-a:	Point so_tilecoord = glCoordToTileCoord(Point(soldier->getPosition().x + 
-		_tiledMap->getPosition().x, soldier->getPosition().y + _tiledMap->getPosition().y));
-	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile);
+a:	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
+	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
 	auto next_step = open_list_1.begin();
 	auto start = open_list_1.begin();
 	for (start; start != open_list_1.end(); start++) {
@@ -354,9 +497,10 @@ a:	Point so_tilecoord = glCoordToTileCoord(Point(soldier->getPosition().x +
 		answer.push_back(soldier->getPosition().x);
 		answer.push_back(soldier->getPosition().y);
 		answer.push_back(0);
+		auto ans_tile = relatedCoordToTileCoord(Point(answer[0], answer[1]));
 		return answer;
 	}
-	auto open_list_2 = tryEightdirection(next_step->first, dest);
+	auto open_list_2 = tryEightdirection(next_step->first, dest_tile, size);
 	auto third_step = open_list_2.begin();
 	auto start_2 = open_list_2.begin();
 	for (start_2; start_2 != open_list_2.end(); start_2++) {
@@ -364,33 +508,207 @@ a:	Point so_tilecoord = glCoordToTileCoord(Point(soldier->getPosition().x +
 			third_step = start_2;
 	}
 	bool isfind = 0;
-	for (auto pos : open_list_1) {
-		if (pos.first == third_step->first) {
-			isfind = 1;
-			break;
+	if (third_step->second != 10000) {
+		for (auto pos : open_list_1) {
+			if (pos.first == third_step->first) {
+				isfind = 1;
+				break;
+			}
 		}
 	}
 	if (isfind) {
-		answer.push_back(_tiledMap->getLayer("ground")->getPositionAt(third_step->first).x + 
-			_tiledMap->getPosition().x);
-		answer.push_back(_tiledMap->getLayer("ground")->getPositionAt(third_step->first).y +
-			_tiledMap->getPosition().y);
+		answer.push_back(tileCoordToRelatedCoord(third_step->first).x);
+		answer.push_back(tileCoordToRelatedCoord(third_step->first).y);
 		if (third_step->first == dest_tile)
 			answer.push_back(1);
 		else
 			answer.push_back(0);
+		auto ans_tile = glCoordToTileCoord(
+			Point(answer[0] + _tiledMap->getPosition().x, answer[1] + _tiledMap->getPosition().y));
 		return answer;
 	}
 	else {
-		answer.push_back(_tiledMap->getLayer("ground")->getPositionAt(next_step->first).x +
-			_tiledMap->getPosition().x);
-		answer.push_back(_tiledMap->getLayer("ground")->getPositionAt(next_step->first).y +
-			_tiledMap->getPosition().y);
+		answer.push_back(tileCoordToRelatedCoord(next_step->first).x);
+		answer.push_back(tileCoordToRelatedCoord(next_step->first).y);
 		if (next_step->first == dest_tile)
 			answer.push_back(1);
 		else
 			answer.push_back(0);
+		auto ans_tile = relatedCoordToTileCoord(Point(answer[0], answer[1]));
 		return answer;
 	}
 	return answer;
+}
+
+//将建筑物建在中心
+Point RAMap::setCenter(Point pos) {
+	Point tile_coord = glCoordToTileCoord(
+		Point(pos.x + _tiledMap->getPosition().x, pos.y + _tiledMap->getPosition().y));
+	return _tiledMap->getLayer("ground")->getPositionAt(tile_coord);
+}
+
+//出现士兵
+Point RAMap::soldierBirth(Point build_pos, const int size) {
+	Point build_tile = relatedCoordToTileCoord(build_pos);
+	int direction = random(1, 8);
+	if (direction == 1) {
+		for (int x = build_tile.x; x != 128 - size; x++) {
+			if (collision[Point(x, build_tile.y)])
+				continue;
+			else {
+				bool canreach = 1;
+				for (int i = 0; i != size; i++) {
+					for (int j = 0; j != size; j++) {
+						if (collision[Point(x + i, build_tile.y + j)]) {
+							canreach = 0;
+							continue;
+						}
+					}
+				}
+				if (canreach)
+					return Point(x, build_tile.y);
+			}
+		}
+		direction++;
+	}
+	if (direction == 2) {
+		for (int x = build_tile.x; x != 0; x--) {
+			if (collision[Point(x, build_tile.y)])
+				continue;
+			else {
+				bool canreach = 1;
+				for (int i = 0; i != size; i++) {
+					for (int j = 0; j != size; j++) {
+						if (collision[Point(x + i, build_tile.y + j)]) {
+							canreach = 0;
+							continue;
+						}
+					}
+				}
+				if (canreach)
+					return Point(x, build_tile.y);
+			}
+		}
+		direction++;
+	}
+	if (direction == 3) {
+		for (int y = build_tile.y; y != 128 - size; y++) {
+			if (collision[Point(build_tile.x, y)])
+				continue;
+			else {
+				bool canreach = 1;
+				for (int i = 0; i != size; i++) {
+					for (int j = 0; j != size; j++) {
+						if (collision[Point(build_tile.x + i, y + j)]) {
+							canreach = 0;
+							continue;
+						}
+					}
+				}
+				if (canreach)
+					return Point(build_tile.x, y);
+			}
+		}
+		direction++;
+	}
+	if (direction == 4) {
+		for (int y = build_tile.y; y != 0; y--) {
+			if (collision[Point(build_tile.x, y)])
+				continue;
+			else {
+				bool canreach = 1;
+				for (int i = 0; i != size; i++) {
+					for (int j = 0; j != size; j++) {
+						if (collision[Point(build_tile.x + i, y + j)]) {
+							canreach = 0;
+							continue;
+						}
+					}
+				}
+				if (canreach)
+					return Point(build_tile.x, y);
+			}
+		}
+		direction++;
+	}
+	if (direction == 5) {
+		for (int x = build_tile.x, y = build_tile.y; x != 128 - size, y != 128 - size; x++, y++) {
+			if (collision[Point(x, y)])
+				continue;
+			else {
+				bool canreach = 1;
+				for (int i = 0; i != size; i++) {
+					for (int j = 0; j != size; j++) {
+						if (collision[Point(x + i, y + j)]) {
+							canreach = 0;
+							continue;
+						}
+					}
+				}
+				if (canreach)
+					return Point(x, y);
+			}
+		}
+		direction++;
+	}
+	if (direction == 6) {
+		for (int x = build_tile.x, y = build_tile.y; x != 128 - size, y != 0; x++, y--) {
+			if (collision[Point(x, y)])
+				continue;
+			else {
+				bool canreach = 1;
+				for (int i = 0; i != size; i++) {
+					for (int j = 0; j != size; j++) {
+						if (collision[Point(x + i, y + j)]) {
+							canreach = 0;
+							continue;
+						}
+					}
+				}
+				if (canreach)
+					return Point(x, y);
+			}
+		}
+		direction++;
+	}
+	if (direction == 7) {
+		for (int x = build_tile.x, y = build_tile.y; x != 0, y != 128 - size; x--, y++) {
+			if (collision[Point(x, y)])
+				continue;
+			else {
+				bool canreach = 1;
+				for (int i = 0; i != size; i++) {
+					for (int j = 0; j != size; j++) {
+						if (collision[Point(x + i, y + j)]) {
+							canreach = 0;
+							continue;
+						}
+					}
+				}
+				if (canreach)
+					return Point(x, y);
+			}
+		}
+		direction++;
+	}
+	if (direction == 8) {
+		for (int x = build_tile.x, y = build_tile.y; x != 0, y != 0; x--, y--) {
+			if (collision[Point(x, y)])
+				continue;
+			else {
+				bool canreach = 1;
+				for (int i = 0; i != size; i++) {
+					for (int j = 0; j != size; j++) {
+						if (collision[Point(x + i, y + j)]) {
+							canreach = 0;
+							continue;
+						}
+					}
+				}
+				if (canreach)
+					return Point(x, y);
+			}
+		}
+		direction++;
+	}
 }

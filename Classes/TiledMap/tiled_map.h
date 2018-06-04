@@ -11,6 +11,10 @@ public:
     static bool init();
 
 	static cocos2d::Point glCoordToTileCoord(cocos2d::Point gl_cood);
+	
+	static cocos2d::Point tileCoordToRelatedCoord(cocos2d::Point tile_coord);
+
+	static cocos2d::Point relatedCoordToTileCoord(cocos2d::Point related_coord);
 
 	static bool cannotBuildNormal(cocos2d::Point build_point, int size);
 
@@ -29,17 +33,22 @@ public:
 	static void sureToBuildOil(cocos2d::Point pos, int size);
 
 	static std::map<cocos2d::Point, int> tryEightdirection(cocos2d::Point position,
-		cocos2d::Point dest);
+		cocos2d::Point dest, const int size);
 
-	static std::vector<float> findRoutine(RASoldier* soldier, cocos2d::Point dest);
+	static std::vector<float> findRoutine(RASoldier* soldier, cocos2d::Point dest, const int size);
 
 	static void destroyNormalBuildings(cocos2d::Point pos, int size);
 
 	static void destroyOilBuildings(cocos2d::Point pos, int size);
 
-	static void setSoldierCollision(cocos2d::Point pos);
+	static void setSoldierCollision(cocos2d::Point pos, const int size);
 
-	static void removeSoldierCollision(cocos2d::Point pos);
+	static void removeSoldierCollision(cocos2d::Point pos, const int size);
+
+	static cocos2d::Point setCenter(cocos2d::Point pos);
+
+	static cocos2d::Point soldierBirth(cocos2d::Point build_pos, const int);
+
 	//地图移动速度
 	static const float speed;
 
