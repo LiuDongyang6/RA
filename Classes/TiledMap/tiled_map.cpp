@@ -234,9 +234,8 @@ void RAMap::moveMap(float dt) {
 }
 
 //判断是否可以建造普通建筑
-bool RAMap::cannotBuildNormal(Point build_point/*GL 坐标*/, int size) {
-	//从GL坐标转化为瓦片坐标  
-	Point tile_coord = glCoordToTileCoord(build_point);
+bool RAMap::cannotBuildNormal(Point build_point, int size) {
+	Point tile_coord = relatedCoordToTileCoord(build_point);
 	if (tile_coord.x <= 0)
 		return false;
 	for (int x = 0; x < size; x++) {
@@ -254,7 +253,7 @@ bool RAMap::cannotBuildNormal(Point build_point/*GL 坐标*/, int size) {
 //判断是否可以建造油井
 Point RAMap::cannotBuildOil(Point build_point, int size) {
 	//从GL坐标转化为瓦片坐标  
-	Point tile_coord = glCoordToTileCoord(build_point);
+	Point tile_coord = relatedCoordToTileCoord(build_point);
 	if (oil[tile_coord]) {
 		while (oil[tile_coord]) {
 			if (oil[Point(tile_coord.x + 1, tile_coord.y)])
@@ -271,7 +270,7 @@ Point RAMap::cannotBuildOil(Point build_point, int size) {
 
 //确定建造普通建筑
 void RAMap::sureToBuildNormal(Point build_point, int size) {
-	Point tile_coord = glCoordToTileCoord(build_point);
+	Point tile_coord = relatedCoordToTileCoord(build_point);
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
 			collision[tile_coord] = 1;
@@ -283,9 +282,9 @@ void RAMap::sureToBuildNormal(Point build_point, int size) {
 	}
 }
 
-//确定建造油井 传入的point是cannotBuildOil返回的
+//确定建造油井 
 void RAMap::sureToBuildOil(Point build_point, int size) {
-	Point tile_coord = glCoordToTileCoord(build_point);
+	Point tile_coord = relatedCoordToTileCoord(build_point);
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
 			oil[tile_coord] = 0;
@@ -297,8 +296,9 @@ void RAMap::sureToBuildOil(Point build_point, int size) {
 }
 
 //普通建筑被摧毁
+//输入 相对坐标 地基大小
 void RAMap::destroyNormalBuildings(Point des_pos, int size) {
-	Point tile_coord = glCoordToTileCoord(des_pos);
+	Point tile_coord = relatedCoordToTileCoord(des_pos);
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
 			collision[tile_coord] = 0;
@@ -312,7 +312,7 @@ void RAMap::destroyNormalBuildings(Point des_pos, int size) {
 
 //油田被摧毁
 void RAMap::destroyOilBuildings(Point des_pos, int size) {
-	Point tile_coord = glCoordToTileCoord(des_pos);
+	Point tile_coord = relatedCoordToTileCoord(des_pos);
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
 			oil[tile_coord] = 1;
@@ -474,7 +474,7 @@ downright:	if (cannotmove)//8
 std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point dest, const int size) {
 	std::vector<float> answer = { -1, -1, -1 };
 	Point dest_tile = relatedCoordToTileCoord(dest);
-	Point so_glcoord = Point(soldier->getPosition().x, soldier->getPosition().y - soldier->getScaleY() / 2);
+	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
 	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
 	if (collision[dest_tile] || soldier_collision[dest_tile]) {
 		if (Point(so_tilecoord.x + 1, so_tilecoord.y) == dest_tile ||
@@ -551,8 +551,6 @@ a:	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
 			answer[2] = 1;
 		else
 			answer[2] = 0;
-		auto ans_tile = glCoordToTileCoord(
-			Point(answer[0] + _tiledMap->getPosition().x, answer[1] + _tiledMap->getPosition().y));
 		return answer;
 	}
 	else {
@@ -562,7 +560,6 @@ a:	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
 			answer[2] = 1;
 		else
 			answer[2] = 0;
-		auto ans_tile = relatedCoordToTileCoord(Point(answer[0], answer[1]));
 		/*log("c next %f,%f %f,%f", next_step->first.x, next_step->first.y, answer[0], answer[1]);
 		log("soldier %f,%f %f,%f", so_tilecoord.x, so_tilecoord.y, soldier->getPosition().x, soldier->getPosition().y);
 		log("%f, %f", tileCoordToRelatedCoord(so_tilecoord).x, tileCoordToRelatedCoord(so_tilecoord).y);
@@ -574,7 +571,7 @@ a:	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
 
 //将建筑物建在中心
 Point RAMap::setCenter(Point pos) {
-	Point tile_coord = glCoordToTileCoord(
+	Point tile_coord = relatedCoordToTileCoord(
 		Point(pos.x + _tiledMap->getPosition().x, pos.y + _tiledMap->getPosition().y));
 	return _tiledMap->getLayer("ground")->getPositionAt(tile_coord);
 }
