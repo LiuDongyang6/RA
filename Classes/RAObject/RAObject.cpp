@@ -40,7 +40,7 @@ bool RAObject::annihilation()
 	//2，3颠倒会delete自己，则power_cost_会变为未知
 	removeFromParentAndCleanup(true);
 	//释放tilemap占地
-	//RAMap::destroyNormalBuildings()
+	RAMap::destroyNormalBuildings(getPosition(), covering_);
 	return true;
 }
 
@@ -49,9 +49,9 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 	//
 	Sprite::initWithSpriteFrameName(filename);
 	//
+	setAnchorPoint(Vec2(0.5, 0));
 	setPosition(location);
-	auto halfPoint = location - Point(0, getContentSize().height / 2);
-	RAMap::sureToBuildNormal(halfPoint + RAMap::getMap()->getPosition(), covering_);
+	RAMap::sureToBuildNormal(getPosition(), covering_);
 	return true;
 }
 
@@ -94,7 +94,6 @@ bool RAConstructButton::onTouchBegan(Touch* touch, Event* event)
 		std::string SpriteFrameName = StringUtils::format("%s(1).png", ObjectName);
 		tempObject = Sprite::createWithSpriteFrameName(SpriteFrameName);
 		tempObject->setAnchorPoint(Vec2(0.5, 0));
-		tempObject->setPosition(touch->getLocation()-Vec2(0,tempObject->getContentSize().height/2));
 		//透明可以保证只要不移动就不能建造
 		tempObject->setVisible(false);
 		//z order 5 used for tempObject
@@ -109,12 +108,10 @@ void RAConstructButton::onTouchMoved(Touch* touch, Event* type)
 	{
 		//point 指向(0，50%)
 		auto point = touch->getLocation();
-		auto halfHeight = (tempObject->getContentSize().height) / 2;
-		Vec2 halfPoint = point - Vec2(0, halfHeight);
 		//if constructable
-		if (RAMap::cannotBuildNormal(halfPoint, covering_))
+		if (RAMap::cannotBuildNormal(point, covering_))
 		{
-			tempObject->setPosition(point);
+			tempObject->setPosition(point-Vec2(0, tempObject->getContentSize().height / 2));
 			tempObject->setVisible(true);
 		}
 		else
