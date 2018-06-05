@@ -48,10 +48,20 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 {
 	//
 	Sprite::initWithSpriteFrameName(filename);
-	//
-	setAnchorPoint(Vec2(0.5, 0));
-	setPosition(location);
-	RAMap::sureToBuildNormal(getPosition(), covering_);
+	//building
+	if (category_ == 100)
+	{
+		setAnchorPoint(Vec2(0.5, 0));
+		setPosition(location);
+		RAMap::sureToBuildNormal(location, covering_);
+	}
+	//soldier
+	else
+	{
+		location = RAMap::soldierBirth(location, covering_);
+		setAnchorPoint(Vec2(0.5, 0));
+		setPosition(location);
+	}
 	return true;
 }
 

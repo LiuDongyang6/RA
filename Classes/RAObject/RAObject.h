@@ -17,7 +17,9 @@ public:
 	RAObject(int id) :
 		original_hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
 		hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
-		covering_(RAUtility::RAgetProperty(id,"covering").asInt()){}
+		covering_(RAUtility::RAgetProperty(id,"covering").asInt()),
+	    category_(RAUtility::RAgetProperty(id, "category").asInt()) 
+	{}
 	~RAObject()override {}
 	bool initWithSpriteFrameNameAndLocation(const std::string& filename,Point location);
 	//decrease Hp
@@ -29,6 +31,7 @@ protected:
 	int hp_;
 	const int original_hp_;
 	bool toBeOrNotToBe();
+	const int category_;
 };
 
 

@@ -101,12 +101,12 @@ Action* RASoldier::getAction(int number, float dt)
 }
 void RASoldier::findRoadAndLetGo()
 {
+	RAMap::removeSoldierCollision(getPosition(), covering_);
 	auto vec = RAMap::findRoutine(this,destination,covering_);
+	Point point = Point(vec[0], vec[1]);
+	RAMap::setSoldierCollision(point, covering_);
 	if (vec[2] == 0)
 	{
-		Point point = Point(vec[0], vec[1]);
-		RAMap::removeSoldierCollision(getPosition(), covering_);
-		RAMap::setSoldierCollision(point,covering_);
 		auto move = MoveTo::create(getPosition().getDistance(point) / speed_, point);
 		auto call = [&]() {findRoadAndLetGo(); };
 		CallFunc* callFunc = CallFunc::create(call);
@@ -115,6 +115,8 @@ void RASoldier::findRoadAndLetGo()
 	}
 	else
 	{
+		auto move = MoveTo::create(getPosition().getDistance(point) / speed_, point);
+		runAction(move);
 	}
 }
 void RASoldier::findRoadAndLetGoForFight()

@@ -61,6 +61,7 @@ protected:
 	static cocos2d::Point diff;
 	static std::map<cocos2d::Point, bool> collision;
 	static std::map<cocos2d::Point, bool> oil;
+	static std::map<cocos2d::Point, bool> soldier_collision;
 };
 
 #endif // __AB__
