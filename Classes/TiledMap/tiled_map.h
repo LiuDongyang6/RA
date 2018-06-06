@@ -35,7 +35,7 @@ public:
 	static std::map<cocos2d::Point, int> tryEightdirection(cocos2d::Point position,
 		cocos2d::Point dest, const int size);
 
-	static std::vector<float> findRoutine(RASoldier* soldier, cocos2d::Point dest, const int size);
+	static std::vector<float> findRoutine(RASoldier* soldier, cocos2d::Point &dest, const int size);
 
 	static void destroyNormalBuildings(cocos2d::Point pos, int size);
 

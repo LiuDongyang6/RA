@@ -252,7 +252,6 @@ bool RAMap::cannotBuildNormal(Point build_point, int size) {
 
 //判断是否可以建造油井
 Point RAMap::cannotBuildOil(Point build_point, int size) {
-	//从GL坐标转化为瓦片坐标  
 	Point tile_coord = relatedCoordToTileCoord(build_point);
 	if (oil[tile_coord]) {
 		while (oil[tile_coord]) {
@@ -296,7 +295,6 @@ void RAMap::sureToBuildOil(Point build_point, int size) {
 }
 
 //普通建筑被摧毁
-//输入 相对坐标 地基大小
 void RAMap::destroyNormalBuildings(Point des_pos, int size) {
 	Point tile_coord = relatedCoordToTileCoord(des_pos);
 	for (int x = 0; x < size; x++) {
@@ -471,7 +469,7 @@ downright:	if (cannotmove)//8
 }
 
 //士兵寻路
-std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point dest, const int size) {
+std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point &dest, const int size) {
 	std::vector<float> answer = { -1, -1, -1 };
 	Point dest_tile = relatedCoordToTileCoord(dest);
 	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
@@ -509,6 +507,7 @@ std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point dest, const int 
 							continue;
 						else {
 							dest_tile = Point(x, y);
+							dest = Point(tileCoordToRelatedCoord(dest_tile));
 							goto a;
 						}
 				}
@@ -572,8 +571,8 @@ a:	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
 //将建筑物建在中心
 Point RAMap::setCenter(Point pos) {
 	Point tile_coord = relatedCoordToTileCoord(
-		Point(pos.x + _tiledMap->getPosition().x, pos.y + _tiledMap->getPosition().y));
-	return _tiledMap->getLayer("ground")->getPositionAt(tile_coord);
+		Point(pos.x , pos.y));
+	return tileCoordToRelatedCoord(tile_coord);
 }
 
 //出现士兵
@@ -588,8 +587,8 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				bool canreach = 1;
 				for (int i = 0; i != size; i++) {
 					for (int j = 0; j != size; j++) {
-						if (collision[Point(x + i, build_tile.y + j)] ||
-							soldier_collision[Point(x + i, build_tile.y + j)]) {
+						if (collision[Point(x - i, build_tile.y - j)] ||
+							soldier_collision[Point(x - i, build_tile.y - j)]) {
 							canreach = 0;
 							continue;
 						}
@@ -611,8 +610,8 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				bool canreach = 1;
 				for (int i = 0; i != size; i++) {
 					for (int j = 0; j != size; j++) {
-						if (collision[Point(x + i, build_tile.y + j)] ||
-							soldier_collision[Point(x + i, build_tile.y + j)]) {
+						if (collision[Point(x - i, build_tile.y - j)] ||
+							soldier_collision[Point(x - i, build_tile.y - j)]) {
 							canreach = 0;
 							continue;
 						}
@@ -634,8 +633,8 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				bool canreach = 1;
 				for (int i = 0; i != size; i++) {
 					for (int j = 0; j != size; j++) {
-						if (collision[Point(build_tile.x + i, y + j)] ||
-							soldier_collision[Point(build_tile.x + i, y + j)]) {
+						if (collision[Point(build_tile.x - i, y - j)] ||
+							soldier_collision[Point(build_tile.x - i, y - j)]) {
 							canreach = 0;
 							continue;
 						}
@@ -657,8 +656,8 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				bool canreach = 1;
 				for (int i = 0; i != size; i++) {
 					for (int j = 0; j != size; j++) {
-						if (collision[Point(build_tile.x + i, y + j)] ||
-							soldier_collision[Point(build_tile.x + i, y + j)]) {
+						if (collision[Point(build_tile.x - i, y - j)] ||
+							soldier_collision[Point(build_tile.x - i, y - j)]) {
 							canreach = 0;
 							continue;
 						}
@@ -680,7 +679,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				bool canreach = 1;
 				for (int i = 0; i != size; i++) {
 					for (int j = 0; j != size; j++) {
-						if (collision[Point(x + i, y + j)] || soldier_collision[Point(x, y)]) {
+						if (collision[Point(x - i, y - j)] || soldier_collision[Point(x - i, y - j)]) {
 							canreach = 0;
 							continue;
 						}
@@ -702,7 +701,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				bool canreach = 1;
 				for (int i = 0; i != size; i++) {
 					for (int j = 0; j != size; j++) {
-						if (collision[Point(x + i, y + j)] || soldier_collision[Point(x + i, y + j)]) {
+						if (collision[Point(x - i, y - j)] || soldier_collision[Point(x - i, y - j)]) {
 							canreach = 0;
 							continue;
 						}
@@ -724,7 +723,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				bool canreach = 1;
 				for (int i = 0; i != size; i++) {
 					for (int j = 0; j != size; j++) {
-						if (collision[Point(x + i, y + j)] || soldier_collision[Point(x + i, y + j)]) {
+						if (collision[Point(x - i, y - j)] || soldier_collision[Point(x - i, y - j)]) {
 							canreach = 0;
 							continue;
 						}
@@ -746,7 +745,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				bool canreach = 1;
 				for (int i = 0; i != size; i++) {
 					for (int j = 0; j != size; j++) {
-						if (collision[Point(x + i, y + j)] || soldier_collision[Point(x + i, y + j)]) {
+						if (collision[Point(x - i, y - j)] || soldier_collision[Point(x - i, y - j)]) {
 							canreach = 0;
 							continue;
 						}
@@ -758,6 +757,5 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 			}
 		}
-		direction++;
 	}
 }
