@@ -11,27 +11,33 @@ USING_NS_CC;
 using namespace cocostudio;
 using namespace cocos2d::ui;
 
+class RASoldier;
+
 class RAObject : public cocos2d::Sprite
 {
 public:
 	RAObject(int id) :
 		original_hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
 		hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
-		covering_(RAUtility::RAgetProperty(id,"covering").asInt()),
-	    category_(RAUtility::RAgetProperty(id, "category").asInt()) 
+		covering_(RAUtility::RAgetProperty(id, "covering").asInt()),
+		category_(RAUtility::RAgetProperty(id, "category").asInt()),
+		object_count_(RAPlayer::getCounter())
 	{}
 	~RAObject()override {}
 	bool initWithSpriteFrameNameAndLocation(const std::string& filename,Point location);
 	//decrease Hp
-	bool sufferAttack(float attack_speed,int damage);
-	bool stopSufferAttack();
+	void sufferAttack(float attack_speed,int damage,RASoldier* attacker);
+	void stopSufferAttack(RASoldier* attacker);
 	virtual bool annihilation();
+	int getCount() { return object_count_; }
 protected:
 	const int covering_;
 	int hp_;
 	const int original_hp_;
 	bool toBeOrNotToBe();
 	const int category_;
+	std::unordered_set<RASoldier*> attacking_me_;
+	const int object_count_;
 };
 
 
@@ -66,13 +72,14 @@ private:
 	//id of object the button constructs
 	const int id;
 	//
-	int capital_cost_;
+	const int capital_cost_;
 	//
-	int power_cost_;
+	const int power_cost_;
 	//
-	int category_;
+	const int category_;
 	//
-	int covering_;
+	const int covering_;
+	//
 	Sprite* tempObject;
 };
 
