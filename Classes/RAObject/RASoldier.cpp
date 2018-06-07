@@ -103,8 +103,6 @@ void RASoldier::findRoadAndLetGo()
 {
 	RAMap::removeSoldierCollision(getPosition(), covering_);
 	auto vec = RAMap::findRoutine(this,destination,covering_);
-	auto atest=RAAssassin::create(destination);
-	RAMap::getMap()->addChild(atest);
 	next_step = Point(vec[0], vec[1]);
 	RAMap::setSoldierCollision(next_step, covering_);
 	if (vec[2] == 0)
