@@ -40,7 +40,7 @@ bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 		RAPlayer::selected_soldiers_.clear();
 
 		RAPlayer::selected_soldiers_.insert(this);
-
+		stopAllActions();
 		return true;
 	}
 	else
@@ -68,7 +68,8 @@ bool RASoldier::annihilation()
 }
 void RASoldier::runTo(Point point)
 {
-	stopCurrentBehavior();
+	//如不停止会以矢量和移动
+	stopAllActions();
 	//保存目的地
 	destination = point;
 	//
@@ -78,11 +79,10 @@ void RASoldier::runTo(Point point)
 	findRoadAndLetGo();
 
 }
-void RASoldier::runToFight(RAHostileObject* object)
+void RASoldier::runToFight(RAObject* object)
 {
 	//如不停止会以矢量和移动
-	//重置状态
-	stopCurrentBehavior();
+	stopAllActions();
 	//保存目的地
 	AimEnemy = object;
 	//
@@ -103,13 +103,11 @@ void RASoldier::findRoadAndLetGo()
 {
 	RAMap::removeSoldierCollision(getPosition(), covering_);
 	auto vec = RAMap::findRoutine(this,destination,covering_);
-	auto atest=RAAssassin::create(destination);
-	RAMap::getMap()->addChild(atest);
-	next_step = Point(vec[0], vec[1]);
-	RAMap::setSoldierCollision(next_step, covering_);
+	Point point = Point(vec[0], vec[1]);
+	RAMap::setSoldierCollision(point, covering_);
 	if (vec[2] == 0)
 	{
-		auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
+		auto move = MoveTo::create(getPosition().getDistance(point) / speed_, point);
 		auto call = [&]() {findRoadAndLetGo(); };
 		CallFunc* callFunc = CallFunc::create(call);
 		auto sequence = Sequence::create(move, callFunc, NULL);
@@ -117,7 +115,7 @@ void RASoldier::findRoadAndLetGo()
 	}
 	else
 	{
-		auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
+		auto move = MoveTo::create(getPosition().getDistance(point) / speed_, point);
 		runAction(move);
 	}
 }
@@ -129,63 +127,42 @@ void RASoldier::findRoadAndLetGoForFight()
 	}
 	else
 	{
-		RAMap::removeSoldierCollision(getPosition(), covering_);
-		auto vec = RAMap::findRoutine(this, Point(AimEnemy->getPosition()), covering_);
-		next_step = Point(vec[0], vec[1]);
-		RAMap::setSoldierCollision(next_step, covering_);
+		auto vec = RAMap::findRoutine(this, AimEnemy->getPosition(),covering_);
 		if (vec[2] == 0)
 		{
-			auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
+			Point point = RAUtility::getPositionInMap(Point(vec[0], vec[1]));
+			auto move = MoveTo::create(getPosition().getDistance(point) / speed_, point);
 			auto call = [&]() {findRoadAndLetGoForFight(); };
 			CallFunc* callFunc = CallFunc::create(call);
 			auto sequence = Sequence::create(move, callFunc, NULL);
 			runAction(sequence);
 		}
-		else
-		{
-			auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
-			runAction(move);
-		}
 	}
 }
 void RASoldier::doAttack()
 {
-	//停止动画
 	stopAllActions();
 
 	auto FightAction = getAction(2, 0.2f);
 
 	runAction(FightAction);
 
-	AimEnemy->sufferAttack(attack_speed_, hit_,this);
+	AimEnemy->sufferAttack(attack_speed_, hit_);
 
 	auto func= [&](float dt){
 		if (getPosition().distance(this->AimEnemy->getPosition()) > range_)
 		{
-			stopCurrentBehavior();
+			AimEnemy->stopSufferAttack();
+			stopAllActions();
+			unschedule(std::string("isAimInRange"));
 		}
 	};
-	schedule(func, 0.2f, std::string("IN_RANGE_CHECK"));
-}
-void RASoldier::stopCurrentBehavior()
-{
-	stopAllActions();
-	//如果上一个指令是攻击
-	if (AimEnemy != NULL)
-	{
-		unschedule(std::string("IN_RANGE_CHECK"));
-		AimEnemy->stopSufferAttack(this);
-		AimEnemy = NULL;
-	}
-	//上一个指令是移动
-	else if (next_step != Point(-1, -1))
-	{
-		RAMap::removeSoldierCollision(next_step, covering_);
-	}
+	schedule(func, 0.2f, std::string("isAimInRange"));
 }
 //
 //RAFairy
 //
+bool RAFairy::lauched = 0;
 Sprite* RAFairy::create(Point location)
 {
 	RAFairy* fairy = new RAFairy();
@@ -198,6 +175,7 @@ Sprite* RAFairy::create(Point location)
 //
 //RAAssassin
 //
+bool RAAssassin::lauched = 0;
 Sprite* RAAssassin::create(Point location)
 {
 	RAAssassin* assassin = new RAAssassin();
@@ -210,6 +188,7 @@ Sprite* RAAssassin::create(Point location)
 //
 //RAGeneral
 //
+bool RALancer::lauched = 0;
 Sprite* RALancer::create(Point location)
 {
 	RALancer* lancer = new RALancer();
@@ -222,6 +201,7 @@ Sprite* RALancer::create(Point location)
 //
 //RAGeneral
 //
+bool RAGeneral::lauched = 0;
 Sprite* RAGeneral::create(Point location)
 {
 	RAGeneral* general = new RAGeneral();

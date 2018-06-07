@@ -1,7 +1,6 @@
 #ifndef __RASOLDIER_H__
 #define __RASOLDIER_H__
 #include"RAObject\RAObject.h"
-#include"RAHostileObject.h"
 USING_NS_CC;
 
 class RASoldier :public RAObject
@@ -33,8 +32,6 @@ public:
 
 	void doAttack();
 
-	void stopCurrentBehavior();
-
 	~RASoldier()override {
 		for (auto vec : animation_)
 			vec.clear();
@@ -42,7 +39,7 @@ public:
 	}
 
 	void runTo(Point point);
-	void runToFight(RAHostileObject* object);
+	void runToFight(RAObject* object);
 	Widget* UI_;
 
 private:
@@ -54,8 +51,7 @@ private:
 	const int power_cost_;
 	const int capital_cost_;
 	Point destination;
-	Point next_step=Point(-1,-1);
-	RAHostileObject* AimEnemy=NULL;
+	RAObject* AimEnemy;
 	//get a repeat forever action
 	Action* getAction(int number, float dt);
 };
@@ -68,6 +64,7 @@ public:
 
 	static Sprite* create(Point location);
 	static const int id = 3;
+	static bool lauched;
 };
 class RAAssassin :public RASoldier
 {
@@ -77,6 +74,7 @@ public:
 
 	static Sprite* create(Point location);
 	static const int id = 4;
+	static bool lauched;
 };
 class RALancer :public RASoldier
 {
@@ -86,6 +84,7 @@ public:
 
 	static Sprite* create(Point location);
 	static const int id = 5;
+	static bool lauched;
 };
 class RAGeneral :public RASoldier
 {
@@ -95,6 +94,7 @@ public:
 
 	static Sprite* create(Point location);
 	static const int id = 6;
+	static bool lauched;
 };
 #endif // !__RASOLDIER_H__
 

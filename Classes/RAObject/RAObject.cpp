@@ -1,5 +1,4 @@
 #include"RAObject.h"
-#include"RASoldier.h"
 
 USING_NS_CC;
 
@@ -7,30 +6,25 @@ int myrandom=0;
 //
 //RAObject
 //
-void RAObject::sufferAttack(float attack_speed,int damage,RASoldier* attacker)
+bool RAObject::sufferAttack(float attack_speed,int damage)
 {
-	attacking_me_.insert(attacker);
 	auto func = [&,damage](float dt)
 	{
 		this->hp_ -= damage;
 		this->toBeOrNotToBe();
 	};
-	schedule(func, attack_speed,StringUtils::format("ATK_%05d",attacker->getCount()));
+	schedule(func, attack_speed,StringUtils::format("%d%d",myrandom++,myrandom++));
+	return true;
 }
-void RAObject::stopSufferAttack(RASoldier* attacker)
+bool RAObject::stopSufferAttack()
 {
-	attacking_me_.erase(attacker);
-	unschedule(StringUtils::format("ATK_%05d", attacker->getCount()));
+	return 0;
 }
 
 bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
 {
 	if (hp_ < 0)
 	{
-		for (auto attacker : attacking_me_)
-		{
-			attacker->stopCurrentBehavior();
-		}
 		annihilation();
 		return false;
 	}
@@ -125,7 +119,7 @@ void RAConstructButton::onTouchMoved(Touch* touch, Event* type)
 		//point Ö¸Ïò(0£¬50%)
 		auto point = touch->getLocation();
 		//if constructable
-		if (RAMap::cannotBuildNormal(RAUtility::getPositionInMap(point), covering_))
+		if (RAMap::cannotBuildNormal(point, covering_))
 		{
 			tempObject->setPosition(point-Vec2(0, tempObject->getContentSize().height / 2));
 			tempObject->setVisible(true);
@@ -154,7 +148,7 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 		}
 	else //soldier
 	{
-		auto object = CreateWiki[id](this->getParent()->getPosition());
+		auto object = CreateWiki[id](this->getParent()->getPosition()-Vec2(50, 50));
 		RAMap::getMap()->addChild(object, category_);
 	}
 	tempObject->removeFromParentAndCleanup(true);

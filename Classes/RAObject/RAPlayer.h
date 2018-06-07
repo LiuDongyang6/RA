@@ -16,8 +16,7 @@ class RAPlayer
 public:
 	static const int getCapital() { return capital_; }
 	static const int getPower() {return power_; }
-	//give a unique counter in a game
-	static const int getCounter() { return unit_counter_++; }
+
 	//player's capital will increase by quantity
 	static void resumeCapital(const int quantity);
 	//player's power will increase by quantity
@@ -34,7 +33,6 @@ public:
 private:
 	static int capital_;
 	static int power_;
-	static int unit_counter_;
 	static Widget* current_UI_;
 };
 
