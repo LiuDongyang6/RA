@@ -33,7 +33,7 @@ bool Loading::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	// ----------------------------------- add background picture -----------------------------------
-	Sprite *bg = Sprite::create("Scene\loading-back.png");
+	Sprite *bg = Sprite::create("loading-back.png");
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
@@ -60,8 +60,8 @@ bool Loading::init()
 
 	// ----------------------------------- add lastpage button -----------------------------------
 	auto lastpageMenuItem = MenuItemImage::create(
-		"Scene\lastpage.png",
-		"Scene\lastpage.png",
+		"lastpage.png",
+		"lastpage.png",
 		CC_CALLBACK_1(Loading::menuLastpageCallback, this));
 
 	lastpageMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));

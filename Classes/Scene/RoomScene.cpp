@@ -33,7 +33,7 @@ bool Room::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	// ----------------------------------- add background picture -----------------------------------
-	Sprite *bg = Sprite::create("Scene\room-back.png");
+	Sprite *bg = Sprite::create("room-back.png");
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
@@ -60,23 +60,23 @@ bool Room::init()
 	// ----------------------------------- add menu items -----------------------------------
 	// start button
 	auto startMenuItem = MenuItemImage::create(
-		"Scene\start-up1.png",
-		"Scene\start-up1.png",
+		"start-up1.png",
+		"start-up1.png",
 		CC_CALLBACK_1(Room::startCallback, this));
 	startMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
 
 	// last page button
 	auto lastpageMenuItem = MenuItemImage::create(
-		"Scene\lastpage.png",
-		"Scene\lastpage.png",
+		"lastpage.png",
+		"lastpage.png",
 		CC_CALLBACK_1(Room::menuLastpageCallback, this));
 	lastpageMenuItem->setPosition(Vec2(origin.x + lastpageMenuItem->getContentSize().width,
 		origin.y + lastpageMenuItem->getContentSize().height));
 
 	// ok button
 	auto okMenuItem = MenuItemImage::create(
-		"Scene\ok-down1.png",
-		"Scene\ok-up1.png",
+		"ok-down1.png",
+		"ok-up1.png",
 		CC_CALLBACK_1(Room::menuOkCallback, this));
 
 	okMenuItem->setPosition(Vec2(origin.x + visibleSize.width - okMenuItem->getContentSize().width,

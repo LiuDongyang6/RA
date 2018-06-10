@@ -34,7 +34,7 @@ bool Start::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	// ----------------------------------- add background picture -----------------------------------
-	Sprite *bg = Sprite::create("Scene\background.png");
+	Sprite *bg = Sprite::create("background.png");
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
@@ -62,22 +62,22 @@ bool Start::init()
 	// ----------------------------------- add menu items -----------------------------------
 	// single-play button
 	auto singleStartMenuItem = MenuItemImage::create(
-		"Scene\single-play.png",
-		"Scene\single-play.png", 
+		"single-play.png",
+		"single-play.png", 
 		CC_CALLBACK_1(Start::menuSingleplayerCallback, this));
 	singleStartMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 2 / 3));
 	
 	// multi-play button
 	auto multiStartMenuItem = MenuItemImage::create(
-		"Scene\multi-play.png",
-		"Scene\multi-play.png",
+		"multi-play.png",
+		"multi-play.png",
 		CC_CALLBACK_1(Start::menuMultiplayerCallback, this));
 	multiStartMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
 	// lastpage button
 	auto lastpageMenuItem = MenuItemImage::create(
-		"Scene\lastpage.png",
-		"Scene\lastpage.png",
+		"lastpage.png",
+		"lastpage.png",
 		CC_CALLBACK_1(Start::menuLastpageCallback, this));
 
 	lastpageMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
