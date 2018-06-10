@@ -13,7 +13,7 @@ public:
 	// a selector callback
 	void menuSoundToggleCallback(cocos2d::Ref* pSender);
 	void menuMusicToggleCallback(cocos2d::Ref* pSender);
-	void menuOkCallback(cocos2d::Ref* pSender);
+	void menuLastpageCallback(cocos2d::Ref* pSender);
 
 
 	// implement the "static create()" method manually

@@ -30,7 +30,8 @@ bool Setting::init()
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
+	
+	// ----------------------------------- add background picture -----------------------------------
 	Sprite *bg = Sprite::create("setting-back.png");
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
@@ -44,9 +45,9 @@ bool Setting::init()
 	bg->setScaleY(winw / spx);
 	this->addChild(bg,-1);
 
-	// add a label shows "Red Alert"
+	// ----------------------------------- add a label shows "Red Alert" -----------------------------------
+	
 	// create and initialize a label
-
 	auto label = Label::createWithTTF("Red Alert", "fonts/Marker Felt.ttf", 24);
 
 	// position the label on the center of the screen
@@ -56,7 +57,7 @@ bool Setting::init()
 	// add the label as a child to this layer
 	this->addChild(label, 1);
 
-
+	// ----------------------------------- sound button -----------------------------------
 	auto soundOnMenuItem = MenuItemImage::create(
 		"on.png",
 		"on.png");
@@ -70,7 +71,7 @@ bool Setting::init()
 		NULL);
 	soundToggleMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
 
-	//ÒôÀÖ
+	// -----------------------------------  music button -----------------------------------
 	auto musicOnMenuItem = MenuItemImage::create(
 		"on.png",
 		"on.png");
@@ -83,14 +84,15 @@ bool Setting::init()
 		NULL);
 	musicToggleMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
-	//Ok°´Å¥
+	// ----------------------------------- lastpage button -----------------------------------
 	auto okMenuItem = MenuItemImage::create(
 		"ok-down1.png",
 		"ok-up1.png",
-		CC_CALLBACK_1(Setting::menuOkCallback, this));
+		CC_CALLBACK_1(Setting::menuLastpageCallback, this));
 
 	okMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 4));
 
+	// ----------------------------------- add all buttons above to menu -----------------------------------
 	Menu* mn = Menu::create(soundToggleMenuItem, musicToggleMenuItem, okMenuItem, NULL);
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(mn);
@@ -98,7 +100,7 @@ bool Setting::init()
 	return true;
 }
 
-void Setting::menuOkCallback(Ref* pSender)
+void Setting::menuLastpageCallback(Ref* pSender)
 {
 	Director::getInstance()->popScene();
 }
