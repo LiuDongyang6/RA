@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "PlayScene.h"
+#include "Scene/HelloScene.h"
 #include"TiledMap\tiled_map.h"
 
 // #define USE_AUDIO_ENGINE 1
@@ -95,7 +95,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // create a scene. it's an autorelease object
-	auto scene = PlayScene::create();
+	auto scene = HelloWorld::createScene();
 
     // run
     director->runWithScene(scene);
