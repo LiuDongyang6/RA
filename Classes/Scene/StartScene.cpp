@@ -33,6 +33,7 @@ bool Start::init()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	// ----------------------------------- add background picture -----------------------------------
 	Sprite *bg = Sprite::create("background.png");
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
@@ -46,7 +47,7 @@ bool Start::init()
 	bg->setScaleY(winw / spx);
 	this->addChild(bg, -1);
 
-	// add a label shows "Red Alert"
+	// ----------------------------------- add a label shows "Red Alert" -----------------------------------
 	// create and initialize a label
 
 	auto label = Label::createWithTTF("Red Alert", "fonts/Marker Felt.ttf", 24);
@@ -58,30 +59,33 @@ bool Start::init()
 	// add the label as a child to this layer
 	this->addChild(label, 1);
 
+	// ----------------------------------- add menu items -----------------------------------
+	// single-play button
 	auto singleStartMenuItem = MenuItemImage::create(
 		"single-play.png",
 		"single-play.png", 
 		CC_CALLBACK_1(Start::menuSingleplayerCallback, this));
 	singleStartMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 2 / 3));
 	
+	// multi-play button
 	auto multiStartMenuItem = MenuItemImage::create(
 		"multi-play.png",
 		"multi-play.png",
 		CC_CALLBACK_1(Start::menuMultiplayerCallback, this));
 	multiStartMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
+	// lastpage button
 	auto lastpageMenuItem = MenuItemImage::create(
 		"lastpage.png",
 		"lastpage.png",
 		CC_CALLBACK_1(Start::menuLastpageCallback, this));
 
 	lastpageMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
-
+	
+	// ----------------------------------- add all buttons above to scene -----------------------------------
 	Menu* mn = Menu::create(singleStartMenuItem, multiStartMenuItem, lastpageMenuItem, NULL);
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(mn);
-
-
 
 	return true;
 }
