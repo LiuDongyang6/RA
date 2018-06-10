@@ -13,6 +13,7 @@ public:
 
 	virtual bool init();
 
+	// callback functions that jump to other scenes 
 	void menuLastpageCallback(cocos2d::Ref* pSender);
 	void startCallback(Ref* pSender);
 	void menuOkCallback(cocos2d::Ref* pSender);

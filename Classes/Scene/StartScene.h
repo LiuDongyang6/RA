@@ -10,7 +10,7 @@ public:
 
 	virtual bool init();
 
-	// a selector callback
+	// callback functions that jump to other scenes 
 	void menuSingleplayerCallback(cocos2d::Ref* pSender);
 	void menuMultiplayerCallback(cocos2d::Ref* pSender);
 	void menuLastpageCallback(cocos2d::Ref* pSender);
