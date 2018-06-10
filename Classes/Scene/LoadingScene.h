@@ -12,7 +12,6 @@ public:
 
 	void menuLastpageCallback(cocos2d::Ref* pSender);
 
-	// implement the "static create()" method manually
 	CREATE_FUNC(Loading);
 };
 

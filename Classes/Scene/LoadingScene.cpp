@@ -32,6 +32,7 @@ bool Loading::init()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	// ----------------------------------- add background picture -----------------------------------
 	Sprite *bg = Sprite::create("loading-back.png");
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
@@ -45,7 +46,7 @@ bool Loading::init()
 	bg->setScaleY(winw / spx);
 	this->addChild(bg, -1);
 
-	// add a label shows "Red Alert"
+	// ----------------------------------- add a label shows "Red Alert" -----------------------------------
 	// create and initialize a label
 
 	auto label = Label::createWithTTF("Red Alert", "fonts/Marker Felt.ttf", 24);
@@ -57,6 +58,7 @@ bool Loading::init()
 	// add the label as a child to this layer
 	this->addChild(label, 1);
 
+	// ----------------------------------- add lastpage button -----------------------------------
 	auto lastpageMenuItem = MenuItemImage::create(
 		"lastpage.png",
 		"lastpage.png",
