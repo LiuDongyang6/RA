@@ -44,7 +44,7 @@ bool Hello::init()
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
 
-	Sprite *bg = Sprite::create("Scene\background.png");
+	Sprite *bg = Sprite::create("Scene/background.png");
 
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
@@ -59,8 +59,8 @@ bool Hello::init()
 	this->addChild(bg);
 
 	// ----------------------------------- start sprite -----------------------------------
-	Sprite* startSpriteNormal = Sprite::create("Scene\start-up1.png");
-	Sprite* startSpriteSelected = Sprite::create("Scene\start-down1.png");
+	Sprite* startSpriteNormal = Sprite::create("Scene/start-up1.png");
+	Sprite* startSpriteSelected = Sprite::create("Scene/start-down1.png");
 
 	MenuItemSprite * startMenuItem = MenuItemSprite::create(startSpriteNormal,
 		startSpriteSelected,

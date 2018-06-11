@@ -25,11 +25,11 @@ public:
 	{}
 	~RAObject()override {}
 	bool initWithSpriteFrameNameAndLocation(const std::string& filename,Point location);
-	//decrease Hp
-	void sufferAttack(float attack_speed,int damage,RASoldier* attacker);
+	virtual void sufferAttack(float attack_speed,int damage,RASoldier* attacker)=0;
 	void stopSufferAttack(RASoldier* attacker);
 	virtual bool annihilation();
 	int getCount() { return object_count_; }
+	bool under_my_control=true;
 protected:
 	const int covering_;
 	int hp_;
@@ -61,7 +61,7 @@ public:
 	void checkConstructable(Ref* pSender);
 	//a map containing all creat functions
 	//initialized in RAInitialAll
-	typedef Sprite*(*CreateType)(Point);
+	typedef RAObject*(*CreateType)(Point);
 	static std::unordered_map<int, CreateType> CreateWiki;
 	~RAConstructButton()
 	{ NotificationCenter::getInstance()->removeAllObservers(this); }

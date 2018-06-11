@@ -3,7 +3,6 @@
 #include"RAObject\RABuilding.h"
 #include"RAUtility.h"
 #include"RAObject\RASoldier.h"
-#include"RAObject\RAHostileObject.h"
 class RedAlert
 {
 public:

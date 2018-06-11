@@ -56,9 +56,6 @@ bool RABuilding::initWithIdAndLocation(int id,Point location)
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(RABuilding::onTouchBegan, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-	//cost resources
-	RAPlayer::consumePower(power_cost_);
-	RAPlayer::consumeCapital(capital_cost_);
 	return true;
 }
 
@@ -75,18 +72,24 @@ bool RABuilding::annihilation()
 	UI_->cleanup();
 	UI_->release();
 	//恢复资源，发布消息
+	if(under_my_control)
 	RAPlayer::resumePower(power_cost_);
 	RAObject::annihilation();
 	return true;
 }
 
-//bool  RABuilding::sufferAttack(int damage)
-//{
-//	bool survive = RAObject::sufferAttack(damage);
-//	if (survive)
-//		changeAppearance();
-//	return survive;
-//}
+void RABuilding::sufferAttack(float attack_speed, int damage, RASoldier* attacker)
+{
+	//保存进攻我的对象
+	attacking_me_.insert(attacker);
+	auto func = [&, damage](float dt)
+	{
+		this->hp_ -= damage;
+		this->changeAppearance();
+		this->toBeOrNotToBe();
+	};
+	schedule(func, attack_speed, StringUtils::format("ATK_%05d", attacker->getCount()));
+}
 
 bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 {
@@ -94,9 +97,19 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 		return false;
 	else
 	{
-		Director::getInstance()->getRunningScene()->getChildByTag(2)->removeChild(RAPlayer::currentUI(),false);
-		Director::getInstance()->getRunningScene()->getChildByTag(2)->addChild(this->UI_);
-		RAPlayer::currentUI() = UI_;
+		if (under_my_control)
+		{
+			Director::getInstance()->getRunningScene()->getChildByTag(2)->removeChild(RAPlayer::currentUI(), false);
+			Director::getInstance()->getRunningScene()->getChildByTag(2)->addChild(this->UI_);
+			RAPlayer::currentUI() = UI_;
+		}
+		else
+		{
+			for (auto soldier : RAPlayer::selected_soldiers_)
+			{
+				soldier->runToFight(this);
+			}
+		}
 		return true;
 	}
 }
@@ -104,20 +117,21 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 //
 //RAPowerstation
 //
-Sprite* RAPowerStation::create(Point location)
+RAObject* RAPowerStation::create(Point location)
 {
 	RAPowerStation* powerstation = new RAPowerStation();
 	
 	powerstation->initWithIdAndLocation(id,location);
 	
 	powerstation->autorelease();
+
 	return powerstation;
 }
 
 //
 //RABase
 //
-Sprite* RABase::create(Point location)
+RAObject* RABase::create(Point location)
 {
 	RABase* base = new RABase();
 
@@ -132,14 +146,14 @@ Sprite* RABase::create(Point location)
 //
 //RABarrack
 //
-Sprite* RABarrack::create(Point location)
+RAObject* RABarrack::create(Point location)
 {
-	RABarrack* base = new RABarrack();
+	RABarrack* object = new RABarrack();
 
-	base->initWithIdAndLocation(id, location);
+	object->initWithIdAndLocation(id, location);
 	//Initial UI
 
-	base->autorelease();
+	object->autorelease();
 
-	return base;
+    return object;
 }

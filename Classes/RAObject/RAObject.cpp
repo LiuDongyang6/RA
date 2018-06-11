@@ -3,20 +3,9 @@
 
 USING_NS_CC;
 
-int myrandom=0;
 //
 //RAObject
 //
-void RAObject::sufferAttack(float attack_speed,int damage,RASoldier* attacker)
-{
-	attacking_me_.insert(attacker);
-	auto func = [&,damage](float dt)
-	{
-		this->hp_ -= damage;
-		this->toBeOrNotToBe();
-	};
-	schedule(func, attack_speed,StringUtils::format("ATK_%05d",attacker->getCount()));
-}
 void RAObject::stopSufferAttack(RASoldier* attacker)
 {
 	attacking_me_.erase(attacker);
@@ -27,10 +16,7 @@ bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
 {
 	if (hp_ < 0)
 	{
-		for (auto attacker : attacking_me_)
-		{
-			attacker->stopCurrentBehavior();
-		}
+		NotificationCenter::getInstance()->postNotification("DIE", this);
 		annihilation();
 		return false;
 	}
@@ -40,13 +26,13 @@ bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
 bool RAObject::annihilation()
 {
 	//顺序不能颠倒
-
-	//remove children后会导致construct button析构函数触发，停止观察者模式
-	removeAllChildrenWithCleanup(true);
-	//2，3颠倒会delete自己，则power_cost_会变为未知
-	removeFromParentAndCleanup(true);
 	//释放tilemap占地
 	RAMap::destroyNormalBuildings(getPosition(), covering_);
+	NotificationCenter::getInstance()->removeAllObservers(this);
+	//remove children后会导致construct button析构函数触发，停止观察者模式
+	removeAllChildrenWithCleanup(true);
+	//上下颠倒会delete自己，则power_cost_会变为未知
+	removeFromParentAndCleanup(true);
 	return true;
 }
 
@@ -74,7 +60,7 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 //
 //RAConstructButton
 //
-typedef Sprite*(*CreateType)(Point);
+typedef RAObject*(*CreateType)(Point);
 std::unordered_map<int, CreateType> RAConstructButton::CreateWiki;
 std::unordered_set<int> RAConstructButton::LaunchRecord;
 bool RAConstructButton::LaunchTest(int id)
@@ -147,6 +133,9 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 			auto object = CreateWiki[id](RAUtility::getPositionInMap(tempObject->getPosition()));
 
 			RAMap::getMap()->addChild(object, category_);
+			//resources cost
+			RAPlayer::consumePower(power_cost_);
+			RAPlayer::consumeCapital(capital_cost_);
 		}
 		else
 		{
@@ -156,6 +145,11 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 	{
 		auto object = CreateWiki[id](this->getParent()->getPosition());
 		RAMap::getMap()->addChild(object, category_);
+		//resources cost
+		RAPlayer::consumePower(power_cost_);
+		RAPlayer::consumeCapital(capital_cost_);
+		//record in archives
+		RAPlayer::all_soldiers_.insert(static_cast<RASoldier*>(object));
 	}
 	tempObject->removeFromParentAndCleanup(true);
 	tempObject = NULL;

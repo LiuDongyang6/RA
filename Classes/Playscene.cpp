@@ -42,7 +42,14 @@ bool PlayScene::init()
 	auto powerstation = RAPowerStation::create(Point(300, 450));
 	fight_layer->addChild(powerstation);
 
-	auto badbase = RAHostileObject::Appear(0,Point(3000,2500));
+	auto badbase = RAPowerStation::create(Point(3000,2500));
+	badbase->under_my_control = 0;
+	fight_layer->addChild(badbase,100);
+
+	RAConstructButton::LaunchTest(3);
+	auto badfairy = RAFairy::create(Point(2500, 2500));
+	badfairy->under_my_control = 0;
+	fight_layer->addChild(badfairy, 101);
 
 	return true;
 }

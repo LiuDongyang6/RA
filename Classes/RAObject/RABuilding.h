@@ -23,7 +23,7 @@ public:
 	//delete the building and remove power cost
 	virtual bool annihilation()override;
 
-	//virtual bool sufferAttack(int damage)override;
+	void sufferAttack(float attack_speed, int damage, RASoldier* attacker) override;
 
 	bool onTouchBegan(Touch* touch, Event* event);
 
@@ -49,10 +49,9 @@ public:
 	RAPowerStation() :
 		RABuilding(id) {}
 
-	static Sprite* create(Point location);
+	static RAObject* create(Point location);
 	static const int id = 1;
 };
-
 //
 //RABase
 //
@@ -62,7 +61,7 @@ public:
 	RABase() :
 		RABuilding(id) {}
 
-	static Sprite* create(Point location);
+	static RAObject* create(Point location);
 	static const int id = 0;
 
 };
@@ -75,7 +74,7 @@ public:
 	RABarrack() :
 		RABuilding(id) {}
 
-	static Sprite* create(Point location);
+	static RAObject* create(Point location);
 	static const int id = 2;
 
 };

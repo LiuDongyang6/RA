@@ -8,6 +8,5 @@ class RAHostileObject : public RAObject
 public:
 	RAHostileObject(int id) :RAObject(id) {};
 	static RAHostileObject* Appear(int id, Point location);
-	bool onTouchBegan(Touch* touch, Event* event);
 };
 #endif // !__RA_HOSTILE_OBJECT_H__

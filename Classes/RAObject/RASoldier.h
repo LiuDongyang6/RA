@@ -1,13 +1,11 @@
 #ifndef __RASOLDIER_H__
 #define __RASOLDIER_H__
 #include"RAObject\RAObject.h"
-#include"RAHostileObject.h"
 USING_NS_CC;
 
 class RASoldier :public RAObject
 {
 public:
-
 	RASoldier(int id) :
 		RAObject(id),
 		range_(RAUtility::RAgetProperty(id, "range").asInt()),
@@ -18,33 +16,27 @@ public:
 		power_cost_(RAUtility::RAgetProperty(id, "power").asInt()),
 		capital_cost_(RAUtility::RAgetProperty(id, "capital").asInt())
 	    {}
-
+	//
 	bool initWithIdAndLocation(int id,Point location);
-
 	//delete the building and remove power cost
 	virtual bool annihilation()override;
-
-	//virtual bool sufferAttack(int damage)override;
-
+	//
 	void findRoadAndLetGo();
+	//
 	void findRoadAndLetGoForFight();
-
-	bool onTouchBegan(Touch* touch, Event* event);
-
+	//called by my soldier
+	bool onTouchBegan(Touch* touch, Event* event) ;
+	//
 	void doAttack();
-
-	void stopCurrentBehavior();
-
-	~RASoldier()override {
-		for (auto vec : animation_)
-			vec.clear();
-		animation_.clear();
-	}
-
+	//
+	void sufferAttack(float attack_speed, int damage, RASoldier* attacker) override;
+	//
+	void stopCurrentBehavior(Ref* pSender=0);
+	//
 	void runTo(Point point);
-	void runToFight(RAHostileObject* object);
-	Widget* UI_;
-
+	//
+	void runToFight(RAObject* object);
+	~RASoldier()override {	}
 private:
 	std::vector<Vector<SpriteFrame*>> animation_;
 	const int range_;
@@ -55,7 +47,7 @@ private:
 	const int capital_cost_;
 	Point destination;
 	Point next_step=Point(-1,-1);
-	RAHostileObject* AimEnemy=NULL;
+	RAObject* AimEnemy=NULL;
 	//get a repeat forever action
 	Action* getAction(int number, float dt);
 };
@@ -66,7 +58,7 @@ public:
 	RAFairy() :
 		RASoldier(id) {}
 
-	static Sprite* create(Point location);
+	static RAObject* create(Point location);
 	static const int id = 3;
 };
 class RAAssassin :public RASoldier
@@ -75,7 +67,7 @@ public:
 	RAAssassin() :
 		RASoldier(id) {}
 
-	static Sprite* create(Point location);
+	static RAObject* create(Point location);
 	static const int id = 4;
 };
 class RALancer :public RASoldier
@@ -84,7 +76,7 @@ public:
 	RALancer() :
 		RASoldier(id) {}
 
-	static Sprite* create(Point location);
+	static RAObject* create(Point location);
 	static const int id = 5;
 };
 class RAGeneral :public RASoldier
@@ -93,7 +85,7 @@ public:
 	RAGeneral() :
 		RASoldier(id) {}
 
-	static Sprite* create(Point location);
+	static RAObject* create(Point location);
 	static const int id = 6;
 };
 #endif // !__RASOLDIER_H__

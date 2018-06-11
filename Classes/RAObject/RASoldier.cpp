@@ -2,6 +2,17 @@
 //
 //RASoldier
 //
+void RASoldier::sufferAttack(float attack_speed, int damage, RASoldier* attacker)
+{
+	//保存进攻我的对象
+	attacking_me_.insert(attacker);
+	auto func = [&, damage](float dt)
+	{
+		this->hp_ -= damage;
+		this->toBeOrNotToBe();
+	};
+	schedule(func, attack_speed, StringUtils::format("ATK_%05d", attacker->getCount()));
+}
 bool RASoldier::initWithIdAndLocation(int id, Point location)
 {
 	//super initial
@@ -26,21 +37,24 @@ bool RASoldier::initWithIdAndLocation(int id, Point location)
 	listener->setSwallowTouches(true);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	
-	//record in archives
-	RAPlayer::all_soldiers_.insert(this);
-	//resources cost
-	RAPlayer::consumePower(power_cost_);
-	RAPlayer::consumeCapital(capital_cost_);
 	return true;
 }
 bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 {
 	if (RAUtility::containsTouchLocation(touch, event))
 	{
-		RAPlayer::selected_soldiers_.clear();
-
-		RAPlayer::selected_soldiers_.insert(this);
-
+		if (under_my_control)
+		{
+			RAPlayer::selected_soldiers_.clear();
+			RAPlayer::selected_soldiers_.insert(this);
+		}
+		else
+		{
+			for (auto soldier : RAPlayer::selected_soldiers_)
+			{
+				soldier->runToFight(this);
+			}
+		}
 		return true;
 	}
 	else
@@ -74,13 +88,16 @@ void RASoldier::runTo(Point point)
 	findRoadAndLetGo();
 
 }
-void RASoldier::runToFight(RAHostileObject* object)
+void RASoldier::runToFight(RAObject* object)
 {
 	//如不停止会以矢量和移动
 	//重置状态
 	stopCurrentBehavior();
 	//保存目的地
 	AimEnemy = object;
+	NotificationCenter::getInstance()->
+		addObserver(this, callfuncO_selector(RASoldier::stopCurrentBehavior),
+			StringUtils::format("DIE",AimEnemy->getCount()),AimEnemy);
 	//
 	auto repeat = getAction(1, 0.2f);
 	runAction(repeat);
@@ -161,62 +178,68 @@ void RASoldier::doAttack()
 	};
 	schedule(func, 0.2f, std::string("IN_RANGE_CHECK"));
 }
-void RASoldier::stopCurrentBehavior()
+void RASoldier::stopCurrentBehavior(Ref* pSender)
 {
 	stopAllActions();
 	//如果上一个指令是攻击
 	if (AimEnemy != NULL)
 	{
+		NotificationCenter::getInstance()->removeObserver(this, "DIE");
 		unschedule(std::string("IN_RANGE_CHECK"));
 		AimEnemy->stopSufferAttack(this);
 		AimEnemy = NULL;
 	}
-	//上一个指令是移动
-	else if (next_step != Point(-1, -1))
+	//上一个指令是移动(or run to fight)
+	if (next_step != Point(-1, -1))
 	{
 		RAMap::removeSoldierCollision(next_step, covering_);
+		RAMap::setSoldierCollision(getPosition(), covering_);
+		next_step = Point(-1, -1);
 	}
 }
 //
 //RAFairy
 //
-Sprite* RAFairy::create(Point location)
+RAObject* RAFairy::create(Point location)
 {
 	RAFairy* fairy = new RAFairy();
 
 	fairy->initWithIdAndLocation(id,location);
 
 	fairy->autorelease();
+
 	return fairy;
 }
 //
 //RAAssassin
 //
-Sprite* RAAssassin::create(Point location)
+RAObject* RAAssassin::create(Point location)
 {
 	RAAssassin* assassin = new RAAssassin();
 
 	assassin->initWithIdAndLocation(id, location);
 
 	assassin->autorelease();
+
 	return assassin;
 }
 //
 //RAGeneral
 //
-Sprite* RALancer::create(Point location)
+RAObject* RALancer::create(Point location)
 {
 	RALancer* lancer = new RALancer();
 
 	lancer->initWithIdAndLocation(id, location);
 
 	lancer->autorelease();
+
 	return lancer;
 }
 //
 //RAGeneral
 //
-Sprite* RAGeneral::create(Point location)
+RAObject* RAGeneral::create(Point location)
 {
 	RAGeneral* general = new RAGeneral();
 
