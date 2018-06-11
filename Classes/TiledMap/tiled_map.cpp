@@ -68,12 +68,13 @@ void RAMap::testForCoord(void) {
 		auto dest = touch->getLocation();
 		auto tile = glCoordToTileCoord(dest);
 		auto relate_1 = tileCoordToRelatedCoord(tile);
-		auto relate = relatedCoordToTileCoord(relate_1);
+		auto relate = relatedCoordToTileCoord(relate_1);/*
 		log("-------------tile %f, %f", tile.x, tile.y);
 		log("-------------relate %f, %f", relate_1.x, relate_1.y);
 		log("-------------%f, %f", relate.x, relate.y);
 		log("-------------soldier collision %d %f,%f", 
-			soldier_collision[Point(tile.x - 3, tile.y - 3)], tile.x - 3, tile.y - 3);
+			soldier_collision[Point(tile.x - 3, tile.y - 3)], tile.x - 3, tile.y - 3);*/
+		log("%d, %f, %f", soldier_collision[Point(tile.x - 1, tile.y - 1)], tile.x - 1, tile.y - 1);
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
@@ -474,7 +475,16 @@ std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point &dest, const int
 	Point dest_tile = relatedCoordToTileCoord(dest);
 	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
 	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
-	if (collision[dest_tile] || soldier_collision[dest_tile]) {
+	bool cannotmove_1 = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(dest_tile.x - 1 - x, dest_tile.y - y)] ||
+				soldier_collision[Point(dest_tile.x - 1 - x, dest_tile.y - y)]) {
+				cannotmove_1 = 1;
+			}
+		}
+	}
+	if (collision[dest_tile] || soldier_collision[dest_tile] || cannotmove_1) {
 		if (Point(so_tilecoord.x + 1, so_tilecoord.y) == dest_tile ||
 			Point(so_tilecoord.x - 1, so_tilecoord.y) == dest_tile ||
 			Point(so_tilecoord.x, so_tilecoord.y + 1) == dest_tile ||
@@ -490,31 +500,39 @@ std::vector<float> RAMap::findRoutine(RASoldier* soldier, Point &dest, const int
 			answer[2] = 1;
 			return answer;
 		}
-		for (int x = dest_tile.x; x < 128 - size; x++) {
-			for (int y = dest_tile.y; y < 128 - size; y++) {
-				if (collision[Point(x, y)] == 0 && soldier_collision[Point(x, y)] == 0) {
-					bool cannotmove = 0;
-					for (int i = 0; i != size; i++) {
-						for (int j = 0; j != size; j++) {
-							if (collision[Point(dest_tile.x + i, dest_tile.y + j)] ||
-								soldier_collision[Point(dest_tile.x + i, dest_tile.y + j)]) {
-								cannotmove = 1;
-								goto out;
-							}
-						}
-					}
-				out:	if (cannotmove)
-							continue;
-						else {
-							dest_tile = Point(x, y);
-							dest = Point(tileCoordToRelatedCoord(dest_tile));
-							goto a;
-						}
+		auto open_list = tryEightdirection(dest_tile, dest_tile, size);
+		auto next_step = open_list.begin();
+		auto start = open_list.begin();
+		for (start; start != open_list.end(); start++) {
+			if (start->second < next_step->second)
+				next_step = start;
+			if (start->first == so_tilecoord) {
+				answer[0] = so_related_coord.x;
+				answer[1] = so_related_coord.y;
+				answer[2] = 1;
+				return answer;
+			}
+		}
+		
+		while (next_step->second == 10000) {
+			open_list = tryEightdirection(next_step->first, so_tilecoord, size);
+			next_step = open_list.begin();
+			start = open_list.begin();
+			for (start; start != open_list.end(); start++) {
+				if (start->second < next_step->second)
+					next_step = start;
+				if (start->first == so_tilecoord) {
+					answer[0] = so_related_coord.x;
+					answer[1] = so_related_coord.y;
+					answer[2] = 1;
+					return answer;
 				}
 			}
 		}
+		dest_tile = Point(next_step->first.x, next_step->first.y);
+		dest = Point(tileCoordToRelatedCoord(dest_tile));
 	}
-a:	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
+	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
 	auto next_step = open_list_1.begin();
 	auto start = open_list_1.begin();
 	for (start; start != open_list_1.end(); start++) {
@@ -596,6 +614,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 				if (canreach) {
 					auto answer = tileCoordToRelatedCoord(Point(x, build_tile.y));
+					setSoldierCollision(answer, size);
 					return answer;
 				}
 			}
@@ -619,6 +638,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 				if (canreach) {
 					auto answer = tileCoordToRelatedCoord(Point(x, build_tile.y));
+					setSoldierCollision(answer, size);
 					return answer;
 				}
 			}
@@ -642,6 +662,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 				if (canreach) {
 					auto answer = tileCoordToRelatedCoord(Point(build_tile.x, y));
+					setSoldierCollision(answer, size);
 					return answer;
 				}
 			}
@@ -665,6 +686,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 				if (canreach) {
 					auto answer = tileCoordToRelatedCoord(Point(build_tile.x, y));
+					setSoldierCollision(answer, size);
 					return answer;
 				}
 			}
@@ -687,6 +709,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 				if (canreach) {
 					auto answer = tileCoordToRelatedCoord(Point(x, y));
+					setSoldierCollision(answer, size);
 					return answer;
 				}
 			}
@@ -709,6 +732,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 				if (canreach) {
 					auto answer = tileCoordToRelatedCoord(Point(x, y));
+					setSoldierCollision(answer, size);
 					return answer;
 				}
 			}
@@ -731,6 +755,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 				if (canreach) {
 					auto answer = tileCoordToRelatedCoord(Point(x, y));
+					setSoldierCollision(answer, size);
 					return answer;
 				}
 			}
@@ -753,6 +778,7 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 				}
 				if (canreach) {
 					auto answer = tileCoordToRelatedCoord(Point(x, y));
+					setSoldierCollision(answer, size);
 					return answer;
 				}
 			}
