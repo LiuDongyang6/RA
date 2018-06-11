@@ -64,15 +64,24 @@ void RedAlert::onTouchEnded(Touch* touch, Event* event)
 	//moved
 	else
 	{
-		RAPlayer::selected_soldiers_.clear();
 		auto position = selectBox->getPosition();
 		auto size = selectBox->getContentSize();
 		auto rect = Rect(MIN(position.x,position.x+size.width),MIN(position.y, position.y + size.height),abs(size.width),abs(size.height));
+		//尽管移动了，但范围内没有我方单位
+		//则不会清空
+		bool cleared=0;
 		for (auto soldier : RAPlayer::all_soldiers_)
 		{
 			auto position = soldier->getPosition();
 			if (rect.containsPoint(soldier->getPosition()))
+			{
+				if (!cleared)
+				{
+					RAPlayer::selected_soldiers_.clear();
+					cleared = 1;
+				}
 				RAPlayer::selected_soldiers_.insert(soldier);
+			}
 		}
 	}
 	RAMap::getMap()->removeChild(selectBox);
