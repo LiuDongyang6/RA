@@ -44,7 +44,7 @@ bool Hello::init()
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
 
-	Sprite *bg = Sprite::create("background.png");
+	Sprite *bg = Sprite::create("Scene\background.png");
 
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
@@ -59,8 +59,8 @@ bool Hello::init()
 	this->addChild(bg);
 
 	// ----------------------------------- start sprite -----------------------------------
-	Sprite* startSpriteNormal = Sprite::create("start-up1.png");
-	Sprite* startSpriteSelected = Sprite::create("start-down1.png");
+	Sprite* startSpriteNormal = Sprite::create("Scene\start-up1.png");
+	Sprite* startSpriteSelected = Sprite::create("Scene\start-down1.png");
 
 	MenuItemSprite * startMenuItem = MenuItemSprite::create(startSpriteNormal,
 		startSpriteSelected,
@@ -69,15 +69,15 @@ bool Hello::init()
 
 	// ----------------------------------- image menu -----------------------------------
 	MenuItemImage* settingMenuItem = MenuItemImage::create(
-		"setting-up1.png",
-		"setting-down1.png",
+		"Scene\setting-up1.png",
+		"Scene\setting-down1.png",
 		CC_CALLBACK_1(Hello::menuItemSettingCallback, this));
 	settingMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
 	// ----------------------------------- help menu -----------------------------------
 	MenuItemImage* helpMenuItem = MenuItemImage::create(
-		"help-up1.png",
-		"help-down1.png",
+		"Scene\help-up1.png",
+		"Scene\help-down1.png",
 		CC_CALLBACK_1(Hello::menuItemHelpCallback, this));
 	helpMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
 
@@ -87,8 +87,8 @@ bool Hello::init()
 	
     // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
-		"CloseNormal1.png",
-        "CloseSelected1.png",
+		"Scene\CloseNormal1.png",
+        "Scene\CloseSelected1.png",
         CC_CALLBACK_1(Hello::menuCloseCallback, this));
 
     if (closeItem == nullptr ||
@@ -131,7 +131,7 @@ bool Hello::init()
     }
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+    auto sprite = Sprite::create("Scene\HelloWorld.png");
     if (sprite == nullptr)
     {
         problemLoading("'HelloWorld.png'");
