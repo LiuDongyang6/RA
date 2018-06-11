@@ -69,15 +69,15 @@ bool Hello::init()
 
 	// ----------------------------------- image menu -----------------------------------
 	MenuItemImage* settingMenuItem = MenuItemImage::create(
-		"Scene\setting-up1.png",
-		"Scene\setting-down1.png",
+		"Scene/setting-up1.png",
+		"Scene/setting-down1.png",
 		CC_CALLBACK_1(Hello::menuItemSettingCallback, this));
 	settingMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
 	// ----------------------------------- help menu -----------------------------------
 	MenuItemImage* helpMenuItem = MenuItemImage::create(
-		"Scene\help-up1.png",
-		"Scene\help-down1.png",
+		"Scene/help-up1.png",
+		"Scene/help-down1.png",
 		CC_CALLBACK_1(Hello::menuItemHelpCallback, this));
 	helpMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
 
@@ -87,8 +87,8 @@ bool Hello::init()
 	
     // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
-		"Scene\CloseNormal1.png",
-        "Scene\CloseSelected1.png",
+		"Scene/CloseNormal1.png",
+        "Scene/CloseSelected1.png",
         CC_CALLBACK_1(Hello::menuCloseCallback, this));
 
     if (closeItem == nullptr ||
@@ -131,7 +131,7 @@ bool Hello::init()
     }
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("Scene\HelloWorld.png");
+    auto sprite = Sprite::create("Scene/HelloWorld.png");
     if (sprite == nullptr)
     {
         problemLoading("'HelloWorld.png'");

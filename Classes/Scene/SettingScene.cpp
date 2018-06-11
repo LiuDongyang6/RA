@@ -32,7 +32,7 @@ bool Setting::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	
 	// ----------------------------------- add background picture -----------------------------------
-	Sprite *bg = Sprite::create("Scene\setting-back.png");
+	Sprite *bg = Sprite::create("Scene/setting-back.png");
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
@@ -59,11 +59,11 @@ bool Setting::init()
 
 	// ----------------------------------- sound button -----------------------------------
 	auto soundOnMenuItem = MenuItemImage::create(
-		"Scene\on.png",
-		"Scene\on.png");
+		"Scene/on.png",
+		"Scene/on.png");
 	auto soundOffMenuItem = MenuItemImage::create(
-		"Scene\off.png",
-		"Scene\off.png");
+		"Scene/off.png",
+		"Scene/off.png");
 
 	auto soundToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuSoundToggleCallback, this),
 		soundOnMenuItem,
@@ -73,11 +73,11 @@ bool Setting::init()
 
 	// -----------------------------------  music button -----------------------------------
 	auto musicOnMenuItem = MenuItemImage::create(
-		"Scene\on.png",
-		"Scene\on.png");
+		"Scene/on.png",
+		"Scene/on.png");
 	auto musicOffMenuItem = MenuItemImage::create(
-		"Scene\off.png",
-		"Scene\off.png");
+		"Scene/off.png",
+		"Scene/off.png");
 	auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuMusicToggleCallback, this),
 		musicOnMenuItem,
 		musicOffMenuItem,
@@ -86,8 +86,8 @@ bool Setting::init()
 
 	// ----------------------------------- lastpage button -----------------------------------
 	auto okMenuItem = MenuItemImage::create(
-		"Scene\ok-down1.png",
-		"Scene\ok-up1.png",
+		"Scene/ok-down1.png",
+		"Scene/ok-up1.png",
 		CC_CALLBACK_1(Setting::menuLastpageCallback, this));
 
 	okMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 4));
