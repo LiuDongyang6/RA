@@ -55,11 +55,7 @@ bool RASoldier::annihilation()
 	auto animation = Animation::createWithSpriteFrames(animation_[0], 1.0f / 8);
 	auto animate = Animate::create(animation);
 	//一定要以CallFunc的形式调用
-	auto remove = [&]() {
-		auto it = RAPlayer::selected_soldiers_.find(this);
-		if ((it != RAPlayer::selected_soldiers_.end()))
-			RAPlayer::selected_soldiers_.erase(it);
-		RAObject::annihilation(); };
+	auto remove = [&]() {RAObject::annihilation(); };
 	CallFunc* callFunc = CallFunc::create(remove);
 	auto seq = Sequence::create(animate,callFunc,NULL);
 	
