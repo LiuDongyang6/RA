@@ -33,7 +33,7 @@ struct RAClientInformation			// Client 相关信息
 struct PlayerInfo
 {
 	std::string nickname;
-	struct RAGameClientInformation clientInfo;
+	struct RAClientInformation clientInfo;
 };
 
 struct RoomInfo
@@ -62,12 +62,12 @@ public:
 
 	void chat(int whichRoom);
 	static DWORD WINAPI chatSendThread(LPVOID lpParam);		// 聊天室发送消息
-	static DWORD WINAPI charRecvThread(LPVOID lpParam);		// 聊天室接收消息
+	static DWORD WINAPI chatRecvThread(LPVOID lpParam);		// 聊天室接收消息
 
 	// SOCKET 相关
 public:
 	SOCKET ClientSocket;
-	struct sockaddr_in_ ServerAddr;
+	struct sockaddr_in ServerAddr;
 
 	// 网络数据处理
 
