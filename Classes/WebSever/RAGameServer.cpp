@@ -410,3 +410,69 @@ DWORD WINAPI GameServer::sendRoomInfo(void *data)
 
 	return 0;
 }
+
+/*
+名称：清理Socket
+描述：清理退出游戏的线程
+*/
+void GameServer::CleanSocket(int ID)
+{
+	if (ID < 8)
+		return;
+
+	char send[20];
+	sprintf(send, "#DD i%d", ID);
+	SendMessageToAllClient(send, ID);
+
+
+	cout << " 玩家" << ID << "退出游戏\n";
+	fflush(stdout);
+
+	AcceptSocket[ID].Active = false;
+	closesocket(AcceptSocket[ID].ClientSock);
+	AcceptSocket[ID].ClientSock = INVALID_SOCKET;
+
+	cout << "正在关闭其接收线程: " << AcceptSocket[ID].RecvThreadID << "\n";
+	fflush(stdout);
+	ExitThread(AcceptSocket[ID].RecvThreadID);
+
+
+	cout << "关闭成功!\n";
+	fflush(stdout);
+}
+
+
+void GameServer::GenerateProps()
+{
+	static std::random_device rd;
+	static std::uniform_int_distribution<int> dist(1, 6);
+
+	for (int i = 0; i < 15; i++)
+		for (int j = 0; j < 15; j++)
+			prog_map[i][j] = dist(rd);
+
+	for (int i = 0; i < 15; i++)
+	{
+		for (int j = 0; j < 15; j++)
+			cout << prog_map[i][j] = " ";
+		cout << "\n";
+	}
+	cout << "\n";
+}
+
+void GameServer::sendProps(int ID)
+{
+	const int MAX = 2 * (sizeof(int) * 15 * 15 + 10 * sizeof(int));
+	char buffer[MAX];
+	ZeroMemory(buffer, sizeof(buffer));
+	for (int i = 0; i < 15; i++)
+		for (int j = 0; j < 15; j++)
+		{
+			sprintf(buffer + 2 * (i * 15 + j), "%d", prog_map[i][j]);
+		}
+	string str(buffer);
+
+
+	fflush(stdout);
+	SendMessageToOneClient(ID, str);
+}
