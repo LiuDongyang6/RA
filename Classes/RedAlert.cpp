@@ -86,3 +86,10 @@ void RedAlert::onTouchEnded(Touch* touch, Event* event)
 	}
 	RAMap::getMap()->removeChild(selectBox);
 }
+void RedAlert::HostileObjectAppear(int id, Point location)
+{
+	RAConstructButton::LaunchTest(id);
+	auto object=RAConstructButton::CreateWiki[id](location);
+	object->under_my_control = 0;
+	RAPlayer::enemies.insert(object);
+}

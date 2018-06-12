@@ -6,6 +6,7 @@ int RAPlayer::unit_counter_ = 1;
 Widget* RAPlayer::current_UI_ = 0;
 std::unordered_set<RASoldier*> RAPlayer::selected_soldiers_;
 std::unordered_set<RASoldier*> RAPlayer::all_soldiers_;
+std::unordered_set<RAObject*> RAPlayer::enemies;
 
 void RAPlayer::consumeCapital(int quantity)
 {

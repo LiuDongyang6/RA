@@ -37,19 +37,14 @@ bool PlayScene::init()
 	addChild(ui_layer, 2, 2);
 
 	auto base = RABase::create(Point(3000, 3000));
-	fight_layer->addChild(base,100);
 
-	auto powerstation = RAPowerStation::create(Point(300, 450));
-	fight_layer->addChild(powerstation);
 
-	auto badbase = RAPowerStation::create(Point(3000,2500));
-	badbase->under_my_control = 0;
-	fight_layer->addChild(badbase,100);
+	auto powerstation = RAPowerStation::create(Point(2800,2800));
 
-	RAConstructButton::LaunchTest(3);
-	auto badfairy = RAFairy::create(Point(2500, 2500));
-	badfairy->under_my_control = 0;
-	fight_layer->addChild(badfairy, 101);
+	RedAlert::HostileObjectAppear(3, Point(2500, 2500));
+	RedAlert::HostileObjectAppear(0, Point(1500, 1500));
+
+
 
 	return true;
 }
