@@ -58,5 +58,64 @@ bool GameClient::init()
 		return false;
 	}
 
-	ServerAddr.sin_family
+	ServerAddr.sin_family = PF_INET;
+	ServerAddr.sin_port = htons(PORTS);
+	ServerAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	ClientSocket = socket(PF_INET, SOCK_STREAM, 0);
+
+	if (ClientSocket == INVALID_SOCKET)
+	{
+		WSACleanup();	// 释放套接字资源
+		return false;
+	}
+	unsigned long ul = 1;
+	int ret = ioctlsocket(ClientSocket, FIONBIO, (unsigned long*)&ul);	// 设置成功
+	if (ret == SOCKET_ERROR)		// 设置失败
+	{
+		outfile << "设置非阻塞失败\n";
+		closesocket(ClientSocket);	// 关闭套接字
+		WSACleanup*();	// 释放套接字资源
+		return false;
+	}
+	outfile << "设置非阻塞成功\n";
+	
+	if (connect(ClientSocket, (LPSOCKADDR)&ServerAddr,
+		sizeof(ServerAddr)) < 0)
+	{
+		fd_set wfd;
+		struct timeval tm;
+
+		FD_ZERO(&wfd);
+		FD_SET(ClientSocket, &wfd);
+		tm.tv_sec = 0.1;
+		tm.tv_usec = 0;
+		int sel = select(ClientSocket, NULL, &wfd, NULL, &tm);
+		if (sel <= 0)
+		{
+			outfile << "连接失败\n";
+			closesocket(ClientSocket);	// 关闭套接字
+			WSACleanup();	// 释放套接字资源
+			return false;
+		}
+	}
+
+	outfile << "客户端连接成功!\n";
+	outfile.close();
+	Rooms.resize(4);
+	for (int i = 0; i < 4; i++)
+	{
+		Rooms[i].name = "Room" + std::to_string(i);
+		Rooms[i].id = 10 + i;
+		Rooms[i].curNum = 0;
+	}
+	char tempBuf[8];
+	int retc = recv(ClientSocket, tempBuf, sizeof(tempBuf), 0);
+	int id;
+	sscanf(tempBuf, "%d", &id);
+	myPlayerInfo.clientInfo = { NULL, ServerAddr, id, 0, 0, 0 };
+	myPlayerInfo.nickname = std::to_string(ServerAddr.sin_addr.S_un.S_addr) +
+		std::to_string(ServerAddr.sin_port) + "_" + std::to_string(id);
+
+
+	return true;
 }
