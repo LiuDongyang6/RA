@@ -9,6 +9,7 @@ void RASoldier::sufferAttack(float attack_speed, int damage, RASoldier* attacker
 	auto func = [&, damage](float dt)
 	{
 		this->hp_ -= damage;
+		this->hp_bar->setScaleX(float(hp_) / original_hp_);
 		this->toBeOrNotToBe();
 	};
 	schedule(func, attack_speed, StringUtils::format("ATK_%05d", attacker->getCount()));

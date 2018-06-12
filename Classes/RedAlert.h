@@ -12,6 +12,7 @@ public:
 	bool onTouchBegan(Touch* touch, Event* event);
 	void onTouchMoved(Touch* touch, Event* event);
 	void onTouchEnded(Touch* touch, Event* event);
+	static void HostileObjectAppear(int id,Point location);
 private:
 	static RedAlert* instance_;
 	Layer* selectBox;

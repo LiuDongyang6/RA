@@ -28,6 +28,7 @@ public:
 	virtual void sufferAttack(float attack_speed,int damage,RASoldier* attacker)=0;
 	void stopSufferAttack(RASoldier* attacker);
 	virtual bool annihilation();
+	void changeControl(bool mine);
 	int getCount() { return object_count_; }
 	bool under_my_control=true;
 protected:
@@ -38,6 +39,7 @@ protected:
 	const int category_;
 	std::unordered_set<RASoldier*> attacking_me_;
 	const int object_count_;
+	Sprite* hp_bar;
 };
 
 
