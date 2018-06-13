@@ -14,6 +14,7 @@ void RABuilding::changeAppearance()//called after sufferAttack or repair
 		{
 			this->setSpriteFrame(appearances[2]);
 			current_appearance_ = 2;
+			setAnchorPoint(Vec2(0.5, 0));
 		}
 	}
 	else if (hp_ < (original_hp_ / 2))
@@ -22,6 +23,7 @@ void RABuilding::changeAppearance()//called after sufferAttack or repair
 		{
 			this->setSpriteFrame(appearances[1]);
 			current_appearance_ = 1;
+			setAnchorPoint(Vec2(0.5, 0));
 		}
 	}
 	else
@@ -30,6 +32,7 @@ void RABuilding::changeAppearance()//called after sufferAttack or repair
 		{
 			this->setSpriteFrame(appearances[0]);
 			current_appearance_ = 0;
+			setAnchorPoint(Vec2(0.5, 0));
 		}
 	}
 }
@@ -85,6 +88,7 @@ void RABuilding::sufferAttack(float attack_speed, int damage, RASoldier* attacke
 	auto func = [&, damage](float dt)
 	{
 		this->hp_ -= damage;
+		this->hp_bar->setScaleX(float(hp_) / original_hp_);
 		this->changeAppearance();
 		this->toBeOrNotToBe();
 	};

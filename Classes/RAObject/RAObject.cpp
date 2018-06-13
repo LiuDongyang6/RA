@@ -1,5 +1,6 @@
 #include"RAObject.h"
 #include"RASoldier.h"
+#include"RABuilding.h"
 
 USING_NS_CC;
 
@@ -28,7 +29,10 @@ bool RAObject::annihilation()
 	//顺序不能颠倒
 	//释放tilemap占地
 	RAMap::destroyNormalBuildings(getPosition(), covering_);
+	//
 	NotificationCenter::getInstance()->removeAllObservers(this);
+	//
+	hp_bar->removeFromParentAndCleanup(true);
 	//remove children后会导致construct button析构函数触发，停止观察者模式
 	removeAllChildrenWithCleanup(true);
 	//上下颠倒会delete自己，则power_cost_会变为未知
@@ -44,7 +48,6 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 	if (category_ == 100)
 	{
 		setAnchorPoint(Vec2(0.5, 0));
-		setPosition(location);
 		RAMap::sureToBuildNormal(location, covering_);
 	}
 	//soldier
@@ -52,11 +55,52 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 	{
 		location = RAMap::soldierBirth(location, covering_);
 		setAnchorPoint(Vec2(0.5, 0));
-		setPosition(location);
 	}
+	setPosition(location);
+	RAMap::getMap()->addChild(this, category_);
+	//initialize hp_bar
+	hp_bar = Sprite::create("hp_bar.png");
+	hp_bar->setPosition(getPosition());
+	hp_bar->setContentSize(Size(getContentSize().width,5));
+	hp_bar->setAnchorPoint(Vec2(0.5, 3.0));
+	RAMap::getMap()->addChild(hp_bar,99);
+	//
 	return true;
 }
 
+void RAObject::changeControl(bool mine)
+{
+	under_my_control = mine;
+	if (mine)//我方侵占对方单位
+	{
+		RAPlayer::enemies.erase(this);
+		if (category_ == 100)//建筑
+		{
+			//增加用电量
+			RAPlayer::consumePower(static_cast<RABuilding*>(this)->getPowerCost());
+		}
+		else//士兵
+		{
+			auto p = static_cast<RASoldier*>(this);
+			p->stopCurrentBehavior();
+			RAPlayer::all_soldiers_.insert(p);
+		}
+	}
+	else//敌方侵占我方单位
+	{
+		RAPlayer::enemies.insert(this);
+		if (category_ == 100)
+		{
+			RAPlayer::resumePower(static_cast<RABuilding*>(this)->getPowerCost());
+		}
+		else
+		{
+			auto p = static_cast<RASoldier*>(this);
+			p->stopCurrentBehavior();
+			RAPlayer::all_soldiers_.insert(p);
+		}
+	}
+}
 //
 //RAConstructButton
 //
@@ -131,8 +175,6 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 		if (tempObject->isVisible())
 		{
 			auto object = CreateWiki[id](RAUtility::getPositionInMap(tempObject->getPosition()));
-
-			RAMap::getMap()->addChild(object, category_);
 			//resources cost
 			RAPlayer::consumePower(power_cost_);
 			RAPlayer::consumeCapital(capital_cost_);
@@ -144,7 +186,6 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 	else //soldier
 	{
 		auto object = CreateWiki[id](this->getParent()->getPosition());
-		RAMap::getMap()->addChild(object, category_);
 		//resources cost
 		RAPlayer::consumePower(power_cost_);
 		RAPlayer::consumeCapital(capital_cost_);

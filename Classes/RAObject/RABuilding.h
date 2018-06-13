@@ -28,7 +28,9 @@ public:
 	bool onTouchBegan(Touch* touch, Event* event);
 
 	~RABuilding()override {}
-	
+	//used when controler changes
+	int getPowerCost() { return power_cost_; }
+
 	Widget* UI_;
 
 protected:

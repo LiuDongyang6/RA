@@ -10,6 +10,7 @@ using namespace cocostudio;
 using namespace cocos2d::ui;
 
 class RASoldier;
+class RAObject;
 
 class RAPlayer
 {
@@ -30,7 +31,10 @@ public:
 	static Widget*& currentUI() { return current_UI_; }
 
 	static std::unordered_set<RASoldier*> selected_soldiers_;
+	//all soldiers in my control, used to manipulate my soldiers
 	static std::unordered_set<RASoldier*> all_soldiers_;
+	//enemies' buildings and soldiers, used to caclculate range attack
+	static std::unordered_set<RAObject*> enemies;
 private:
 	static int capital_;
 	static int power_;
