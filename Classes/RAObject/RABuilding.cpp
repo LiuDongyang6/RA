@@ -161,3 +161,18 @@ RAObject* RABarrack::create(Point location)
 
     return object;
 }
+
+//
+//RAOilField
+//
+RAObject* RAOilField::create(Point location)
+{
+	RAOilField* object = new RAOilField();
+
+	object->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	object->autorelease();
+
+	return object;
+}

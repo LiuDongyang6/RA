@@ -37,7 +37,7 @@ public:
 	//
 	void runToFight(RAObject* object);
 	~RASoldier()override {	}
-private:
+protected:
 	std::vector<Vector<SpriteFrame*>> animation_;
 	const int range_;
 	const int speed_;
@@ -87,6 +87,64 @@ public:
 
 	static RAObject* create(Point location);
 	static const int id = 6;
+};
+class RAAtomicBomb :public RASoldier
+{
+public:
+	RAAtomicBomb() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 7;
+};
+class RABlackMagician :public RASoldier
+{
+public:
+	RABlackMagician() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 8;
+};
+class RABomber :public RASoldier
+{
+public:
+	RABomber() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 9;
+};
+class RAEngineer :public RASoldier
+{
+public:
+	RAEngineer() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 10;
+	void runToBuildOilField(Point pos);
+	void findRoadAndLetGoForOilField();
+private:
+	Point oil_position_;
+};
+class RAWinterSoldier :public RASoldier
+{
+public:
+	RAWinterSoldier() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 11;
+};
+class RAWizzard :public RASoldier
+{
+public:
+	RAWizzard() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 13;
 };
 #endif // !__RASOLDIER_H__
 

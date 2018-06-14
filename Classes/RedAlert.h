@@ -9,7 +9,9 @@ public:
 	static RedAlert* getInstance();
 	void selectedSoldiersMove(Touch* touch);
 	void initAll();
+	void initCreateWiki();
 	bool onTouchBegan(Touch* touch, Event* event);
+	bool OilOnTouBegan(Touch* touch, Event* event);
 	void onTouchMoved(Touch* touch, Event* event);
 	void onTouchEnded(Touch* touch, Event* event);
 	static void HostileObjectAppear(int id,Point location);

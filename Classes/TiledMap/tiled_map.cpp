@@ -261,7 +261,7 @@ Point RAMap::cannotBuildOil(Point build_point, int size) {
 			else if (oil[Point(tile_coord.x, tile_coord.y + 1)])
 				tile_coord.y++;
 			else
-				return _tiledMap->getLayer("oil")->getPositionAt(tile_coord);
+				return tileCoordToRelatedCoord(tile_coord);
 		}
 	}
 	else

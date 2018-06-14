@@ -1,4 +1,5 @@
 #include"RASoldier.h"
+#include"RABuilding.h"
 //
 //RASoldier
 //
@@ -108,7 +109,7 @@ void RASoldier::runToFight(RAObject* object)
 }
 Action* RASoldier::getAction(int number, float dt)
 {
-	auto animation = Animation::createWithSpriteFrames(animation_[number], dt);
+	auto animation = Animation::createWithSpriteFrames(animation_[number],dt);
 	auto animate = Animate::create(animation);
 	auto repeat = RepeatForever::create(animate);
 	return repeat;
@@ -126,11 +127,13 @@ void RASoldier::findRoadAndLetGo()
 		CallFunc* callFunc = CallFunc::create(call);
 		auto sequence = Sequence::create(move, callFunc, NULL);
 		runAction(sequence);
+		hp_bar->runAction(move->clone());
 	}
 	else
 	{
 		auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
 		runAction(move);
+		hp_bar->runAction(move->clone());
 	}
 }
 void RASoldier::findRoadAndLetGoForFight()
@@ -148,15 +151,17 @@ void RASoldier::findRoadAndLetGoForFight()
 		if (vec[2] == 0)
 		{
 			auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
-			auto call = [&]() {findRoadAndLetGoForFight(); };
+			auto call = [&]() {	findRoadAndLetGoForFight(); };
 			CallFunc* callFunc = CallFunc::create(call);
 			auto sequence = Sequence::create(move, callFunc, NULL);
 			runAction(sequence);
+			hp_bar->runAction(move->clone());
 		}
 		else
 		{
 			auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
 			runAction(move);
+			hp_bar->runAction(move->clone());
 		}
 	}
 }
@@ -165,7 +170,7 @@ void RASoldier::doAttack()
 	//停止动画
 	stopAllActions();
 
-	auto FightAction = getAction(2, 0.2f);
+	auto FightAction = getAction(2, attack_speed_/animation_[2].size());
 
 	runAction(FightAction);
 
@@ -249,4 +254,127 @@ RAObject* RAGeneral::create(Point location)
 	general->autorelease();
 
 	return general;
+}
+//
+//RAAtomicBomb
+//
+RAObject* RAAtomicBomb::create(Point location)
+{
+	RAAtomicBomb* object = new RAAtomicBomb();
+
+	object->initWithIdAndLocation(id, location);
+
+	object->autorelease();
+
+	return object;
+}
+//
+//RABlackMagician
+//
+RAObject* RABlackMagician::create(Point location)
+{
+	RABlackMagician* object = new RABlackMagician();
+
+	object->initWithIdAndLocation(id, location);
+
+	object->autorelease();
+
+	return object;
+}
+//
+//RABomber
+//
+RAObject* RABomber::create(Point location)
+{
+	RABomber* object = new RABomber();
+
+	object->initWithIdAndLocation(id, location);
+
+	object->autorelease();
+
+	return object;
+}
+//
+//RAEngineer
+//
+RAObject* RAEngineer::create(Point location)
+{
+	RAEngineer* object = new RAEngineer();
+
+	object->initWithIdAndLocation(id, location);
+
+	object->autorelease();
+
+	return object;
+}
+void RAEngineer::runToBuildOilField(Point location)
+{
+	stopCurrentBehavior();
+	//保存目的地
+	destination = oil_position_= location;
+	//
+	auto repeat = getAction(1, 0.2f);
+	runAction(repeat);
+	//
+	findRoadAndLetGoForOilField();
+}
+void RAEngineer::findRoadAndLetGoForOilField()
+{
+	if (getPosition().distance(destination) <= range_)
+	{
+		auto test=RAMap::cannotBuildOil(oil_position_, 4);
+		if (RAMap::cannotBuildOil(oil_position_,4) != Point(-1000.0f, -1000.0f))
+		{
+			RAOilField::create(test);
+			RAMap::sureToBuildOil(test,4);
+		}
+	}
+	else
+	{
+		RAMap::removeSoldierCollision(getPosition(), covering_);
+		auto vec = RAMap::findRoutine(this, Point(destination), covering_);
+		next_step = Point(vec[0], vec[1]);
+		RAMap::setSoldierCollision(next_step, covering_);
+		if (vec[2] == 0)
+		{
+			auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
+			auto call = [&]() {	findRoadAndLetGoForOilField(); };
+			CallFunc* callFunc = CallFunc::create(call);
+			auto sequence = Sequence::create(move, callFunc, NULL);
+			runAction(sequence);
+			hp_bar->runAction(move->clone());
+		}
+		else
+		{
+			auto move = MoveTo::create(getPosition().getDistance(next_step) / speed_, next_step);
+			runAction(move);
+			hp_bar->runAction(move->clone());
+		}
+	}
+}
+//
+//RAWinterSoldier
+//
+RAObject* RAWinterSoldier::create(Point location)
+{
+	RAWinterSoldier* object = new RAWinterSoldier();
+
+	object->initWithIdAndLocation(id, location);
+
+	object->autorelease();
+
+	return object;
+}
+//
+//RAWizzard
+//
+RAObject* RAWizzard::create(Point location)
+{
+	RAWizzard* object = new RAWizzard();
+
+	object->initWithIdAndLocation(id, location);
+
+	object->autorelease();
+
+	return object;
 }

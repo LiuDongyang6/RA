@@ -10,18 +10,11 @@ void RedAlert::initAll()
 {
 	RAUtility::RAObjectProperty=FileUtils::getInstance()->getStringFromFile("RAObjectProperty.json");
 	//initial create_function wiki
-	auto &wiki = RAConstructButton::CreateWiki;
-	wiki.insert({ 0,RABase::create });
-	wiki.insert({1,RAPowerStation::create});
-	wiki.insert({ 2,RABarrack::create });
-	wiki.insert({ 3,RAFairy::create });
-	wiki.insert({ 4,RAAssassin::create });
-	wiki.insert({ 5,RALancer::create });
-	wiki.insert({ 6,RAGeneral::create });
-
+	initCreateWiki();
 	//initial building sprite frame
 	auto framecache = SpriteFrameCache::getInstance();
 	framecache->addSpriteFramesWithFile("Buildings.plist");
+	framecache->addSpriteFramesWithFile("OilField/OilField.plist");
 	//
 	RAMap::init();
 	//initial selectBox
@@ -35,6 +28,31 @@ void RedAlert::initAll()
 	listener->onTouchEnded = CC_CALLBACK_2(RedAlert::onTouchEnded, this);
 	Director::getInstance()->getEventDispatcher()->
 		addEventListenerWithSceneGraphPriority(listener, RAMap::getMap()->getChildByTag(1));
+	//
+	auto OilListener= EventListenerTouchOneByOne::create();
+	OilListener->onTouchBegan = CC_CALLBACK_2(RedAlert::OilOnTouBegan, this);
+	OilListener->setSwallowTouches(true);
+	Director::getInstance()->getEventDispatcher()->
+		addEventListenerWithSceneGraphPriority(OilListener, RAMap::getMap()->getChildByTag(2));
+}
+void RedAlert::initCreateWiki()
+{
+	//initial create_function wiki
+	auto &wiki = RAConstructButton::CreateWiki;
+	wiki.insert({ 0,RABase::create });
+	wiki.insert({ 1,RAPowerStation::create });
+	wiki.insert({ 2,RABarrack::create });
+	wiki.insert({ 3,RAFairy::create });
+	wiki.insert({ 4,RAAssassin::create });
+	wiki.insert({ 5,RALancer::create });
+	wiki.insert({ 6,RAGeneral::create });
+	wiki.insert({ 7,RAAtomicBomb::create });
+	wiki.insert({ 8,RABlackMagician::create });
+	wiki.insert({ 9,RABomber::create });
+	wiki.insert({ 10,RAEngineer::create });
+	wiki.insert({ 11,RAWinterSoldier::create });
+	wiki.insert({ 13,RAWizzard::create });
+
 }
 void RedAlert::selectedSoldiersMove(Touch* touch)
 {
@@ -43,6 +61,22 @@ void RedAlert::selectedSoldiersMove(Touch* touch)
 	{
 		soldier->runTo(point);
 	}
+}
+bool RedAlert::OilOnTouBegan(Touch* touch, Event* event)
+{
+	auto point =RAUtility::getPositionInMap(touch->getLocation());
+	auto pos = RAMap::cannotBuildOil(point, 4);
+	if (pos!= Point(-1000.0f, -1000.0f))
+	{
+		const auto& soldiers = RAPlayer::selected_soldiers_;
+		if ((soldiers.size() == 1) && ((*soldiers.begin())->getId() == 10))
+		{
+			auto engineer=static_cast<RAEngineer*>(*soldiers.begin());
+			engineer->runToBuildOilField(point);
+			return true;
+		}
+	}
+	return false;
 }
 bool RedAlert::onTouchBegan(Touch* touch, Event* event)
 {

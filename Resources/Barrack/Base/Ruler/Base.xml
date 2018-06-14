@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfGuidesProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <GuidesProject>
+    <Project>BaseUi</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>PowerStation Ui</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>Barrack</Project>
+    <GuidesList>
+      <GuidesInfo>
+        <GuidesName>HThumb</GuidesName>
+        <GuidesPosition>86.682905982925945</GuidesPosition>
+      </GuidesInfo>
+      <GuidesInfo>
+        <GuidesName>VThumb</GuidesName>
+        <GuidesPosition>-13.48034188033364</GuidesPosition>
+      </GuidesInfo>
+    </GuidesList>
+  </GuidesProject>
+</ArrayOfGuidesProject>
