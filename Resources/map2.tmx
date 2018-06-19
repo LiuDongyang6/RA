@@ -35,7 +35,7 @@
  </layer>
  <layer name="rocks" width="128" height="128">
   <data encoding="base64" compression="zlib">
-   eJzt20EKg0AQAEHPviT/f2EOOQUMCG6SXbsK5u7YCCq6b9u2m/TQpH+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfNqL/Y8SB8Bf6t+nfpn+b/m36t92x/2zHMzP92/Rv079N/7a79v80vLtjf87Tv03/Nv3b9G/z/U+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m0j+/vv/mWlfX9x/a90PkZYaV/9x1tpX/3HW2lf/cdbaV/9x1vpPlj/Ns//bfq36d+mf5v+bfq36d+mf5v+bfq36T+/b74/139++rfp36Z/m/5t+rfp36Z/m/5t+rfp36Z/m/7nrfTvxVn6X6f/Mf3np/91+h/Tf376X6f/Mf3np3+b/nyL/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36t+nftpv8PAF5zCGZ
+   eJzt20GKg0AQQFHXnmTuf8IsZiUYEGxnuv3vQe2tfMUk6L5t227SQ5P+bfq36d+mf5v+bfq36d+mf5v+bfq36d+mf9uT/Z1X89O/Tf829/+2Ef1/RhwI/0L/Nv3b9G/Tv03/tjf2n+14ZqZ/m/5t+rfp3/bW/t+Gozf25zr92/Rv079N/zbP/7Tp36Z/m/5t+rfp36Z/m/5t+rfp36Z/m/5t+rfp36Z/m/5t+rfp36Z/m/5t+rfp36Z/W61/adcr9G/Tv21kf+/d/1pp37+4/lf6PEZYaV/9x1tpX/3HW2lf/cdbaV/9x1vpe7D+bbXf/xzp36Z/m/5t+rfp36Z/m/5t+rfp36b//J78/1z/+enfpn+b/m36t+nfpn+b/m36t+nfpn+b/m36X7fSuxdX6X+f/uf0n5/+9+l/Tv/56X+f/uf0n5/+bfrzFP3b9G/Tv03/Nv3b9G/Tv03/Nv3b9G/Tv03/Nv3b9G/Tv03/Nv3b9G/Tv03/Nv3b9G/Tv03/Nv3b9G/Tv203+fkA/koh1Q==
   </data>
  </layer>
  <layer name="collision" width="128" height="128" opacity="0">

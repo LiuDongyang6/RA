@@ -35,7 +35,9 @@ public:
 	static std::map<cocos2d::Point, int> tryEightdirection(cocos2d::Point position,
 		cocos2d::Point dest, const int size);
 
-	static std::vector<float> findRoutine(RASoldier* soldier, cocos2d::Point &dest, const int size);
+	static std::vector<cocos2d::Point> findRoutine(RASoldier* soldier, cocos2d::Point &dest, const int size);
+
+	static int aStar(cocos2d::Point so_pos, cocos2d::Point dest, const int size);
 
 	static void destroyNormalBuildings(cocos2d::Point pos, int size);
 
@@ -62,6 +64,7 @@ protected:
 	static std::map<cocos2d::Point, bool> collision;
 	static std::map<cocos2d::Point, bool> oil;
 	static std::map<cocos2d::Point, bool> soldier_collision;
+	static std::vector<cocos2d::Point> routines;
 };
 
 #endif // __AB__
