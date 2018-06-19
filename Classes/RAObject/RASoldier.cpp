@@ -121,7 +121,7 @@ Action* RASoldier::getAction(int number, float dt)
 void RASoldier::findRoadAndLetGo()
 {
 	RAMap::removeSoldierCollision(getPosition(), covering_);
-	auto vec = RAMap::findRoutine(this,destination,covering_);
+	auto vec = RAMap::findRoutineOneByOne(this,destination,covering_);
 	next_step = Point(vec[0], vec[1]);
 	RAMap::setSoldierCollision(next_step, covering_);
 	if (vec[2] == 0)
@@ -149,7 +149,7 @@ void RASoldier::findRoadAndLetGoForFight()
 	else
 	{
 		RAMap::removeSoldierCollision(getPosition(), covering_);
-		auto vec = RAMap::findRoutine(this, Point(AimEnemy->getPosition()), covering_);
+		auto vec = RAMap::findRoutineOneByOne(this, Point(AimEnemy->getPosition()), covering_);
 		next_step = Point(vec[0], vec[1]);
 		RAMap::setSoldierCollision(next_step, covering_);
 		if (vec[2] == 0)
@@ -348,7 +348,7 @@ void RAEngineer::findRoadAndLetGoForOilField()
 	else
 	{
 		RAMap::removeSoldierCollision(getPosition(), covering_);
-		auto vec = RAMap::findRoutine(this, Point(destination), covering_);
+		auto vec = RAMap::findRoutineOneByOne(this, Point(destination), covering_);
 		next_step = Point(vec[0], vec[1]);
 		RAMap::setSoldierCollision(next_step, covering_);
 		if (vec[2] == 0)
