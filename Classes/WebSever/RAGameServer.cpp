@@ -388,7 +388,7 @@ DWORD WINAPI GameServer::sendRoomInfo(void *data)
 			SendMessageToOneClient(Rooms[whichRoom].playerList.at(GameSocket->ID).clientInfo.ID, sendBuf);
 			break;
 		}
-		else
+		else¡¤
 			sprintf(sendBuf, "[%s said]:%s", inet_ntoa(GameSocket->Client.sin_addr), Msg);
 
 		for (int i = 0; i < Rooms[whichRoom].playerList.size(); i++)
