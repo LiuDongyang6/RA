@@ -47,7 +47,6 @@ protected:
 	const int capital_cost_;
 	Point destination;
 	Point next_step=Point(-1,-1);
-	std::vector<Point> routine_;
 	RAObject* AimEnemy=NULL;
 	//get a repeat forever action
 	Action* getAction(int number, float dt);

@@ -87,8 +87,6 @@ void RASoldier::runTo(Point point)
 	auto repeat = getAction(1, 0.2f);
 	runAction(repeat);
 	//
-	routine_.clear();
-	routine_ = RAMap::findRoutine(this, destination, covering_);
 	findRoadAndLetGo();
 
 }
