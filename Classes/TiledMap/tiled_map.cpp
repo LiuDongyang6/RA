@@ -349,8 +349,7 @@ std::map<Point, int> RAMap::tryEightdirection(Point position, Point dest, const 
 	bool cannotmove = 0;
 	for (int x = 0; x != size; x++) {
 		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x - 1 - x, position.y - y)] || 
-				soldier_collision[Point(position.x - 1 - x, position.y - y)]) {
+			if (collision[Point(position.x - 1 - x, position.y - y)]) {
 				cannotmove = 1;
 				goto left;
 			}
@@ -364,8 +363,7 @@ left:	if (cannotmove)//1
 	cannotmove = 0;
 	for (int x = 0; x != size; x++) {
 		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x + 1 - x, position.y - y)] || 
-				soldier_collision[Point(position.x + 1 - x, position.y - y)]) {
+			if (collision[Point(position.x + 1 - x, position.y - y)]) {
 				cannotmove = 1;
 				goto right;
 			}
@@ -379,8 +377,7 @@ right:	if (cannotmove)//2
 	cannotmove = 0;
 	for (int x = 0; x != size; x++) {
 		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x - x, position.y - 1 - y)] ||
-				soldier_collision[Point(position.x - x, position.y - 1 - y)]) {
+			if (collision[Point(position.x - x, position.y - 1 - y)]) {
 				cannotmove = 1;
 				goto down;
 			}
@@ -394,8 +391,7 @@ down:	if (cannotmove)//3
 	cannotmove = 0;
 	for (int x = 0; x != size; x++) {
 		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x - x, position.y + 1 - y)] || 
-				soldier_collision[Point(position.x - x, position.y + 1 - y)]) {
+			if (collision[Point(position.x - x, position.y + 1 - y)]) {
 				cannotmove = 1;
 				goto up;
 			}
@@ -409,8 +405,7 @@ up:	if (cannotmove)//4
 	cannotmove = 0;
 	for (int x = 0; x != size; x++) {
 		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x + 1 - x, position.y + 1 - y)] ||
-				soldier_collision[Point(position.x + 1 - x, position.y + 1 - y)]) {
+			if (collision[Point(position.x + 1 - x, position.y + 1 - y)]) {
 				cannotmove = 1;
 				goto upright;
 			}
@@ -424,8 +419,7 @@ upright:	if (cannotmove)//5
 	cannotmove = 0;
 	for (int x = 0; x != size; x++) {
 		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x - 1 - x, position.y - 1 - y)] ||
-				soldier_collision[Point(position.x - 1 - x, position.y - 1 - y)]) {
+			if (collision[Point(position.x - 1 - x, position.y - 1 - y)]) {
 				cannotmove = 1;
 				goto downleft;
 			}
@@ -439,8 +433,7 @@ downleft:	if (cannotmove)//6
 	cannotmove = 0;
 	for (int x = 0; x != size; x++) {
 		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x -1 - x, position.y + 1 - y)] ||
-				soldier_collision[Point(position.x - 1 - x, position.y + 1 - y)]) {
+			if (collision[Point(position.x -1 - x, position.y + 1 - y)]) {
 					cannotmove = 1;
 					goto upleft;
 			}
@@ -454,8 +447,7 @@ upleft:	if (cannotmove)//7
 	cannotmove = 0;
 	for (int x = 0; x != size; x++) {
 		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x + 1 - x, position.y - 1 - y)] ||
-				soldier_collision[Point(position.x + 1 - x, position.y - 1 - y)]) {
+			if (collision[Point(position.x + 1 - x, position.y - 1 - y)]) {
 				cannotmove = 1;
 				goto downright;
 			}
