@@ -161,7 +161,7 @@
         "original_hp":1000,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
+        "frame_upper_bound":[5,9,15],//die move attack
         "category":101,
         "range":100,
         "speed":150,

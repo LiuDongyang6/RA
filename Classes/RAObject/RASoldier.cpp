@@ -83,10 +83,12 @@ void RASoldier::runTo(Point point)
 	stopCurrentBehavior();
 	//保存目的地
 	destination = point;
-	//
+	//跑步动画
 	auto repeat = getAction(1, 0.2f);
 	runAction(repeat);
 	//
+	routine_.clear();
+	routine_ = RAMap::findRoutine(this, destination, covering_);
 	findRoadAndLetGo();
 
 }

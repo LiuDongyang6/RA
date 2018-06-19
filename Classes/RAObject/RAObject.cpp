@@ -45,7 +45,7 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 	//
 	Sprite::initWithSpriteFrameName(filename);
 	//building
-	if (category_ == 100)
+	if (category_ == 100||category_==2)
 	{
 		setAnchorPoint(Vec2(0.5, 0));
 		RAMap::sureToBuildNormal(location, covering_);
