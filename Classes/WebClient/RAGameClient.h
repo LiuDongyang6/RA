@@ -55,8 +55,8 @@ public:
 	int clientProcessRoomData(int which);
 
 	bool gameThreadProcess(GameScene * gs);		// 启动客户处理
-	static DWORD WINAPI gameSendThread(LPVOID lpParam);		// 收发消息
-	static DWORD WINAPI gameRecvThread(LPVOID lpParam);		// 收发消息
+	static DWORD WINAPI gameSendThread(LPVOID lpParam);		// 发送消息
+	static DWORD WINAPI gameRecvThread(LPVOID lpParam);		// 接收消息
 
 	static DWORD WINAPI consumer(LPVOID lpParam);		// 消费者
 

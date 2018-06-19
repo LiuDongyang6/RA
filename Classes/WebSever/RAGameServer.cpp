@@ -1,9 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-#include "RAGameServer.h"
 #include <iostream>
 #include <fstream>
+#include "RAGameServer.h"
 
 using std::cout;
 using std::string;
@@ -388,7 +388,7 @@ DWORD WINAPI GameServer::sendRoomInfo(void *data)
 			SendMessageToOneClient(Rooms[whichRoom].playerList.at(GameSocket->ID).clientInfo.ID, sendBuf);
 			break;
 		}
-		else¡¤
+		else
 			sprintf(sendBuf, "[%s said]:%s", inet_ntoa(GameSocket->Client.sin_addr), Msg);
 
 		for (int i = 0; i < Rooms[whichRoom].playerList.size(); i++)
@@ -459,6 +459,7 @@ void GameServer::GenerateProps()
 	}
 	cout << "\n";
 }
+
 
 void GameServer::sendProps(int ID)
 {
