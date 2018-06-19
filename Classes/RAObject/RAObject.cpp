@@ -45,7 +45,7 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 	//
 	Sprite::initWithSpriteFrameName(filename);
 	//building
-	if (category_ == 100||category_==2)
+	if (isBuilding())
 	{
 		setAnchorPoint(Vec2(0.5, 0));
 		RAMap::sureToBuildNormal(location, covering_);
@@ -68,13 +68,20 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 	return true;
 }
 
+bool RAObject::isBuilding()
+{
+	if (category_ == 100 || category_ == 2)
+		return true;
+	else
+		return false;
+}
 void RAObject::changeControl(bool mine)
 {
 	under_my_control = mine;
 	if (mine)//我方侵占对方单位
 	{
 		RAPlayer::enemies.erase(this);
-		if (category_ == 100)//建筑
+		if (isBuilding())//建筑
 		{
 			//增加用电量
 			RAPlayer::consumePower(static_cast<RABuilding*>(this)->getPowerCost());
@@ -89,7 +96,7 @@ void RAObject::changeControl(bool mine)
 	else//敌方侵占我方单位
 	{
 		RAPlayer::enemies.insert(this);
-		if (category_ == 100)
+		if (isBuilding())
 		{
 			RAPlayer::resumePower(static_cast<RABuilding*>(this)->getPowerCost());
 		}

@@ -52,7 +52,11 @@ bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 		}
 		else
 		{
-			for (auto soldier : RAPlayer::selected_soldiers_)
+			//复制一下，否则一旦哥们攻击的时候阵亡了，会引起
+			//selected_soldiers_遍历过程中失去元素
+			//从而导致崩溃
+			auto TempSet = RAPlayer::selected_soldiers_;
+			for (auto soldier : TempSet)
 			{
 				soldier->runToFight(this);
 			}
@@ -68,13 +72,13 @@ bool RASoldier::annihilation()
 	RAPlayer::all_soldiers_.erase(this);
 	RAPlayer::selected_soldiers_.erase(this);
 	//die animation
-	auto animation = Animation::createWithSpriteFrames(animation_[0], 1.0f / 8);
+	auto animation = Animation::createWithSpriteFrames(animation_[active_die_?2:0], 1.0f / 8);
 	auto animate = Animate::create(animation);
 	//一定要以CallFunc的形式调用
 	auto remove = [&]() {RAObject::annihilation(); };
 	CallFunc* callFunc = CallFunc::create(remove);
-	auto seq = Sequence::create(animate,callFunc,NULL);
-	
+	auto seq = Sequence::create(animate, callFunc, NULL);
+
 	runAction(seq);
 	return true;
 }
@@ -268,6 +272,18 @@ RAObject* RAAtomicBomb::create(Point location)
 
 	return object;
 }
+void RAAtomicBomb::doAttack()
+{
+	stopAllActions();
+	//if and only if enemy is a building and is not under my control
+	if (!AimEnemy->under_my_control)
+	{
+		//如果不暂停触摸会有莫名其妙的bug
+		active_die_ = 1;
+		annihilation();
+		AimEnemy->annihilation();
+	}
+}
 //
 //RABlackMagician
 //
@@ -350,6 +366,20 @@ void RAEngineer::findRoadAndLetGoForOilField()
 			runAction(move);
 			hp_bar->runAction(move->clone());
 		}
+	}
+}
+void RAEngineer::doAttack()
+{
+	stopAllActions();
+	//if and only if enemy is a building and is not under my control
+	if (AimEnemy->isBuilding() && !AimEnemy->under_my_control)
+	{
+		//如果不暂停触摸会有莫名其妙的bug
+		AimEnemy->getEventDispatcher()->pauseEventListenersForTarget(AimEnemy);
+		active_die_ = 1;
+		annihilation();
+		AimEnemy->changeControl(true);
+		AimEnemy->getEventDispatcher()->resumeEventListenersForTarget(AimEnemy);
 	}
 }
 //

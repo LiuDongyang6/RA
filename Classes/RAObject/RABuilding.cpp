@@ -109,7 +109,8 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 		}
 		else
 		{
-			for (auto soldier : RAPlayer::selected_soldiers_)
+			auto TempSet = RAPlayer::selected_soldiers_;
+			for (auto soldier : TempSet)
 			{
 				soldier->runToFight(this);
 			}

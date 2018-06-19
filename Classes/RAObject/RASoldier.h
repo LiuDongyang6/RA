@@ -27,7 +27,7 @@ public:
 	//called by my soldier
 	bool onTouchBegan(Touch* touch, Event* event) ;
 	//
-	void doAttack();
+	virtual void doAttack();
 	//
 	void sufferAttack(float attack_speed, int damage, RASoldier* attacker) override;
 	//
@@ -48,6 +48,8 @@ protected:
 	Point destination;
 	Point next_step=Point(-1,-1);
 	RAObject* AimEnemy=NULL;
+	//soldier是否主动死亡（意味着可能播放不同的动画)
+	bool active_die_ = 0;
 	//get a repeat forever action
 	Action* getAction(int number, float dt);
 };
@@ -93,7 +95,7 @@ class RAAtomicBomb :public RASoldier
 public:
 	RAAtomicBomb() :
 		RASoldier(id) {}
-
+	void doAttack() override;
 	static RAObject* create(Point location);
 	static const int id = 7;
 };
@@ -120,7 +122,7 @@ class RAEngineer :public RASoldier
 public:
 	RAEngineer() :
 		RASoldier(id) {}
-
+	void doAttack() override;
 	static RAObject* create(Point location);
 	static const int id = 10;
 	void runToBuildOilField(Point pos);
