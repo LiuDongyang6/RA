@@ -20,7 +20,7 @@ Point RAMap::diff;
 std::map<Point, bool> RAMap::collision;
 std::map<Point, bool> RAMap::oil;
 std::map<Point, bool> RAMap::soldier_collision;
-std::vector<Point> routines;
+std::vector<Point> RAMap::routines;
 
 // on "init" you need to initialize your instance
 bool RAMap::init()
@@ -32,7 +32,7 @@ bool RAMap::init()
 	_tiledMap = TMXTiledMap::create("map1.tmx");
 
 	mapInit();
-	//testForCoord();
+	testForCoord();
 	setMovePosition();
 	_tiledMap->schedule(schedule_selector(RAMap::moveMap));
     return true;
@@ -75,7 +75,7 @@ void RAMap::testForCoord(void) {
 		log("-------------%f, %f", relate.x, relate.y);
 		log("-------------soldier collision %d %f,%f", 
 			soldier_collision[Point(tile.x - 3, tile.y - 3)], tile.x - 3, tile.y - 3);*/
-		log("%d, %f, %f", soldier_collision[Point(tile.x - 1, tile.y - 1)], tile.x - 1, tile.y - 1);
+		auto oil = cannotBuildOil(relate_1, 4);
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
@@ -261,8 +261,11 @@ Point RAMap::cannotBuildOil(Point build_point, int size) {
 				tile_coord.x++;
 			else if (oil[Point(tile_coord.x, tile_coord.y + 1)])
 				tile_coord.y++;
-			else
-				return _tiledMap->getLayer("oil")->getPositionAt(tile_coord);
+			else 
+			{	
+				log("%f, %f", tile_coord.x, tile_coord.y);
+				return tileCoordToRelatedCoord(tile_coord);
+			}
 		}
 	}
 	else
@@ -512,7 +515,7 @@ int RAMap::aStar(Point so_tilecoord, Point dest_tile, const int size) {
 }
 
 //士兵寻路
-std::vector<Point> RAMap::findRoutine(RASoldier* soldier, Point &dest, const int size) {
+std::vector<Point> RAMap::findRoutineAllAtOnce(RASoldier* soldier, Point &dest, const int size) {
 	routines.clear();
 	Point dest_tile = relatedCoordToTileCoord(dest);
 	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
@@ -637,6 +640,70 @@ std::vector<Point> RAMap::findRoutine(RASoldier* soldier, Point &dest, const int
 	}
 	aStar(so_tilecoord, dest_tile, size);
 	return routines;
+}
+
+std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, const int size) {
+	std::vector<float> answer = { -1, -1, -1 };
+	Point dest_tile = relatedCoordToTileCoord(dest);
+	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
+	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
+	bool cannotmove_1 = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(dest_tile.x - 1 - x, dest_tile.y - y)] ||
+				soldier_collision[Point(dest_tile.x - 1 - x, dest_tile.y - y)]) {
+				cannotmove_1 = 1;
+			}
+		}
+	}
+	if (collision[dest_tile] || soldier_collision[dest_tile] || cannotmove_1) {
+		if (Point(so_tilecoord.x + 1, so_tilecoord.y) == dest_tile ||
+			Point(so_tilecoord.x - 1, so_tilecoord.y) == dest_tile ||
+			Point(so_tilecoord.x, so_tilecoord.y + 1) == dest_tile ||
+			Point(so_tilecoord.x, so_tilecoord.y - 1) == dest_tile ||
+			Point(so_tilecoord.x + 1, so_tilecoord.y + 1) == dest_tile ||
+			Point(so_tilecoord.x - 1, so_tilecoord.y + 1) == dest_tile ||
+			Point(so_tilecoord.x + 1, so_tilecoord.y - 1) == dest_tile ||
+			Point(so_tilecoord.x - 1, so_tilecoord.y - 1) == dest_tile
+			)
+		{
+			answer[0] = soldier->getPosition().x;
+			answer[1] = soldier->getPosition().y;
+			answer[2] = 1;
+			return answer;
+		}
+		auto open_list = tryEightdirection(dest_tile, dest_tile, size);
+		auto next_step = open_list.begin();
+		auto start = open_list.begin();
+		for (start; start != open_list.end(); start++) {
+			if (start->second < next_step->second)
+				next_step = start;
+			if (start->first == so_tilecoord) {
+				answer[0] = so_related_coord.x;
+				answer[1] = so_related_coord.y;
+				answer[2] = 1;
+				return answer;
+			}
+		}
+
+		while (next_step->second == 10000) {
+			open_list = tryEightdirection(next_step->first, so_tilecoord, size);
+			next_step = open_list.begin();
+			start = open_list.begin();
+			for (start; start != open_list.end(); start++) {
+				if (start->second < next_step->second)
+					next_step = start;
+				if (start->first == so_tilecoord) {
+					answer[0] = so_related_coord.x;
+					answer[1] = so_related_coord.y;
+					answer[2] = 1;
+					return answer;
+				}
+			}
+		}
+		dest_tile = Point(next_step->first.x, next_step->first.y);
+		dest = Point(tileCoordToRelatedCoord(dest_tile));
+	}
 }
 
 //将建筑物建在中心
