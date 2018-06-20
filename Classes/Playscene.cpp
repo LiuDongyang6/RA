@@ -1,5 +1,6 @@
 #include "PlayScene.h"
 #include "SimpleAudioEngine.h"
+#include"ResourceUI/ResourceUI.h"
 
 
 USING_NS_CC;
@@ -35,6 +36,9 @@ bool PlayScene::init()
 	ui_layer->setPosition(1200,0);
 	addChild(fight_layer, 1, 1);
 	addChild(ui_layer, 2, 2);
+
+	RAResourceUI::init();
+	ui_layer->addChild(RAResourceUI::ResourceUI);
 
 	auto base = RABase::create(Point(3000, 3000));
 
