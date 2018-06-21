@@ -1,6 +1,6 @@
 #include "StartScene.h"
-#include "LoadingScene.h"
 #include "RoomScene.h"
+#include"PlayScene.h"
 
 USING_NS_CC;
 
@@ -97,7 +97,7 @@ void Start::menuLastpageCallback(Ref* pSender)
 
 void Start::menuSingleplayerCallback(Ref* pSender)
 {
-	auto sc = Loading::createScene();
+	auto sc = PlayScene::createScene();
 	Director::getInstance()->pushScene(sc);
 }
 

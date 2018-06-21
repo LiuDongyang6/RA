@@ -1,5 +1,5 @@
 #include "RoomScene.h"
-#include "LoadingScene.h"
+#include "PlayScene.h"
 
 USING_NS_CC;
 
@@ -97,7 +97,7 @@ void Room::menuLastpageCallback(Ref* pSender)
 
 void Room::startCallback(Ref* pSender)
 {
-	auto sc = Loading::createScene();
+	auto sc = PlayScene::createScene();
 	Director::getInstance()->pushScene(sc);
 }
 
