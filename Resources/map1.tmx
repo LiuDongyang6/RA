@@ -1,39 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="32" infinite="0" nextobjectid="1">
- <tileset firstgid="1" name="Untitled" tilewidth="64" tileheight="115" spacing="2" margin="2" tilecount="14" columns="7">
-  <image source="iso-test.png" width="512" height="256"/>
-  <tile id="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="17" height="17" tilewidth="40" tileheight="40" nextobjectid="3">
+ <tileset firstgid="1" name="TownHouse" tilewidth="40" tileheight="40" tilecount="16" columns="8">
+  <image source="TownHouse.png" width="320" height="80"/>
+ </tileset>
+ <tileset firstgid="17" name="TownDestroyable" tilewidth="40" tileheight="40" tilecount="16" columns="8">
+  <image source="TownDestroyable.png" width="320" height="80"/>
+  <tile id="8">
    <properties>
-    <property name="collision" type="bool" value="true"/>
+    <property name="breakable" type="bool" value="true"/>
+    <property name="bush" type="bool" value="false"/>
+    <property name="collidable" type="bool" value="true"/>
+    <property name="red" type="bool" value="true"/>
+    <property name="wood" type="bool" value="false"/>
+    <property name="yellow" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="breakable" type="bool" value="true"/>
+    <property name="bush" type="bool" value="false"/>
+    <property name="collidable" type="bool" value="true"/>
+    <property name="red" type="bool" value="false"/>
+    <property name="wood" type="bool" value="false"/>
+    <property name="yellow" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="breakable" type="bool" value="true"/>
+    <property name="bush" type="bool" value="false"/>
+    <property name="collidable" type="bool" value="true"/>
+    <property name="red" type="bool" value="false"/>
+    <property name="wood" type="bool" value="true"/>
+    <property name="yellow" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="breakable" type="bool" value="true"/>
+    <property name="bush" type="bool" value="true"/>
+    <property name="collidable" type="bool" value="true"/>
+    <property name="red" type="bool" value="false"/>
+    <property name="wood" type="bool" value="false"/>
+    <property name="yellow" type="bool" value="false"/>
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="15" name="2A65D046331BC3EDDB497C7D23CE72EA" tilewidth="64" tileheight="32" tilecount="4" columns="2">
-  <image source="2A65D046331BC3EDDB497C7D23CE72EA.png" width="179" height="90"/>
+ <tileset firstgid="33" name="TownGround" tilewidth="40" tileheight="40" tilecount="7" columns="7">
+  <image source="TownGround.png" width="280" height="40"/>
+ </tileset>
+ <tileset firstgid="40" name="collidablesTileSet" tilewidth="40" tileheight="40" tilecount="4" columns="4">
+  <image source="collidablesTileSet.png" width="192" height="64"/>
   <tile id="0">
    <properties>
-    <property name="oil" type="bool" value="true"/>
+    <property name="collidable" type="bool" value="true"/>
    </properties>
   </tile>
  </tileset>
- <layer name="ground" width="128" height="128">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3DAQ0AAAzDoM6/6Qs5JKyaqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7x+e3FbSAAABAA==
+ <tileset firstgid="44" name="Props" tilewidth="40" tileheight="40" tilecount="6" columns="6">
+  <image source="gay.png" width="240" height="40"/>
+  <tile id="0">
+   <properties>
+    <property name="empty" type="bool" value="true"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="true"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="true"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="true"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="background" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAOUMSBlYFYDUrjUkMPM1SQ8EC6YyiaoY4HqxGQH2x+GexmDMV0SikAAKXRHdk=
   </data>
  </layer>
- <layer name="oil" width="128" height="128">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3cMQrDMBBEUd8g979tepMiwiiZ1bwHrr3ms+BGui4AAAAAoNnr9tBF/276d9MfeqXtf9o8qz7Nn/xNabOlzbNK/2fS5lml/zNp86ya1h8AAAAAAAAAAAAAAAAAgDmcW+2mfzf9u+kPACT59p4l/zBn0r+b/t30h15T9v/f7z+V/t3076Y/9Jqy/+yhfzf9u+kPAAAAAAAAAAAAAAAAAAB5nO/tpn83/feYcpdC4kwnmNKfPfTvpj8AAAAAAAAAAAAAAPzGG47P3ywAAAEA
+ <layer name="collidable" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJzTYGBg0KACJhZooNEwNroZ2NRh4+Mzgxh3oOvHZS8p5pKjF9leUsKDkDtICT9i9JMKqB0vxOrHZQ4ue4g1m5J0gWwGsfFCqjtIyUfUCg9KMQAK8w5h
   </data>
  </layer>
- <layer name="trees" width="128" height="128">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3UwY0DQQwDwX1s/jEbjsGeEanuAvw+LXtw7/M8rz/0T0z2Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/Nvuz2Z9tsr/vbt5Uf//vZJjoYPsct1vYPsvNHrbPc6uJ7TPd6GL7XKfb2D7byT6k9q3feaoRqf1X6/ee7E/T+AYab07WtmfbvQ2aNm26tUnLri13NmrYtuHGZun7pt+3QfLGybdtkrpz6l0bJW6deNNmaXun3UOQtLf92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/Nvuz2Z/N/mz2Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92ezPZn+22/19a1km+vsGckz08A3kmGrhG8gw2cE3MG+6wfTfp0vYP+EGqpTtU+6gSdo96RaKtM3T7tkuce/Em7Zyazb7s9mfzf5s9mez/3+0bmj/3zVv2Hx7gvb92u+ftGG7Dd8wYctuW77jpk2bbfqWG7btte17Ttq41cZvOmXjTvZnsz+b/dnsz2Z/Nvuz2Z/N/mz2Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/ttcf/vcBMZbQ7wAAAQA=
+ <layer name="houseBottom" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAv4EajcQFeKM2JJo7Op9QduPi8DPQFhMIFV3gQAsSGH63CmVRAqTtg6gnFHz+J5lIK0N2Dbj+13IMr/AZbeCADANJiATk=
   </data>
  </layer>
- <layer name="collision" width="128" height="128" opacity="0">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3cwU7DQAwG4arv/9CIY1EaUqW7/u2ZT8qFS7yeFqFAeT4ej6cX+hKT/dnsz2Z/Nvuz2Z/N/mz2Z7M/29X+Pi+ayf5s9mezP5s92bq+/9Pm+dTR/BVnsn8N+9+TNs+n7H9P2jyf6tZfM9mfzf5s9mezP5v92Sr7+7qrV9Xf7zsZKjrYPsfuFrbP4rNGtl1NbJ9pRxfb51rdxvbZVvYhte96zlWNSO1/dT3vyv40HV8DHWdO1m2f3ebtoNNOO83aSZe9dpmzow677TBjZ+n7TZ9vguQdJ882SeqeU+eaKHHXiTNNlrbvtHkIkvZtfzb7s32jf/fP4pLZn83+bPZnsxmb/dnszza9/9HPJle/RjD9vPY/N/289j83/bz2P0c7r15N79/l/V91f/u//9pO9l/D/tfuO5X9r91XTNP7d3n/V5l+Xvufm35e+5+bfl77n6OdV6/sz2Z/NvuzVTxvUg6fN7JV9PA1kKP69x2qVdnB10C96gbV96dL2H/CDFQpu0+ZgyZp70mzUKTtPG2e6RL3nTjTVO6azf5s9mezP5v92ez/HV13aP/7Ou+w8+wJuu+v+/yVJuxuwhkqTNnblHPsNGlnk86yw7R9TTvPShN3NfFMq0zcE6U/9fO9/6Hsw/7HKPuw/7G7++jyvxQSZ0pA6a9j9mezP5uNcu14b9k/l/3Z7M9mf61mfzb7s9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/tr9/T+TFu34AtypbbAAAAQA=
+ <layer name="blockBottom" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJytUgkKwCAM8xsySv//y22wQgjpATMgQS1JrF3rHK5nbWCHO4P9bnQs4UB4TLOEr1GOTD/z5zp+L2bi86oflb5io9r97dEL4cQIG9adwFQ/q1M9faHmQ3GA+63mo/rb7G46RwzOEWdeZECofqBX5486WY4uwx/cYn0MEg==
+  </data>
+ </layer>
+ <layer name="Props" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJytUkEKwDAI80Fqt/9/bh00kGW29FBBStRpFjU7Z9E9u3v3Nl6YE3ZbG/Ix3ib5LGJVj5C5Kfia8EmZG/IaYf7npBzm3yMOLpwHvmWeCVYdnLgjDh5R9Fnp3jbrTthuf+ihddCYNTf76s54dj+6T74H3C12y5j7J+X0XmG8r4rHrA4zXFz78/dvPXQL+/Ot+KlV+2Ee0P20PY4EE6o=
+  </data>
+ </layer>
+ <layer name="redBlockTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJy9kzEOACAIA3mDo/9/qHEiaaCeg3YhEUhpUyMSQ2oF19uYUqv9rkd5yD6Z6/TqO7lFufTd+UG56A3Un5+gOt0c1Tkjc1bljXrteIjXN/+pmyE8nc6Kx+GUm1e5WoWBBP0=
+  </data>
+ </layer>
+ <layer name="yellowBlockTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYIAAETSaHCCDRuMChOwgxi2E7CDkFnQ70O0ixQ3Y7BKB8pFpQgBdDT7zCblpMAJ6pTF8cUso3nHZI0OkHCG34FODCxBjD6VuIARISYOkAgAkKAUR
+  </data>
+ </layer>
+ <layer name="woodBlockTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJy1kkEKADEIA/sKj/7/mXtZIQxaa9nNRRBNImatHnYww1lWH3B4Ug0+yN/p28ujPqiz09d64qNC3OHoZT4qxB2G3g1u977CJFs6z9uZjx2yvzMfVY4qP8rHf1Y5417saj6m+Qo+zUen33H9jQfdXAb/
+  </data>
+ </layer>
+ <layer name="bushBlockTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYMAOJAjwiQEKBPjEgJHuDgk0mhx1Cmg0LoBP3WBxBy77cPGJAej2EGPvqDuoBwBuGgRh
+  </data>
+ </layer>
+ <layer name="houseTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJytUlsKwDAIkzHKKEV2/9MOwYIEX4Pmx6ZYE2KJ+rihRhhaL7gXvvS8KAdrnXA/HX3kg2qgPnKmPqpcojw8fevD9rNyzMOba7mXn4duX4bMR/e96Nr9eT6eZMbur/b3/vCF/wn1Mz8b6Af1hUf5Vf/Z6kd7PJnHaXwxMAHJ
   </data>
  </layer>
 </map>

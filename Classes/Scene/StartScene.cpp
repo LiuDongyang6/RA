@@ -1,6 +1,7 @@
 #include "StartScene.h"
+#include "LoadingScene.h"
 #include "RoomScene.h"
-#include"PlayScene.h"
+#include "NetMenu.h"
 
 USING_NS_CC;
 
@@ -97,13 +98,12 @@ void Start::menuLastpageCallback(Ref* pSender)
 
 void Start::menuSingleplayerCallback(Ref* pSender)
 {
-	auto sc = PlayScene::createScene();
+	auto sc = NetMenu::createScene();
 	Director::getInstance()->pushScene(sc);
 }
 
 
 void Start::menuMultiplayerCallback(Ref* pSender)
 {
-	auto sc = Room::createScene();
-	Director::getInstance()->pushScene(sc);
+	Director::getInstance()->popScene();
 }

@@ -1,26 +1,75 @@
-#ifndef __ROOM_SCENE_H__
-#define __ROOM_SCENE_H__
+﻿#ifndef _RoomScene_h_
+#define _RoomScene_h_
 
+#include <iostream>
 #include "cocos2d.h"
-
-#include "cocostudio\CocoStudio.h"
-#include "ui\CocosGUI.h"
-
-class Room : public cocos2d::Layer
+#include "json/document.h"
+#include "../Data/LevelData.h"
+#include "../PlayScene.h"
+#include "../NetWork/LocalServer.h"
+#include "../NetWork/Client.h"
+#include "../Data/ExternData.h"
+/**
+ * @brief 房间类,开房开房开房！继承自cocos2d:Layer
+ * 这里房间信息可以实时更新,玩家可以随便聊天
+ */
+class RoomScene : public cocos2d::Layer
 {
+protected:
+    Vector<Sprite*>     _exist_player;             ///目前房间里的Player
+    int                 _selectLevelIndex;         ///目前选择的地图索引
+    Sprite*             _room_ptr;                 ///房间背景
+    std::string         _owner_player_name;        ///房主的姓名
+    PlayerData*         _owner_player_data;        ///房主的个人信息
+    Button*             _start_game_button;        ///开始游戏按钮
+    std::string         _chatString;               ///聊天信息
+    TextField*          _chatWindow;               ///聊天输入框
 public:
-	static cocos2d::Scene* createScene();
+    LevelData*          _game_data;                ///游戏信息
 
-	virtual bool init();
+    /** 
+    * @brief                    Room的static create函数
+    * @param    c               客户端指针
+    * @param    mode            服务端or客户端
+    * @param    _playerName     玩家姓名
+    * @return   Scene*
+    */
+    static cocos2d::Scene* createScene(Client* c, int mode, std::string _playerName);
 
-	// callback functions that jump to other scenes 
-	void menuLastpageCallback(cocos2d::Ref* pSender);
-	void startCallback(Ref* pSender);
-	void menuOkCallback(cocos2d::Ref* pSender);
-
-
-	// implement the "static create()" method manually
-	CREATE_FUNC(Room);
+    /** 
+    * @brief 做一些初始化的工作
+    * @return  bool
+    */
+    virtual bool init();
+    /** 
+    * @brief 聊天输入框活动函数
+    * @param type 活动的种类
+    * @param pSender 信息传输指针
+    * @return  void
+    */
+    void textFieldEvent(Ref *pSender, cocos2d::ui::TextField::EventType type);
+    /** 
+    * @brief 初始化服务端
+    * @return  void
+    */
+    bool initForServer(void);
+    /** 
+    * @brief 初始化客户端
+    * @return  void
+    */
+    bool initForClient(void);
+    /** 
+    * @brief 找到玩家ID
+    * @return  int
+    */
+    int  findPlayerId();
+    /** 
+    * @brief 每帧对房间进行更新
+    * @return  void
+    */
+    void update(float delta);
+ 
+    CREATE_FUNC(RoomScene);
 };
 
-#endif // __ROOM_SCENE_H__
+#endif /* _RoomScene_h_ */
