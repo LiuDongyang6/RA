@@ -98,6 +98,12 @@ public:
 	void doAttack() override;
 	static RAObject* create(Point location);
 	static const int id = 7;
+
+	void initFire();
+	Sprite* fire_;
+
+	Action* fire_action_;
+	bool annihilation() override;
 };
 class RABlackMagician :public RASoldier
 {
@@ -116,6 +122,13 @@ public:
 
 	static RAObject* create(Point location);
 	static const int id = 9;
+
+	void initFire();
+	void doAttack() override;
+	Sprite* fire_;
+
+	Action* fire_action_;
+	bool annihilation() override;
 };
 class RAEngineer :public RASoldier
 {

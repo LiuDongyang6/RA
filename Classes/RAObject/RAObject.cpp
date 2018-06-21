@@ -75,6 +75,7 @@ bool RAObject::isBuilding()
 	else
 		return false;
 }
+
 void RAObject::changeControl(bool mine)
 {
 	under_my_control = mine;
@@ -107,6 +108,11 @@ void RAObject::changeControl(bool mine)
 			RAPlayer::all_soldiers_.insert(p);
 		}
 	}
+}
+
+Point RAObject::getCorePoint()
+{
+	return getPosition() + Point(0, getContentSize().height / 2);
 }
 //
 //RAConstructButton

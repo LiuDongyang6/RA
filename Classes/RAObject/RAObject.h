@@ -32,6 +32,7 @@ public:
 	void changeControl(bool mine);
 	int getCount() { return object_count_; }
 	int getId() { return id_; };
+	Point getCorePoint();
 	bool isBuilding();
 	bool under_my_control=true;
 protected:

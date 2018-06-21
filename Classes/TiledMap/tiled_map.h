@@ -53,6 +53,10 @@ public:
 
 	static cocos2d::Point soldierBirth(cocos2d::Point build_pos, const int);
 
+	static void changeOilTile(cocos2d::Point pos);
+
+	static void recoverOilTile(cocos2d::Point pos);
+
 	//地图移动速度
 	static const float speed;
 

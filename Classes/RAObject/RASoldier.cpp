@@ -142,7 +142,7 @@ void RASoldier::findRoadAndLetGo()
 }
 void RASoldier::findRoadAndLetGoForFight()
 {
-	if (getPosition().distance(AimEnemy->getPosition()) <= range_)
+	if (getPosition().distance(AimEnemy->getCorePoint()) <= range_)
 	{
 		doAttack();
 	}
@@ -270,19 +270,55 @@ RAObject* RAAtomicBomb::create(Point location)
 
 	object->autorelease();
 
+	object->initFire();
+
 	return object;
+}
+void RAAtomicBomb::initFire()
+{
+	fire_ = Sprite::createWithSpriteFrameName("AtomicBomb_range_attack.png");
+	fire_->setAnchorPoint(Vec2(0.5, 0));
+	RAMap::getMap()->addChild(fire_, 10000);
+	fire_->setScale(0);
+
+	auto in = ScaleTo::create(attack_speed_ , 1);
+	auto changeColor = TintTo::create(attack_speed_ , Color3B(180, 53, 34));
+	auto fadeout = FadeOut::create(attack_speed_ );
+	auto F = fire_;
+	auto call = [=]() {
+		auto archive = RAPlayer::enemies;
+		for (auto enemy : archive)
+		{
+			if(enemy->getCorePoint().distance(F->getPosition())<1000)
+			enemy->annihilation();
+		}
+	};
+	auto callFunc = CallFunc::create(call);
+
+	auto call2 = [=]() {
+		F->removeFromParent();
+	};
+	auto callFunc2 = CallFunc::create(call2);
+	auto step = Spawn::create(callFunc, fadeout, NULL);
+	fire_action_ = Sequence::create(in, changeColor,step,callFunc2, NULL);
+	fire_action_->retain();
 }
 void RAAtomicBomb::doAttack()
 {
+	//停止动画
 	stopAllActions();
-	//if and only if enemy is a building and is not under my control
-	if (!AimEnemy->under_my_control)
-	{
-		//如果不暂停触摸会有莫名其妙的bug
-		active_die_ = 1;
-		annihilation();
-		AimEnemy->annihilation();
-	}
+
+	fire_->setPosition(AimEnemy->getCorePoint());
+
+	active_die_ = 1;
+	annihilation();
+}
+bool RAAtomicBomb::annihilation()
+{
+	RASoldier::annihilation();
+	fire_->runAction(fire_action_);
+	fire_action_->release();
+	return 1;
 }
 //
 //RABlackMagician
@@ -308,7 +344,57 @@ RAObject* RABomber::create(Point location)
 
 	object->autorelease();
 
+	object->initFire();
+
 	return object;
+}
+void RABomber::initFire()
+{
+	fire_ = Sprite::createWithSpriteFrameName("Bomber_range_attack.png");
+	RAMap::getMap()->addChild(fire_, 80);
+	fire_->setScale(0);
+
+	auto in = ScaleTo::create(attack_speed_ / 4, 1);
+
+	auto fade = FadeOut::create(attack_speed_ / 4);
+	auto revolve = RotateBy::create(attack_speed_ / 4, 1080.0f);
+	auto out = Spawn::createWithTwoActions(fade, revolve);
+
+	fire_action_ = Sequence::create(in, out, NULL);
+	fire_action_->retain();
+}
+void RABomber::doAttack()
+{
+	//停止动画
+	stopAllActions();
+
+	auto animation = Animation::createWithSpriteFrames(animation_[2],attack_speed_ / animation_[2].size());
+	auto animate = Animate::create(animation);
+	auto call = [&]() {
+		fire_->setPosition(AimEnemy->getCorePoint());
+		fire_->setOpacity(255);
+		fire_->setScale(0);
+		fire_->runAction(fire_action_);
+	};
+	auto fire_go = CallFunc::create(call);
+	auto seq = Sequence::create(animate, fire_go, NULL);
+	auto act = RepeatForever::create(seq);
+	runAction(act);
+	AimEnemy->sufferAttack(attack_speed_, hit_, this);
+
+	auto func = [&](float dt) {
+		if (getPosition().distance(this->AimEnemy->getCorePoint()) > range_)
+		{
+			stopCurrentBehavior();
+		}
+	};
+	schedule(func, 0.2f, std::string("IN_RANGE_CHECK"));
+}
+bool RABomber::annihilation()
+{
+	fire_action_->release();
+	fire_->removeFromParent();
+	return RASoldier::annihilation();
 }
 //
 //RAEngineer

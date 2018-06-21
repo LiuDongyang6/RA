@@ -191,7 +191,7 @@
         "capital": 100,
         "UI": [],
         "UIFile":"PowerStation/PowerStationUi.ExportJson",
-        "category":2,
+        "category":90,
         "covering":4
     }
 ]
