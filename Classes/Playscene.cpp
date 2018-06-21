@@ -1,6 +1,6 @@
 #include "PlayScene.h"
 #include "SimpleAudioEngine.h"
-
+#include "TiledMap/RAlittle_map.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -38,6 +38,8 @@ bool PlayScene::init()
 
 	auto base = RABase::create(Point(3000, 3000));
 
+	littleMap::init(1);
+	this->addChild(littleMap::getLittleMap(), 20);
 
 	auto powerstation = RAPowerStation::create(Point(2800,2800));
 

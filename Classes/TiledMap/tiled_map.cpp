@@ -223,12 +223,12 @@ void RAMap::moveMap(float dt) {
 	Point viewPos = mapPos + speed * diff;
 	Size winSize = Director::getInstance()->getWinSize();
 	Size tileSize = _tiledMap->getTileSize();
-	if (viewPos.x < winSize.width - 105 * tileSize.width || viewPos.x > 0)
+	if (viewPos.x < winSize.width - 105 * tileSize.width - 800|| viewPos.x > 800)
 	{
 		diff.x = 0;
 	}
 
-	if (viewPos.y < winSize.height - 106 * tileSize.height || viewPos.y >0)
+	if (viewPos.y < winSize.height - 106 * tileSize.height - 450 || viewPos.y > 450)
 	{
 		diff.y = 0;
 	}
