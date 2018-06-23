@@ -10,6 +10,8 @@
     <string>BaseUi.json</string>
     <string>PowerStation Ui.json</string>
     <string>Barrack.json</string>
+    <string>NuclearSilo.json</string>
+    <string>Manhattan.json</string>
   </JsonList>
   <CanvasSize>
     <Width>400</Width>
@@ -21,7 +23,9 @@
   <imageFileList>
     <string>Base0.plist</string>
   </imageFileList>
-  <imagePngList />
+  <imagePngList>
+    <string>Base0.png</string>
+  </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>Barrack.json</CurrentUIJson>
+  <CurrentUIJson>NuclearSilo.json</CurrentUIJson>
 </UIProject>

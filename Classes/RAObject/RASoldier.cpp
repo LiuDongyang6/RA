@@ -482,6 +482,19 @@ RAObject* RAWinterSoldier::create(Point location)
 	return object;
 }
 //
+//RAWitch
+//
+RAObject* RAWitch::create(Point location)
+{
+	RAWitch* object = new RAWitch();
+
+	object->initWithIdAndLocation(id, location);
+
+	object->autorelease();
+
+	return object;
+}
+//
 //RAWizzard
 //
 RAObject* RAWizzard::create(Point location)

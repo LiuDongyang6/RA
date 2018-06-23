@@ -152,6 +152,15 @@ public:
 	static RAObject* create(Point location);
 	static const int id = 11;
 };
+class RAWitch :public RASoldier
+{
+public:
+	RAWitch() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 12;
+};
 class RAWizzard :public RASoldier
 {
 public:

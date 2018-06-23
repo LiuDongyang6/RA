@@ -142,7 +142,7 @@
                 <key>verticesUV</key>
                 <string>292 1087 302 1122 357 1149 357 1198 275 1249 185 1282 180 1283 176 1283 142 1275 1 1204 1 1137 56 1125 113 1070 185 1051 214 1050 236 1050</string>
             </dict>
-            <key>Factory(1).png</key>
+            <key>Manhattan(1).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -165,7 +165,7 @@
                 <key>verticesUV</key>
                 <string>626 1009 719 1096 719 1118 547 1202 518 1202 361 1123 361 1100 378 1083 424 1056 468 1012 523 981 604 958 607 958</string>
             </dict>
-            <key>Factory(2).png</key>
+            <key>Manhattan(2).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -188,7 +188,7 @@
                 <key>verticesUV</key>
                 <string>371 370 371 457 199 512 150 512 5 451 1 429 1 406 47 348 168 286 176 283 178 283</string>
             </dict>
-            <key>Factory(3).png</key>
+            <key>Manhattan(3).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -372,7 +372,7 @@
                 <key>verticesUV</key>
                 <string>693 1306 560 1312 556 1312 528 1299 527 1291 527 1228 545 1206 553 1204 693 1204</string>
             </dict>
-            <key>RepairFactory(1).png</key>
+            <key>Repai>Manhattan(1).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -395,7 +395,7 @@
                 <key>verticesUV</key>
                 <string>838 74 933 111 933 143 724 250 680 250 468 144 468 122 653 21 655 17 688 1 707 1</string>
             </dict>
-            <key>RepairFactory(2).png</key>
+            <key>Repai>Manhattan(2).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -418,7 +418,7 @@
                 <key>verticesUV</key>
                 <string>198 30 237 31 318 79 398 119 466 141 466 174 260 281 212 281 1 176 1 153 53 125 150 1 181 1</string>
             </dict>
-            <key>RepairFactory(3).png</key>
+            <key>Repai>Manhattan(3).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>

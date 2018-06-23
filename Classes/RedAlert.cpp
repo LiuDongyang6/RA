@@ -51,6 +51,7 @@ void RedAlert::initCreateWiki()
 	wiki.insert({ 9,RABomber::create });
 	wiki.insert({ 10,RAEngineer::create });
 	wiki.insert({ 11,RAWinterSoldier::create });
+	wiki.insert({ 12,RAWitch::create });
 	wiki.insert({ 13,RAWizzard::create });
 
 }

@@ -29,7 +29,7 @@ public:
 	virtual void sufferAttack(float attack_speed,int damage,RASoldier* attacker)=0;
 	void stopSufferAttack(RASoldier* attacker);
 	virtual bool annihilation();
-	void changeControl(bool mine);
+	virtual void changeControl(bool mine);
 	int getCount() { return object_count_; }
 	int getId() { return id_; };
 	Point getCorePoint();

@@ -70,7 +70,7 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 
 bool RAObject::isBuilding()
 {
-	if (category_ == 100 || category_ == 2)
+	if (category_ == 100 || category_ == 90)
 		return true;
 	else
 		return false;

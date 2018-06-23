@@ -25,7 +25,7 @@
         "original_hp":3000,
         "power": 50,
         "capital": 150,
-        "UI": [3,4,5,6,7,9,10,11,13],
+        "UI": [3,4,5,6,8,9,10,11,12],
         "UIFile":"Barrack/Barrack.ExportJson",
         "category":100,
         "covering":2
@@ -188,10 +188,12 @@
         "name": "OilField",
         "original_hp":3000,
         "power": 0,
-        "capital": 100,
+        "capital": 0,
         "UI": [],
         "UIFile":"PowerStation/PowerStationUi.ExportJson",
         "category":90,
-        "covering":4
+        "covering":4,
+        "income":50,
+        "income_speed":0.2
     }
 ]

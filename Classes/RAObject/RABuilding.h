@@ -87,10 +87,16 @@ class RAOilField :public RABuilding
 {
 public:
 	RAOilField() :
-		RABuilding(id) {}
-
+		RABuilding(id),
+		income_value_(RAUtility::RAgetProperty(id,"income").asInt())
+	{}
+	void changeControl(bool mine) override;
+	void initCapitalIncome();
+	void getIncome(float dt);
 	static RAObject* create(Point location);
 	static const int id = 14;
+protected:
+	int income_value_;
 };
 #endif
 
