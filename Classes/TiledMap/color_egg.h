@@ -1,5 +1,5 @@
-#ifndef __RAMAP__H__
-#define __RAMAP__H__
+#ifndef __RACOMAP__H__
+#define __RACOMAP__H__
 
 #include "cocos2d.h"
 

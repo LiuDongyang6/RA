@@ -80,6 +80,17 @@ public:
 	static const int id = 2;
 
 };
+//
+//RAOilField
+//
+class RAOilField :public RABuilding
+{
+public:
+	RAOilField() :
+		RABuilding(id) {}
 
+	static RAObject* create(Point location);
+	static const int id = 14;
+};
 #endif
 

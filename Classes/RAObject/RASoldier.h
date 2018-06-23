@@ -27,7 +27,7 @@ public:
 	//called by my soldier
 	bool onTouchBegan(Touch* touch, Event* event) ;
 	//
-	void doAttack();
+	virtual void doAttack();
 	//
 	void sufferAttack(float attack_speed, int damage, RASoldier* attacker) override;
 	//
@@ -37,7 +37,7 @@ public:
 	//
 	void runToFight(RAObject* object);
 	~RASoldier()override {	}
-private:
+protected:
 	std::vector<Vector<SpriteFrame*>> animation_;
 	const int range_;
 	const int speed_;
@@ -48,6 +48,8 @@ private:
 	Point destination;
 	Point next_step=Point(-1,-1);
 	RAObject* AimEnemy=NULL;
+	//soldier是否主动死亡（意味着可能播放不同的动画)
+	bool active_die_ = 0;
 	//get a repeat forever action
 	Action* getAction(int number, float dt);
 };
@@ -87,6 +89,77 @@ public:
 
 	static RAObject* create(Point location);
 	static const int id = 6;
+};
+class RAAtomicBomb :public RASoldier
+{
+public:
+	RAAtomicBomb() :
+		RASoldier(id) {}
+	void doAttack() override;
+	static RAObject* create(Point location);
+	static const int id = 7;
+
+	void initFire();
+	Sprite* fire_;
+
+	Action* fire_action_;
+	bool annihilation() override;
+};
+class RABlackMagician :public RASoldier
+{
+public:
+	RABlackMagician() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 8;
+};
+class RABomber :public RASoldier
+{
+public:
+	RABomber() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 9;
+
+	void initFire();
+	void doAttack() override;
+	Sprite* fire_;
+
+	Action* fire_action_;
+	bool annihilation() override;
+};
+class RAEngineer :public RASoldier
+{
+public:
+	RAEngineer() :
+		RASoldier(id) {}
+	void doAttack() override;
+	static RAObject* create(Point location);
+	static const int id = 10;
+	void runToBuildOilField(Point pos);
+	void findRoadAndLetGoForOilField();
+private:
+	Point oil_position_;
+};
+class RAWinterSoldier :public RASoldier
+{
+public:
+	RAWinterSoldier() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 11;
+};
+class RAWizzard :public RASoldier
+{
+public:
+	RAWizzard() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 13;
 };
 #endif // !__RASOLDIER_H__
 

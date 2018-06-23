@@ -109,7 +109,8 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 		}
 		else
 		{
-			for (auto soldier : RAPlayer::selected_soldiers_)
+			auto TempSet = RAPlayer::selected_soldiers_;
+			for (auto soldier : TempSet)
 			{
 				soldier->runToFight(this);
 			}
@@ -160,4 +161,19 @@ RAObject* RABarrack::create(Point location)
 	object->autorelease();
 
     return object;
+}
+
+//
+//RAOilField
+//
+RAObject* RAOilField::create(Point location)
+{
+	RAOilField* object = new RAOilField();
+
+	object->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	object->autorelease();
+
+	return object;
 }

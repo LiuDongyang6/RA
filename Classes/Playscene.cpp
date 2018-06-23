@@ -1,6 +1,7 @@
 #include "PlayScene.h"
 #include "SimpleAudioEngine.h"
-
+#include"ResourceUI/ResourceUI.h"
+#include "TiledMap/RAlittle_map.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -36,8 +37,13 @@ bool PlayScene::init()
 	addChild(fight_layer, 1, 1);
 	addChild(ui_layer, 2, 2);
 
+	RAResourceUI::init();
+	ui_layer->addChild(RAResourceUI::ResourceUI);
+
 	auto base = RABase::create(Point(3000, 3000));
 
+	littleMap::init(1);
+	this->addChild(littleMap::getLittleMap(), 20);
 
 	auto powerstation = RAPowerStation::create(Point(2800,2800));
 

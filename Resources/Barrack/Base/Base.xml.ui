@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<UIProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ProjectDir>D:\codes\RA\RA\Resources\Barrack\Base</ProjectDir>
+  <Version>1.6.0.0</Version>
+  <Resources>D:\codes\RA\RA\Resources\Barrack\Base\Resources</Resources>
+  <Name>Base</Name>
+  <JsonFileName>Base.json</JsonFileName>
+  <JsonFolder>D:\codes\RA\RA\Resources\Barrack\Base\Json</JsonFolder>
+  <JsonList>
+    <string>BaseUi.json</string>
+    <string>PowerStation Ui.json</string>
+    <string>Barrack.json</string>
+  </JsonList>
+  <CanvasSize>
+    <Width>400</Width>
+    <Height>900</Height>
+  </CanvasSize>
+  <filePath>D:\codes\RA\RA\Resources\Barrack\Base\Base.xml.ui</filePath>
+  <ProjectType>UIProject</ProjectType>
+  <ResRelativePath />
+  <imageFileList>
+    <string>Base0.plist</string>
+  </imageFileList>
+  <imagePngList />
+  <JsonSuffix>.json</JsonSuffix>
+  <CurrentUIJson>Barrack.json</CurrentUIJson>
+</UIProject>

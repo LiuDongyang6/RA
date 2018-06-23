@@ -8,7 +8,7 @@ class RASoldier;
 class RAMap:public cocos2d::Node
 {
 public:
-    static bool init();
+    static bool init(int num = 1);
 
 	static cocos2d::Point glCoordToTileCoord(cocos2d::Point gl_cood);
 	
@@ -53,6 +53,10 @@ public:
 
 	static cocos2d::Point soldierBirth(cocos2d::Point build_pos, const int);
 
+	static void changeOilTile(cocos2d::Point pos);
+
+	static void recoverOilTile(cocos2d::Point pos);
+
 	//地图移动速度
 	static const float speed;
 
@@ -67,6 +71,7 @@ protected:
 	static std::map<cocos2d::Point, bool> oil;
 	static std::map<cocos2d::Point, bool> soldier_collision;
 	static std::vector<cocos2d::Point> routines;
+	static int map_num;
 };
 
 #endif // __AB__

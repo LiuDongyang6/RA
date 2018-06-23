@@ -21,7 +21,8 @@ public:
 		hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
 		covering_(RAUtility::RAgetProperty(id, "covering").asInt()),
 		category_(RAUtility::RAgetProperty(id, "category").asInt()),
-		object_count_(RAPlayer::getCounter())
+		object_count_(RAPlayer::getCounter()),
+		id_(id)
 	{}
 	~RAObject()override {}
 	bool initWithSpriteFrameNameAndLocation(const std::string& filename,Point location);
@@ -30,6 +31,9 @@ public:
 	virtual bool annihilation();
 	void changeControl(bool mine);
 	int getCount() { return object_count_; }
+	int getId() { return id_; };
+	Point getCorePoint();
+	bool isBuilding();
 	bool under_my_control=true;
 protected:
 	const int covering_;
@@ -40,6 +44,7 @@ protected:
 	std::unordered_set<RASoldier*> attacking_me_;
 	const int object_count_;
 	Sprite* hp_bar;
+	const int id_;
 };
 
 
