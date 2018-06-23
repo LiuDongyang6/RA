@@ -17,19 +17,24 @@ const float RAMap::speed = 30;
 const int RAMap::accurancy = 50;
 TMXTiledMap * RAMap::_tiledMap;
 Point RAMap::diff;
+int RAMap::map_num;
 std::map<Point, bool> RAMap::collision;
 std::map<Point, bool> RAMap::oil;
 std::map<Point, bool> RAMap::soldier_collision;
 std::vector<Point> RAMap::routines;
 
 // on "init" you need to initialize your instance
-bool RAMap::init()
+bool RAMap::init(int num)
 {
+	map_num = num;
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//创建地图
-	_tiledMap = TMXTiledMap::create("map1.tmx");
+	if (map_num == 1)
+		_tiledMap = TMXTiledMap::create("map1.tmx");
+	else if (map_num == 2)
+		_tiledMap = TMXTiledMap::create("map2.tmx");
 
 	mapInit();
 	//testForCoord();
@@ -69,13 +74,14 @@ void RAMap::testForCoord(void) {
 		auto dest = touch->getLocation();
 		auto tile = glCoordToTileCoord(dest);
 		auto relate_1 = tileCoordToRelatedCoord(tile);
-		auto relate = relatedCoordToTileCoord(relate_1);/*
+		auto relate = relatedCoordToTileCoord(relate_1);
 		log("-------------tile %f, %f", tile.x, tile.y);
-		log("-------------relate %f, %f", relate_1.x, relate_1.y);
+		/*log("-------------relate %f, %f", relate_1.x, relate_1.y);
 		log("-------------%f, %f", relate.x, relate.y);
 		log("-------------soldier collision %d %f,%f", 
 			soldier_collision[Point(tile.x - 3, tile.y - 3)], tile.x - 3, tile.y - 3);*/
-
+		auto gid1 = getMap()->getLayer("hourse")->getTileGIDAt(tile);
+		log("-------------gid %d", gid1);
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
@@ -297,6 +303,15 @@ void RAMap::sureToBuildOil(Point build_point, int size) {
 		tile_coord.x--;
 	}
 	changeOilTile(tile_coord);
+	if (map_num == 1)
+	{
+		if (oil[Point(68, 68)] == 0 && oil[Point(63, 68)] == 0 && oil[Point(58, 68)] == 0 &&
+			oil[Point(58, 63)] == 0 && oil[Point(58, 58)] == 0 && oil[Point(63, 58)] == 0 &&
+			oil[Point(68, 58)] == 0 && oil[Point(68, 53)] == 0)
+		{
+			getMap()->getLayer("hourse")->setTileGID(69, Point(61, 63));
+		}
+	}
 }
 
 //普通建筑被摧毁
