@@ -16,19 +16,41 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="19" name="isometric_grass_and_water" tilewidth="64" tileheight="50" tilecount="28" columns="4">
+  <image source="isometric_grass_and_water.png" width="256" height="384"/>
+ </tileset>
+ <tileset firstgid="47" name="《全民小镇》全套游戏素材-Q 全民小镇-550171_0_爱给网_aigei_com" tilewidth="64" tileheight="70" tilecount="6" columns="2">
+  <image source="《全民小镇》全套游戏素材-Q 全民小镇-550171_0_爱给网_aigei_com.png" width="187" height="216"/>
+ </tileset>
+ <tileset firstgid="53" name="形状各异长满青苔的石雕石头八卦阵素材-20_v_八卦柱_爱给网_aigei_com" tilewidth="192" tileheight="98" tilecount="16" columns="4">
+  <image source="形状各异长满青苔的石雕石头八卦阵素材-20_v_八卦柱_爱给网_aigei_com.png" width="795" height="429"/>
+ </tileset>
+ <tileset firstgid="69" name="富甲3、4-地图-城池-01 (5)_爱给网_aigei_com" tilewidth="192" tileheight="224" tilecount="2" columns="2">
+  <image source="富甲3、4-地图-城池-01 (5)_爱给网_aigei_com.png" width="555" height="278"/>
+ </tileset>
  <layer name="ground" width="128" height="128">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3DAQ0AAAzDoM6/6Qs5JKyaqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7x+e3FbSAAABAA==
+   H4sIAAAAAAAACu3DAQ0AAAzDoHqYf68XckhYNVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVd8/JF/BhQAAAQA=
   </data>
  </layer>
  <layer name="oil" width="128" height="128">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3cMQrDMBBEUd8g979tepMiwiiZ1bwHrr3ms+BGui4AAAAAoNnr9tBF/276d9MfeqXtf9o8qz7Nn/xNabOlzbNK/2fS5lml/zNp86ya1h8AAAAAAAAAAAAAAAAAgDmcW+2mfzf9u+kPACT59p4l/zBn0r+b/t30h15T9v/f7z+V/t3076Y/9Jqy/+yhfzf9u+kPAAAAAAAAAAAAAAAAAAB5nO/tpn83/feYcpdC4kwnmNKfPfTvpj8AAAAAAAAAAAAAAPzGG47P3ywAAAEA
+   H4sIAAAAAAAACu3cMQqAMBREQW/g/W9rLxYGUTfZGbD2yyMQi2TbAAAAAIBm++mhi/7d9O+mP/RKW/9p84y6mj/5m9JmS5tnlP7PpM0zSv9n0uYZNVt/AAAAAAAAAAAAAAAAAADm4dxqN/276d9NfwAgyd17luxh1qR/N/276Q+97q7rv9f/3+9flf7d9O+mP/Ty/9dN/276d9MfAAAAAAAAAAAAAAAAAADyON/bTf9u+r9jlrsUEmdawSz9eYf+3fQHAAAAAAAAAAAAAIBvHPts3rEAAAEA
   </data>
  </layer>
  <layer name="trees" width="128" height="128">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACu3UwY0DQQwDwX1s/jEbjsGeEanuAvw+LXtw7/M8rz/0T0z2Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/Nvuz2Z9tsr/vbt5Uf//vZJjoYPsct1vYPsvNHrbPc6uJ7TPd6GL7XKfb2D7byT6k9q3feaoRqf1X6/ee7E/T+AYab07WtmfbvQ2aNm26tUnLri13NmrYtuHGZun7pt+3QfLGybdtkrpz6l0bJW6deNNmaXun3UOQtLf92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/Nvuz2Z/N/mz2Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92ezPZn+22/19a1km+vsGckz08A3kmGrhG8gw2cE3MG+6wfTfp0vYP+EGqpTtU+6gSdo96RaKtM3T7tkuce/Em7Zyazb7s9mfzf5s9mez/3+0bmj/3zVv2Hx7gvb92u+ftGG7Dd8wYctuW77jpk2bbfqWG7btte17Ttq41cZvOmXjTvZnsz+b/dnsz2Z/Nvuz2Z/N/mz2Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/ttcf/vcBMZbQ7wAAAQA=
+   H4sIAAAAAAAACu3U0Y0DMQwD0e1o++8uSA2JLVIzD8j3aTnGvc/zvP7QPzHZn83+bPZnsz+b/dnsz2Z/Nvuz2Z/N/mz2Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92ezPZn+2yf6+u3lT/f2/k2Gig+1z3G5h+yw3e9g+z60mts90o4vtc51uY/tsJ/uQ2rd+56lGpPZfrd97sj9N4xtovDlZ255t9zZo2rTp1iYtu7bc2ahh24Ybm6Xvm37fBskbJ9+2SerOqXdtlLh14k2bpe2ddg9B0t72Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/Nvuz2Z/N/mz2Z7M/m/3Zbvf3rWWZ6O8byDHRwzeQY6qFbyDDZAffwLzpBtN/ny5h/4QbqFK2T7mDJmn3pFso0jZPu2e7xL0Tb9rKrdnsz2Z/Nvuz2Z/N/v/RuqH9f9e8YfPtCdr3a79/0obtNnzDhC27bfmOmzZttulbbti217bvOWnjVhu/6ZSNO9mfzf5s9mezP5v92ezPZn82+7PZn83+bPZnsz+b/dnsz2Z/Nvuz2Z/N/mz2Z7M/m/3Z7M9mfzb7s9mfzf5s9mezP5v92V5/+N8Hb66deQAAAQA=
+  </data>
+ </layer>
+ <layer name="bagua" width="128" height="128">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACu3OAQ0AAAgDoJeyfzVj3E1IQAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfDTtAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADnLCQk6m4AAAEA
+  </data>
+ </layer>
+ <layer name="hourse" width="128" height="128">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACu3OAQ0AAAgDoJezfyVj3E1IQAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAV9MOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACnLNC+uE0AAAEA
   </data>
  </layer>
  <layer name="collision" width="128" height="128" opacity="0">

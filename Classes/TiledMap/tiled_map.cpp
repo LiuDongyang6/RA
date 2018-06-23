@@ -17,22 +17,27 @@ const float RAMap::speed = 30;
 const int RAMap::accurancy = 50;
 TMXTiledMap * RAMap::_tiledMap;
 Point RAMap::diff;
+int RAMap::map_num;
 std::map<Point, bool> RAMap::collision;
 std::map<Point, bool> RAMap::oil;
 std::map<Point, bool> RAMap::soldier_collision;
 std::vector<Point> RAMap::routines;
 
 // on "init" you need to initialize your instance
-bool RAMap::init()
+bool RAMap::init(int num)
 {
+	map_num = num;
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//创建地图
-	_tiledMap = TMXTiledMap::create("map1.tmx");
+	if (map_num == 1)
+		_tiledMap = TMXTiledMap::create("map1.tmx");
+	else if (map_num == 2)
+		_tiledMap = TMXTiledMap::create("map2.tmx");
 
 	mapInit();
-	testForCoord();
+	//testForCoord();
 	setMovePosition();
 	_tiledMap->schedule(schedule_selector(RAMap::moveMap));
     return true;
@@ -69,13 +74,14 @@ void RAMap::testForCoord(void) {
 		auto dest = touch->getLocation();
 		auto tile = glCoordToTileCoord(dest);
 		auto relate_1 = tileCoordToRelatedCoord(tile);
-		auto relate = relatedCoordToTileCoord(relate_1);/*
+		auto relate = relatedCoordToTileCoord(relate_1);
 		log("-------------tile %f, %f", tile.x, tile.y);
-		log("-------------relate %f, %f", relate_1.x, relate_1.y);
+		/*log("-------------relate %f, %f", relate_1.x, relate_1.y);
 		log("-------------%f, %f", relate.x, relate.y);
 		log("-------------soldier collision %d %f,%f", 
 			soldier_collision[Point(tile.x - 3, tile.y - 3)], tile.x - 3, tile.y - 3);*/
-		auto oil = cannotBuildOil(relate_1, 4);
+		auto gid1 = getMap()->getLayer("hourse")->getTileGIDAt(tile);
+		log("-------------gid %d", gid1);
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
@@ -223,12 +229,12 @@ void RAMap::moveMap(float dt) {
 	Point viewPos = mapPos + speed * diff;
 	Size winSize = Director::getInstance()->getWinSize();
 	Size tileSize = _tiledMap->getTileSize();
-	if (viewPos.x < winSize.width - 105 * tileSize.width || viewPos.x > 0)
+	if (viewPos.x < winSize.width - 105 * tileSize.width - 800|| viewPos.x > 800)
 	{
 		diff.x = 0;
 	}
 
-	if (viewPos.y < winSize.height - 106 * tileSize.height || viewPos.y >0)
+	if (viewPos.y < winSize.height - 106 * tileSize.height - 450 || viewPos.y > 450)
 	{
 		diff.y = 0;
 	}
@@ -263,7 +269,6 @@ Point RAMap::cannotBuildOil(Point build_point, int size) {
 				tile_coord.y++;
 			else 
 			{	
-				log("%f, %f", tile_coord.x, tile_coord.y);
 				return tileCoordToRelatedCoord(tile_coord);
 			}
 		}
@@ -297,6 +302,16 @@ void RAMap::sureToBuildOil(Point build_point, int size) {
 		tile_coord.y += size;
 		tile_coord.x--;
 	}
+	changeOilTile(tile_coord);
+	if (map_num == 1)
+	{
+		if (oil[Point(68, 68)] == 0 && oil[Point(63, 68)] == 0 && oil[Point(58, 68)] == 0 &&
+			oil[Point(58, 63)] == 0 && oil[Point(58, 58)] == 0 && oil[Point(63, 58)] == 0 &&
+			oil[Point(68, 58)] == 0 && oil[Point(68, 53)] == 0)
+		{
+			getMap()->getLayer("hourse")->setTileGID(69, Point(61, 63));
+		}
+	}
 }
 
 //普通建筑被摧毁
@@ -325,6 +340,7 @@ void RAMap::destroyOilBuildings(Point des_pos, int size) {
 		tile_coord.y += size;
 		tile_coord.x--;
 	}
+	recoverOilTile(tile_coord);
 }
 
 //士兵占据这格
@@ -785,16 +801,25 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 	}
 	auto open_list_2 = tryEightdirection(next_step->first, dest_tile, size);
 	auto third_step = open_list_2.begin();
-	start = open_list_1.begin();
-	bool isfind = 0;
-	while (start != open_list_1.end())
+	auto start2 = open_list_2.begin();
+	while (start2 != open_list_2.end())
 	{
-		if (start->first == third_step->first)
+		if (third_step->second > start2->second)
+		{
+			third_step = start2;
+		}
+		start2++;
+	}
+	bool isfind = 0;
+	auto start3 = open_list_1.begin();
+	while (start3 != open_list_1.end())
+	{
+		if (start3->first == third_step->first)
 		{
 			isfind = 1;
 			break;
 		}
-		start++;
+		start3++;
 	}
 	if (isfind)
 	{
@@ -1015,6 +1040,28 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 					return answer;
 				}
 			}
+		}
+	}
+}
+
+void RAMap::changeOilTile(cocos2d::Point pos) 
+{
+	for (int x = 0; x < 4; x++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			_tiledMap->getLayer("oil")->removeTileAt(Point(pos.x - x, pos.y - y));
+		}
+	}
+}
+
+void RAMap::recoverOilTile(cocos2d::Point pos)
+{
+	for (int x = 0; x < 4; x++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			_tiledMap->getLayer("oil")->setTileGID(15, Point(pos.x - x, pos.y - y));
 		}
 	}
 }
