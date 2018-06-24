@@ -56,7 +56,7 @@
           "sizeType": 0,
           "tag": 1,
           "touchAble": true,
-          "useMergedTexture": false,
+          "useMergedTexture": true,
           "visible": true,
           "width": 166,
           "x": 114,
@@ -69,7 +69,7 @@
           "disabledData": {
             "path": "PowerStation2.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "fontName": "微软雅黑",
           "fontSize": 14,
@@ -78,13 +78,13 @@
           "normalData": {
             "path": "PowerStation0.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "pressed": null,
           "pressedData": {
             "path": "PowerStation1.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "scale9Enable": false,
           "scale9Height": 158,
@@ -129,7 +129,7 @@
           "sizeType": 0,
           "tag": 2,
           "touchAble": true,
-          "useMergedTexture": false,
+          "useMergedTexture": true,
           "visible": true,
           "width": 133,
           "x": 293,
@@ -142,7 +142,7 @@
           "disabledData": {
             "path": "Barrack3.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "fontName": "微软雅黑",
           "fontSize": 14,
@@ -151,13 +151,13 @@
           "normalData": {
             "path": "Barrack0.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "pressed": null,
           "pressedData": {
             "path": "Barrack1.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "scale9Enable": false,
           "scale9Height": 108,
@@ -202,7 +202,7 @@
           "sizeType": 0,
           "tag": 0,
           "touchAble": true,
-          "useMergedTexture": false,
+          "useMergedTexture": true,
           "visible": true,
           "width": 361,
           "x": 116,
@@ -215,7 +215,7 @@
           "disabledData": {
             "path": "Base2.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "fontName": "微软雅黑",
           "fontSize": 14,
@@ -224,13 +224,13 @@
           "normalData": {
             "path": "Base0.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "pressed": null,
           "pressedData": {
             "path": "Base1.png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "scale9Enable": false,
           "scale9Height": 286,
@@ -275,7 +275,7 @@
           "sizeType": 0,
           "tag": 17,
           "touchAble": true,
-          "useMergedTexture": false,
+          "useMergedTexture": true,
           "visible": true,
           "width": 249,
           "x": 294,
@@ -288,7 +288,7 @@
           "disabledData": {
             "path": "Manhattan(3).png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "fontName": "微软雅黑",
           "fontSize": 14,
@@ -297,13 +297,13 @@
           "normalData": {
             "path": "Manhattan(1).png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "pressed": null,
           "pressedData": {
             "path": "Manhattan(2).png",
             "plistFile": "",
-            "resourceType": 0
+            "resourceType": 1
           },
           "scale9Enable": false,
           "scale9Height": 359,
@@ -345,7 +345,7 @@
       "sizeType": 0,
       "tag": 11,
       "touchAble": true,
-      "useMergedTexture": false,
+      "useMergedTexture": true,
       "visible": true,
       "width": 400,
       "x": 0,

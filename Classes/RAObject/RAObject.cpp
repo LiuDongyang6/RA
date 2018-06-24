@@ -59,7 +59,7 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 	setPosition(location);
 	RAMap::getMap()->addChild(this, category_);
 	//initialize hp_bar
-	hp_bar = Sprite::create("hp_bar.png");
+	hp_bar = Sprite::createWithSpriteFrameName("hp_bar.png");
 	hp_bar->setPosition(getPosition());
 	hp_bar->setContentSize(Size(getContentSize().width,5));
 	hp_bar->setAnchorPoint(Vec2(0.5, 3.0));
@@ -81,6 +81,8 @@ void RAObject::changeControl(bool mine)
 	under_my_control = mine;
 	if (mine)//我方侵占对方单位
 	{
+		hp_bar->setSpriteFrame("hp_bar.png");
+		hp_bar->setContentSize(Size(getContentSize().width, 5));
 		RAPlayer::enemies.erase(this);
 		if (isBuilding())//建筑
 		{
@@ -96,6 +98,8 @@ void RAObject::changeControl(bool mine)
 	}
 	else//敌方侵占我方单位
 	{
+		hp_bar->setSpriteFrame("hostile_hp_bar.png");
+		hp_bar->setContentSize(Size(getContentSize().width, 5));
 		RAPlayer::enemies.insert(this);
 		if (isBuilding())
 		{
@@ -105,7 +109,7 @@ void RAObject::changeControl(bool mine)
 		{
 			auto p = static_cast<RASoldier*>(this);
 			p->stopCurrentBehavior();
-			RAPlayer::all_soldiers_.insert(p);
+			RAPlayer::all_soldiers_.erase(p);
 		}
 	}
 }

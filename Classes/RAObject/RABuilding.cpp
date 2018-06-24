@@ -149,6 +149,20 @@ RAObject* RABase::create(Point location)
 
 	return base;
 }
+//
+//RADefendingBase
+//
+RAObject* RADefendingBase::create(Point location)
+{
+	RADefendingBase* base = new RADefendingBase();
+
+	base->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	base->autorelease();
+
+	return base;
+}
 
 //
 //RABarrack
@@ -202,4 +216,32 @@ void RAOilField::changeControl(bool mine)
 {
 	RAObject::changeControl(mine);
 	initCapitalIncome();
+}
+//
+//RANuclearSilo
+//
+RAObject* RANuclearSilo::create(Point location)
+{
+	RANuclearSilo* NuclearSilo = new RANuclearSilo();
+
+	NuclearSilo->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	NuclearSilo->autorelease();
+
+	return NuclearSilo;
+}
+//
+//RAManhattan
+//
+RAObject* RAManhattan::create(Point location)
+{
+	RAManhattan* Manhattan = new RAManhattan();
+
+	Manhattan->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	Manhattan->autorelease();
+
+	return Manhattan;
 }

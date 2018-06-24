@@ -9,9 +9,12 @@ void RASoldier::sufferAttack(float attack_speed, int damage, RASoldier* attacker
 	attacking_me_.insert(attacker);
 	auto func = [&, damage](float dt)
 	{
-		this->hp_ -= damage;
-		this->hp_bar->setScaleX(float(hp_) / original_hp_);
-		this->toBeOrNotToBe();
+		if (!this->invicible_)
+		{
+			this->hp_ -= damage;
+			this->hp_bar->setScaleX(float(hp_) / original_hp_);
+			this->toBeOrNotToBe();
+		}
 	};
 	schedule(func, attack_speed, StringUtils::format("ATK_%05d", attacker->getCount()));
 }
@@ -290,7 +293,7 @@ void RAAtomicBomb::initFire()
 		for (auto enemy : archive)
 		{
 			if(enemy->getCorePoint().distance(F->getPosition())<1000)
-			enemy->annihilation();
+				enemy->annihilation();
 		}
 	};
 	auto callFunc = CallFunc::create(call);
@@ -502,8 +505,95 @@ RAObject* RAWizzard::create(Point location)
 	RAWizzard* object = new RAWizzard();
 
 	object->initWithIdAndLocation(id, location);
-
+	object->initWizzard();
 	object->autorelease();
 
 	return object;
+}
+void RAWizzard::initWizzard()
+{
+	//initial UI
+	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id, "UIFile").asCString());
+	UI_->setPosition(Point(0, 0));
+	UI_->retain();
+	//init onTouch
+	_eventDispatcher->removeEventListenersForTarget(this);
+	auto touch = EventListenerTouchOneByOne::create();
+	touch->onTouchBegan=CC_CALLBACK_2(RAWizzard::WizzardOnTouch,this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touch, this);
+	//init skill
+	auto button=(Button*)Helper::seekWidgetByTag(UI_, 0);
+	button->setTouchEnabled(false);
+	auto touch2 = EventListenerTouchOneByOne::create();
+	touch2->onTouchBegan = [=](Touch* touch,Event* event) {
+		bool value;
+		if (value=button->onTouchBegan(touch, event))
+		{
+			this->StartSkill();
+		}
+		return value;
+	};
+	touch2->setSwallowTouches(true);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touch2, button);
+}
+bool RAWizzard::WizzardOnTouch(Touch* touch, Event* event)
+{
+	bool flag;
+	if (flag=RASoldier::onTouchBegan(touch,event))
+	{
+		if (under_my_control)
+		{
+			Director::getInstance()->getRunningScene()->getChildByTag(2)->removeChild(RAPlayer::currentUI(), false);
+			Director::getInstance()->getRunningScene()->getChildByTag(2)->addChild(this->UI_);
+			RAPlayer::currentUI() = UI_;
+		}
+	}
+	return flag;
+}
+void RAWizzard::StartSkill()
+{
+	int range = RAUtility::RAgetProperty(id, "skill_range").asInt();
+	for (auto soldier : RAPlayer::all_soldiers_)
+	{
+		if (getPosition().distance(soldier->getPosition()) < range)
+		{
+			RAWizzardSkill::create(soldier);
+		}
+	}
+}
+bool RAWizzard::annihilation()
+{
+	UI_->removeAllChildrenWithCleanup(true);
+	UI_->removeFromParentAndCleanup(true);
+	if (RAPlayer::currentUI() == UI_)
+	{
+		RAPlayer::currentUI() = NULL;
+	}
+	UI_->release();
+	return RASoldier::annihilation();
+
+}
+void RAWizzardSkill::create(RASoldier* soldier)
+{
+	auto ring = new RAWizzardSkill();
+	ring->initWithSpriteFrameName("defence_wheel.png");
+	ring->setScale((soldier->getContentSize().height + 40) /ring->getContentSize().height);
+	ring->setPosition(soldier->getCorePoint());
+	RAMap::getMap()->addChild(ring, 80);
+	
+	soldier->setInvicible();
+
+	auto follow = [=](float dt) 	{
+		ring->setPosition(soldier->getCorePoint());
+	};
+	ring->schedule(follow, std::string("FOLLOW"));
+
+	auto call = [=]() {
+		soldier->disSetInvicible();
+		ring->removeFromParentAndCleanup(true);
+	};
+	auto callFunc = CallFunc::create(call);
+	auto delay = DelayTime::create(RAUtility::RAgetProperty(13, "skill_lasting").asInt());
+	auto couple = Sequence::createWithTwoActions(delay, callFunc);
+	ring->runAction(couple);
 }

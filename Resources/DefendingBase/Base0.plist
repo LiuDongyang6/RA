@@ -175,16 +175,16 @@
 				<key>offsetY</key>
 				<real>0</real>
 			</dict>
-			<key>NuclearSilo (1).png</key>
+			<key>Manhattan(1).png</key>
 			<dict>
 				<key>width</key>
-				<integer>436</integer>
+				<integer>249</integer>
 				<key>height</key>
-				<integer>256</integer>
+				<integer>359</integer>
 				<key>originalWidth</key>
-				<integer>436</integer>
+				<integer>249</integer>
 				<key>originalHeight</key>
-				<integer>256</integer>
+				<integer>359</integer>
 				<key>x</key>
 				<integer>358</integer>
 				<key>y</key>
@@ -194,43 +194,24 @@
 				<key>offsetY</key>
 				<real>0</real>
 			</dict>
-			<key>NuclearSilo (2).png</key>
+			<key>Manhattan(2).png</key>
 			<dict>
 				<key>width</key>
-				<integer>436</integer>
+				<integer>251</integer>
 				<key>height</key>
-				<integer>240</integer>
+				<integer>328</integer>
 				<key>originalWidth</key>
-				<integer>436</integer>
+				<integer>251</integer>
 				<key>originalHeight</key>
-				<integer>240</integer>
+				<integer>356</integer>
 				<key>x</key>
-				<integer>0</integer>
+				<integer>609</integer>
 				<key>y</key>
-				<integer>706</integer>
+				<integer>448</integer>
 				<key>offsetX</key>
 				<real>0</real>
 				<key>offsetY</key>
-				<real>0</real>
-			</dict>
-			<key>NuclearSilo (3).png</key>
-			<dict>
-				<key>width</key>
-				<integer>416</integer>
-				<key>height</key>
-				<integer>242</integer>
-				<key>originalWidth</key>
-				<integer>416</integer>
-				<key>originalHeight</key>
-				<integer>242</integer>
-				<key>x</key>
-				<integer>438</integer>
-				<key>y</key>
-				<integer>706</integer>
-				<key>offsetX</key>
-				<real>0</real>
-				<key>offsetY</key>
-				<real>0</real>
+				<real>-14</real>
 			</dict>
 		</dict>
 		<key>metadata</key>

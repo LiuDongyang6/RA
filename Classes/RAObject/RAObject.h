@@ -35,9 +35,12 @@ public:
 	Point getCorePoint();
 	bool isBuilding();
 	bool under_my_control=true;
+	void setInvicible() { invicible_ = 1; }
+	void disSetInvicible() { invicible_ = 0; }
 protected:
 	const int covering_;
 	int hp_;
+	bool invicible_ = 0;
 	const int original_hp_;
 	bool toBeOrNotToBe();
 	const int category_;

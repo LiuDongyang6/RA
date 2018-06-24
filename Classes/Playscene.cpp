@@ -40,7 +40,7 @@ bool PlayScene::init()
 	RAResourceUI::init();
 	ui_layer->addChild(RAResourceUI::ResourceUI);
 
-	auto base = RABase::create(Point(3000, 3000));
+	auto base = RADefendingBase::create(Point(3000, 3000));
 
 	littleMap::init(1);
 	this->addChild(littleMap::getLittleMap(), 20);
