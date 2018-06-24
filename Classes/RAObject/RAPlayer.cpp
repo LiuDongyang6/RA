@@ -5,9 +5,11 @@ int RAPlayer::power_ = 200;
 int RAPlayer::capital_ = 10000;
 int RAPlayer::unit_counter_ = 1;
 Widget* RAPlayer::current_UI_ = 0;
-std::set<RASoldier*> RAPlayer::selected_soldiers_;
-std::set<RASoldier*> RAPlayer::all_soldiers_;
-std::set<RAObject*> RAPlayer::enemies;
+std::vector<RASoldier*> RAPlayer::selected_soldiers_;
+std::list<RASoldier*> RAPlayer::all_soldiers_;
+std::list<RAObject*> RAPlayer::enemies;
+std::unordered_map<int, RAObject*> RAPlayer::master_table_;
+int RAPlayer::edge;
 
 void RAPlayer::consumeCapital(int quantity)
 {

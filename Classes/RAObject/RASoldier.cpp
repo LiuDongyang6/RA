@@ -51,17 +51,17 @@ bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 		if (under_my_control)
 		{
 			RAPlayer::selected_soldiers_.clear();
-			RAPlayer::selected_soldiers_.insert(this);
+			RAPlayer::selected_soldiers_.push_back(this);
 		}
 		else
 		{
-			//复制一下，否则一旦哥们攻击的时候阵亡了，会引起
-			//selected_soldiers_遍历过程中失去元素
-			//从而导致崩溃
-			auto TempSet = RAPlayer::selected_soldiers_;
-			for (auto soldier : TempSet)
+			/**反向遍历是为了避免遍历过程中元素移除
+			*从而会导致遍历混乱并报错
+			*/
+			auto& TempSet = RAPlayer::selected_soldiers_;
+			for (auto soldier=TempSet.end();soldier!=TempSet.begin();)
 			{
-				soldier->runToFight(this);
+				(*(--soldier))->runToFight(this);
 			}
 		}
 		return true;
@@ -72,17 +72,27 @@ bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 bool RASoldier::annihilation()
 {
 	//remove from archives
-	RAPlayer::all_soldiers_.erase(this);
-	RAPlayer::selected_soldiers_.erase(this);
+	//从选中士兵和我方士兵中删去
+	{
+		auto it1 = std::find(RAPlayer::all_soldiers_.begin(), RAPlayer::all_soldiers_.end(), this);
+		if (it1 != RAPlayer::all_soldiers_.end())RAPlayer::all_soldiers_.erase(it1);
+		auto it2 = std::find(RAPlayer::selected_soldiers_.begin(), RAPlayer::selected_soldiers_.end(), this);
+		if (it2 != RAPlayer::selected_soldiers_.end())RAPlayer::selected_soldiers_.erase(it2);
+
+	}
 	//die animation
 	auto animation = Animation::createWithSpriteFrames(animation_[active_die_?2:0], 1.0f / 8);
 	auto animate = Animate::create(animation);
 	//一定要以CallFunc的形式调用
-	auto remove = [&]() {RAObject::annihilation(); };
+	auto tempSprite = Sprite::createWithSpriteFrame(getSpriteFrame());
+	tempSprite->setPosition(getPosition());
+	tempSprite->setAnchorPoint(getAnchorPoint());
+	RAMap::getMap()->addChild(tempSprite, category_);
+	auto remove = [=]() { tempSprite->removeFromParent(); };
 	CallFunc* callFunc = CallFunc::create(remove);
 	auto seq = Sequence::create(animate, callFunc, NULL);
-
-	runAction(seq);
+	tempSprite->runAction(seq);
+	RAObject::annihilation();
 	return true;
 }
 void RASoldier::runTo(Point point)
@@ -289,12 +299,15 @@ void RAAtomicBomb::initFire()
 	auto fadeout = FadeOut::create(attack_speed_ );
 	auto F = fire_;
 	auto call = [=]() {
-		auto archive = RAPlayer::enemies;
-		for (auto enemy : archive)
+		std::vector<RAObject*> objects;
+		for (auto it:RAPlayer::master_table_)
 		{
-			if(enemy->getCorePoint().distance(F->getPosition())<1000)
-				enemy->annihilation();
+			auto object = it.second;
+			if (object->getCorePoint().distance(F->getPosition()) < 1000)
+				objects.push_back(object);
 		}
+		for (auto object : objects)
+			object->annihilation();
 	};
 	auto callFunc = CallFunc::create(call);
 
@@ -310,17 +323,16 @@ void RAAtomicBomb::doAttack()
 {
 	//停止动画
 	stopAllActions();
-
-	fire_->setPosition(AimEnemy->getCorePoint());
-
 	active_die_ = 1;
 	annihilation();
 }
 bool RAAtomicBomb::annihilation()
 {
-	RASoldier::annihilation();
+
+	fire_->setPosition(getCorePoint());
 	fire_->runAction(fire_action_);
 	fire_action_->release();
+	RASoldier::annihilation();
 	return 1;
 }
 //

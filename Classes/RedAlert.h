@@ -14,7 +14,7 @@ public:
 	bool OilOnTouBegan(Touch* touch, Event* event);
 	void onTouchMoved(Touch* touch, Event* event);
 	void onTouchEnded(Touch* touch, Event* event);
-	static void HostileObjectAppear(int id,Point location);
+	static void HostileObjectAppear(int id,Point location,int count);
 private:
 	static RedAlert* instance_;
 	Layer* selectBox;
