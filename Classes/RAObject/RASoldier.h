@@ -27,7 +27,7 @@ public:
 	//called by my soldier
 	bool onTouchBegan(Touch* touch, Event* event) ;
 	//
-	void doAttack();
+	virtual void doAttack();
 	//
 	void sufferAttack(float attack_speed, int damage, RASoldier* attacker) override;
 	//
@@ -36,6 +36,7 @@ public:
 	void runTo(Point point);
 	//
 	void runToFight(RAObject* object);
+	//
 	~RASoldier()override {	}
 protected:
 	std::vector<Vector<SpriteFrame*>> animation_;
@@ -48,6 +49,8 @@ protected:
 	Point destination;
 	Point next_step=Point(-1,-1);
 	RAObject* AimEnemy=NULL;
+	//soldier是否主动死亡（意味着可能播放不同的动画)
+	bool active_die_ = 0;
 	//get a repeat forever action
 	Action* getAction(int number, float dt);
 };
@@ -93,9 +96,15 @@ class RAAtomicBomb :public RASoldier
 public:
 	RAAtomicBomb() :
 		RASoldier(id) {}
-
+	void doAttack() override;
 	static RAObject* create(Point location);
 	static const int id = 7;
+
+	void initFire();
+	Sprite* fire_;
+
+	Action* fire_action_;
+	bool annihilation() override;
 };
 class RABlackMagician :public RASoldier
 {
@@ -114,13 +123,20 @@ public:
 
 	static RAObject* create(Point location);
 	static const int id = 9;
+
+	void initFire();
+	void doAttack() override;
+	Sprite* fire_;
+
+	Action* fire_action_;
+	bool annihilation() override;
 };
 class RAEngineer :public RASoldier
 {
 public:
 	RAEngineer() :
 		RASoldier(id) {}
-
+	void doAttack() override;
 	static RAObject* create(Point location);
 	static const int id = 10;
 	void runToBuildOilField(Point pos);
@@ -137,14 +153,34 @@ public:
 	static RAObject* create(Point location);
 	static const int id = 11;
 };
+class RAWitch :public RASoldier
+{
+public:
+	RAWitch() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 12;
+};
 class RAWizzard :public RASoldier
 {
 public:
 	RAWizzard() :
 		RASoldier(id) {}
-
+	void initWizzard();
 	static RAObject* create(Point location);
 	static const int id = 13;
+	bool WizzardOnTouch(Touch* touch, Event* event);
+	void StartSkill();
+	bool annihilation() override;
+private:
+	Widget * UI_;
+};
+class RAWizzardSkill:public Sprite
+{
+public:
+	RAWizzardSkill() :Sprite() {};
+	static void create(RASoldier* soldier);
 };
 #endif // !__RASOLDIER_H__
 

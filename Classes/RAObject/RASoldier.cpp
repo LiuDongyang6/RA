@@ -9,9 +9,12 @@ void RASoldier::sufferAttack(float attack_speed, int damage, RASoldier* attacker
 	attacking_me_.insert(attacker);
 	auto func = [&, damage](float dt)
 	{
-		this->hp_ -= damage;
-		this->hp_bar->setScaleX(float(hp_) / original_hp_);
-		this->toBeOrNotToBe();
+		if (!this->invicible_)
+		{
+			this->hp_ -= damage;
+			this->hp_bar->setScaleX(float(hp_) / original_hp_);
+			this->toBeOrNotToBe();
+		}
 	};
 	schedule(func, attack_speed, StringUtils::format("ATK_%05d", attacker->getCount()));
 }
@@ -52,7 +55,11 @@ bool RASoldier::onTouchBegan(Touch* touch, Event* event)
 		}
 		else
 		{
-			for (auto soldier : RAPlayer::selected_soldiers_)
+			//复制一下，否则一旦哥们攻击的时候阵亡了，会引起
+			//selected_soldiers_遍历过程中失去元素
+			//从而导致崩溃
+			auto TempSet = RAPlayer::selected_soldiers_;
+			for (auto soldier : TempSet)
 			{
 				soldier->runToFight(this);
 			}
@@ -68,13 +75,13 @@ bool RASoldier::annihilation()
 	RAPlayer::all_soldiers_.erase(this);
 	RAPlayer::selected_soldiers_.erase(this);
 	//die animation
-	auto animation = Animation::createWithSpriteFrames(animation_[0], 1.0f / 8);
+	auto animation = Animation::createWithSpriteFrames(animation_[active_die_?2:0], 1.0f / 8);
 	auto animate = Animate::create(animation);
 	//一定要以CallFunc的形式调用
 	auto remove = [&]() {RAObject::annihilation(); };
 	CallFunc* callFunc = CallFunc::create(remove);
-	auto seq = Sequence::create(animate,callFunc,NULL);
-	
+	auto seq = Sequence::create(animate, callFunc, NULL);
+
 	runAction(seq);
 	return true;
 }
@@ -83,7 +90,7 @@ void RASoldier::runTo(Point point)
 	stopCurrentBehavior();
 	//保存目的地
 	destination = point;
-	//
+	//跑步动画
 	auto repeat = getAction(1, 0.2f);
 	runAction(repeat);
 	//
@@ -117,7 +124,7 @@ Action* RASoldier::getAction(int number, float dt)
 void RASoldier::findRoadAndLetGo()
 {
 	RAMap::removeSoldierCollision(getPosition(), covering_);
-	auto vec = RAMap::findRoutine(this,destination,covering_);
+	auto vec = RAMap::findRoutineOneByOne(this,destination,covering_);
 	next_step = Point(vec[0], vec[1]);
 	RAMap::setSoldierCollision(next_step, covering_);
 	if (vec[2] == 0)
@@ -138,14 +145,14 @@ void RASoldier::findRoadAndLetGo()
 }
 void RASoldier::findRoadAndLetGoForFight()
 {
-	if (getPosition().distance(AimEnemy->getPosition()) <= range_)
+	if (getPosition().distance(AimEnemy->getCorePoint()) <= range_)
 	{
 		doAttack();
 	}
 	else
 	{
 		RAMap::removeSoldierCollision(getPosition(), covering_);
-		auto vec = RAMap::findRoutine(this, Point(AimEnemy->getPosition()), covering_);
+		auto vec = RAMap::findRoutineOneByOne(this, Point(AimEnemy->getPosition()), covering_);
 		next_step = Point(vec[0], vec[1]);
 		RAMap::setSoldierCollision(next_step, covering_);
 		if (vec[2] == 0)
@@ -266,7 +273,55 @@ RAObject* RAAtomicBomb::create(Point location)
 
 	object->autorelease();
 
+	object->initFire();
+
 	return object;
+}
+void RAAtomicBomb::initFire()
+{
+	fire_ = Sprite::createWithSpriteFrameName("AtomicBomb_range_attack.png");
+	fire_->setAnchorPoint(Vec2(0.5, 0));
+	RAMap::getMap()->addChild(fire_, 10000);
+	fire_->setScale(0);
+
+	auto in = ScaleTo::create(attack_speed_ , 1);
+	auto changeColor = TintTo::create(attack_speed_ , Color3B(180, 53, 34));
+	auto fadeout = FadeOut::create(attack_speed_ );
+	auto F = fire_;
+	auto call = [=]() {
+		auto archive = RAPlayer::enemies;
+		for (auto enemy : archive)
+		{
+			if(enemy->getCorePoint().distance(F->getPosition())<1000)
+				enemy->annihilation();
+		}
+	};
+	auto callFunc = CallFunc::create(call);
+
+	auto call2 = [=]() {
+		F->removeFromParent();
+	};
+	auto callFunc2 = CallFunc::create(call2);
+	auto step = Spawn::create(callFunc, fadeout, NULL);
+	fire_action_ = Sequence::create(in, changeColor,step,callFunc2, NULL);
+	fire_action_->retain();
+}
+void RAAtomicBomb::doAttack()
+{
+	//停止动画
+	stopAllActions();
+
+	fire_->setPosition(AimEnemy->getCorePoint());
+
+	active_die_ = 1;
+	annihilation();
+}
+bool RAAtomicBomb::annihilation()
+{
+	RASoldier::annihilation();
+	fire_->runAction(fire_action_);
+	fire_action_->release();
+	return 1;
 }
 //
 //RABlackMagician
@@ -292,7 +347,57 @@ RAObject* RABomber::create(Point location)
 
 	object->autorelease();
 
+	object->initFire();
+
 	return object;
+}
+void RABomber::initFire()
+{
+	fire_ = Sprite::createWithSpriteFrameName("Bomber_range_attack.png");
+	RAMap::getMap()->addChild(fire_, 80);
+	fire_->setScale(0);
+
+	auto in = ScaleTo::create(attack_speed_ / 4, 1);
+
+	auto fade = FadeOut::create(attack_speed_ / 4);
+	auto revolve = RotateBy::create(attack_speed_ / 4, 1080.0f);
+	auto out = Spawn::createWithTwoActions(fade, revolve);
+
+	fire_action_ = Sequence::create(in, out, NULL);
+	fire_action_->retain();
+}
+void RABomber::doAttack()
+{
+	//停止动画
+	stopAllActions();
+
+	auto animation = Animation::createWithSpriteFrames(animation_[2],attack_speed_ / animation_[2].size());
+	auto animate = Animate::create(animation);
+	auto call = [&]() {
+		fire_->setPosition(AimEnemy->getCorePoint());
+		fire_->setOpacity(255);
+		fire_->setScale(0);
+		fire_->runAction(fire_action_);
+	};
+	auto fire_go = CallFunc::create(call);
+	auto seq = Sequence::create(animate, fire_go, NULL);
+	auto act = RepeatForever::create(seq);
+	runAction(act);
+	AimEnemy->sufferAttack(attack_speed_, hit_, this);
+
+	auto func = [&](float dt) {
+		if (getPosition().distance(this->AimEnemy->getCorePoint()) > range_)
+		{
+			stopCurrentBehavior();
+		}
+	};
+	schedule(func, 0.2f, std::string("IN_RANGE_CHECK"));
+}
+bool RABomber::annihilation()
+{
+	fire_action_->release();
+	fire_->removeFromParent();
+	return RASoldier::annihilation();
 }
 //
 //RAEngineer
@@ -332,7 +437,7 @@ void RAEngineer::findRoadAndLetGoForOilField()
 	else
 	{
 		RAMap::removeSoldierCollision(getPosition(), covering_);
-		auto vec = RAMap::findRoutine(this, Point(destination), covering_);
+		auto vec = RAMap::findRoutineOneByOne(this, Point(destination), covering_);
 		next_step = Point(vec[0], vec[1]);
 		RAMap::setSoldierCollision(next_step, covering_);
 		if (vec[2] == 0)
@@ -352,12 +457,39 @@ void RAEngineer::findRoadAndLetGoForOilField()
 		}
 	}
 }
+void RAEngineer::doAttack()
+{
+	stopAllActions();
+	//if and only if enemy is a building and is not under my control
+	if (AimEnemy->isBuilding() && !AimEnemy->under_my_control)
+	{
+		//如果不暂停触摸会有莫名其妙的bug
+		AimEnemy->getEventDispatcher()->pauseEventListenersForTarget(AimEnemy);
+		active_die_ = 1;
+		annihilation();
+		AimEnemy->changeControl(true);
+		AimEnemy->getEventDispatcher()->resumeEventListenersForTarget(AimEnemy);
+	}
+}
 //
 //RAWinterSoldier
 //
 RAObject* RAWinterSoldier::create(Point location)
 {
 	RAWinterSoldier* object = new RAWinterSoldier();
+
+	object->initWithIdAndLocation(id, location);
+
+	object->autorelease();
+
+	return object;
+}
+//
+//RAWitch
+//
+RAObject* RAWitch::create(Point location)
+{
+	RAWitch* object = new RAWitch();
 
 	object->initWithIdAndLocation(id, location);
 
@@ -373,8 +505,95 @@ RAObject* RAWizzard::create(Point location)
 	RAWizzard* object = new RAWizzard();
 
 	object->initWithIdAndLocation(id, location);
-
+	object->initWizzard();
 	object->autorelease();
 
 	return object;
+}
+void RAWizzard::initWizzard()
+{
+	//initial UI
+	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id, "UIFile").asCString());
+	UI_->setPosition(Point(0, 0));
+	UI_->retain();
+	//init onTouch
+	_eventDispatcher->removeEventListenersForTarget(this);
+	auto touch = EventListenerTouchOneByOne::create();
+	touch->onTouchBegan=CC_CALLBACK_2(RAWizzard::WizzardOnTouch,this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touch, this);
+	//init skill
+	auto button=(Button*)Helper::seekWidgetByTag(UI_, 0);
+	button->setTouchEnabled(false);
+	auto touch2 = EventListenerTouchOneByOne::create();
+	touch2->onTouchBegan = [=](Touch* touch,Event* event) {
+		bool value;
+		if (value=button->onTouchBegan(touch, event))
+		{
+			this->StartSkill();
+		}
+		return value;
+	};
+	touch2->setSwallowTouches(true);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touch2, button);
+}
+bool RAWizzard::WizzardOnTouch(Touch* touch, Event* event)
+{
+	bool flag;
+	if (flag=RASoldier::onTouchBegan(touch,event))
+	{
+		if (under_my_control)
+		{
+			Director::getInstance()->getRunningScene()->getChildByTag(2)->removeChild(RAPlayer::currentUI(), false);
+			Director::getInstance()->getRunningScene()->getChildByTag(2)->addChild(this->UI_);
+			RAPlayer::currentUI() = UI_;
+		}
+	}
+	return flag;
+}
+void RAWizzard::StartSkill()
+{
+	int range = RAUtility::RAgetProperty(id, "skill_range").asInt();
+	for (auto soldier : RAPlayer::all_soldiers_)
+	{
+		if (getPosition().distance(soldier->getPosition()) < range)
+		{
+			RAWizzardSkill::create(soldier);
+		}
+	}
+}
+bool RAWizzard::annihilation()
+{
+	UI_->removeAllChildrenWithCleanup(true);
+	UI_->removeFromParentAndCleanup(true);
+	if (RAPlayer::currentUI() == UI_)
+	{
+		RAPlayer::currentUI() = NULL;
+	}
+	UI_->release();
+	return RASoldier::annihilation();
+
+}
+void RAWizzardSkill::create(RASoldier* soldier)
+{
+	auto ring = new RAWizzardSkill();
+	ring->initWithSpriteFrameName("defence_wheel.png");
+	ring->setScale((soldier->getContentSize().height + 40) /ring->getContentSize().height);
+	ring->setPosition(soldier->getCorePoint());
+	RAMap::getMap()->addChild(ring, 80);
+	
+	soldier->setInvicible();
+
+	auto follow = [=](float dt) 	{
+		ring->setPosition(soldier->getCorePoint());
+	};
+	ring->schedule(follow, std::string("FOLLOW"));
+
+	auto call = [=]() {
+		soldier->disSetInvicible();
+		ring->removeFromParentAndCleanup(true);
+	};
+	auto callFunc = CallFunc::create(call);
+	auto delay = DelayTime::create(RAUtility::RAgetProperty(13, "skill_lasting").asInt());
+	auto couple = Sequence::createWithTwoActions(delay, callFunc);
+	ring->runAction(couple);
 }

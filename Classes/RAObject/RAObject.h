@@ -29,13 +29,18 @@ public:
 	virtual void sufferAttack(float attack_speed,int damage,RASoldier* attacker)=0;
 	void stopSufferAttack(RASoldier* attacker);
 	virtual bool annihilation();
-	void changeControl(bool mine);
+	virtual void changeControl(bool mine);
 	int getCount() { return object_count_; }
 	int getId() { return id_; };
+	Point getCorePoint();
+	bool isBuilding();
 	bool under_my_control=true;
+	void setInvicible() { invicible_ = 1; }
+	void disSetInvicible() { invicible_ = 0; }
 protected:
 	const int covering_;
 	int hp_;
+	bool invicible_ = 0;
 	const int original_hp_;
 	bool toBeOrNotToBe();
 	const int category_;

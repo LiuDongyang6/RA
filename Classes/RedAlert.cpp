@@ -15,6 +15,7 @@ void RedAlert::initAll()
 	auto framecache = SpriteFrameCache::getInstance();
 	framecache->addSpriteFramesWithFile("Buildings.plist");
 	framecache->addSpriteFramesWithFile("OilField/OilField.plist");
+	framecache->addSpriteFramesWithFile("effects/effects.plist");
 	//
 	RAMap::init();
 	//initial selectBox
@@ -51,7 +52,11 @@ void RedAlert::initCreateWiki()
 	wiki.insert({ 9,RABomber::create });
 	wiki.insert({ 10,RAEngineer::create });
 	wiki.insert({ 11,RAWinterSoldier::create });
+	wiki.insert({ 12,RAWitch::create });
 	wiki.insert({ 13,RAWizzard::create });
+	wiki.insert({ 15,RADefendingBase::create });
+	wiki.insert({ 16,RANuclearSilo::create });
+	wiki.insert({ 17,RAManhattan::create });
 
 }
 void RedAlert::selectedSoldiersMove(Touch* touch)
@@ -124,6 +129,5 @@ void RedAlert::HostileObjectAppear(int id, Point location)
 {
 	RAConstructButton::LaunchTest(id);
 	auto object=RAConstructButton::CreateWiki[id](location);
-	object->under_my_control = 0;
-	RAPlayer::enemies.insert(object);
+	object->changeControl(0);
 }

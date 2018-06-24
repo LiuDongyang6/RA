@@ -30,11 +30,11 @@ public:
 
 	static Widget*& currentUI() { return current_UI_; }
 
-	static std::unordered_set<RASoldier*> selected_soldiers_;
+	static std::set<RASoldier*> selected_soldiers_;
 	//all soldiers in my control, used to manipulate my soldiers
-	static std::unordered_set<RASoldier*> all_soldiers_;
+	static std::set<RASoldier*> all_soldiers_;
 	//enemies' buildings and soldiers, used to caclculate range attack
-	static std::unordered_set<RAObject*> enemies;
+	static std::set<RAObject*> enemies;
 private:
 	static int capital_;
 	static int power_;

@@ -175,6 +175,63 @@
 				<key>offsetY</key>
 				<real>0</real>
 			</dict>
+			<key>NuclearSilo (1).png</key>
+			<dict>
+				<key>width</key>
+				<integer>436</integer>
+				<key>height</key>
+				<integer>256</integer>
+				<key>originalWidth</key>
+				<integer>436</integer>
+				<key>originalHeight</key>
+				<integer>256</integer>
+				<key>x</key>
+				<integer>358</integer>
+				<key>y</key>
+				<integer>448</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>0</real>
+			</dict>
+			<key>NuclearSilo (2).png</key>
+			<dict>
+				<key>width</key>
+				<integer>436</integer>
+				<key>height</key>
+				<integer>240</integer>
+				<key>originalWidth</key>
+				<integer>436</integer>
+				<key>originalHeight</key>
+				<integer>240</integer>
+				<key>x</key>
+				<integer>0</integer>
+				<key>y</key>
+				<integer>706</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>0</real>
+			</dict>
+			<key>NuclearSilo (3).png</key>
+			<dict>
+				<key>width</key>
+				<integer>416</integer>
+				<key>height</key>
+				<integer>242</integer>
+				<key>originalWidth</key>
+				<integer>416</integer>
+				<key>originalHeight</key>
+				<integer>242</integer>
+				<key>x</key>
+				<integer>438</integer>
+				<key>y</key>
+				<integer>706</integer>
+				<key>offsetX</key>
+				<real>0</real>
+				<key>offsetY</key>
+				<real>0</real>
+			</dict>
 		</dict>
 		<key>metadata</key>
 		<dict>

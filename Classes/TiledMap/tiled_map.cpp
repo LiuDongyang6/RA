@@ -17,19 +17,24 @@ const float RAMap::speed = 30;
 const int RAMap::accurancy = 50;
 TMXTiledMap * RAMap::_tiledMap;
 Point RAMap::diff;
+int RAMap::map_num;
 std::map<Point, bool> RAMap::collision;
 std::map<Point, bool> RAMap::oil;
 std::map<Point, bool> RAMap::soldier_collision;
-std::vector<Point> routines;
+std::vector<Point> RAMap::routines;
 
 // on "init" you need to initialize your instance
-bool RAMap::init()
+bool RAMap::init(int num)
 {
+	map_num = num;
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//创建地图
-	_tiledMap = TMXTiledMap::create("map1.tmx");
+	if (map_num == 1)
+		_tiledMap = TMXTiledMap::create("map1.tmx");
+	else if (map_num == 2)
+		_tiledMap = TMXTiledMap::create("map2.tmx");
 
 	mapInit();
 	//testForCoord();
@@ -69,13 +74,14 @@ void RAMap::testForCoord(void) {
 		auto dest = touch->getLocation();
 		auto tile = glCoordToTileCoord(dest);
 		auto relate_1 = tileCoordToRelatedCoord(tile);
-		auto relate = relatedCoordToTileCoord(relate_1);/*
+		auto relate = relatedCoordToTileCoord(relate_1);
 		log("-------------tile %f, %f", tile.x, tile.y);
-		log("-------------relate %f, %f", relate_1.x, relate_1.y);
+		/*log("-------------relate %f, %f", relate_1.x, relate_1.y);
 		log("-------------%f, %f", relate.x, relate.y);
 		log("-------------soldier collision %d %f,%f", 
 			soldier_collision[Point(tile.x - 3, tile.y - 3)], tile.x - 3, tile.y - 3);*/
-		log("%d, %f, %f", soldier_collision[Point(tile.x - 1, tile.y - 1)], tile.x - 1, tile.y - 1);
+		auto gid1 = getMap()->getLayer("hourse")->getTileGIDAt(tile);
+		log("-------------gid %d", gid1);
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
@@ -223,12 +229,12 @@ void RAMap::moveMap(float dt) {
 	Point viewPos = mapPos + speed * diff;
 	Size winSize = Director::getInstance()->getWinSize();
 	Size tileSize = _tiledMap->getTileSize();
-	if (viewPos.x < winSize.width - 105 * tileSize.width || viewPos.x > 0)
+	if (viewPos.x < winSize.width - 105 * tileSize.width - 800|| viewPos.x > 800)
 	{
 		diff.x = 0;
 	}
 
-	if (viewPos.y < winSize.height - 106 * tileSize.height || viewPos.y >0)
+	if (viewPos.y < winSize.height - 106 * tileSize.height - 450 || viewPos.y > 450)
 	{
 		diff.y = 0;
 	}
@@ -261,8 +267,10 @@ Point RAMap::cannotBuildOil(Point build_point, int size) {
 				tile_coord.x++;
 			else if (oil[Point(tile_coord.x, tile_coord.y + 1)])
 				tile_coord.y++;
-			else
+			else 
+			{	
 				return tileCoordToRelatedCoord(tile_coord);
+			}
 		}
 	}
 	else
@@ -294,6 +302,16 @@ void RAMap::sureToBuildOil(Point build_point, int size) {
 		tile_coord.y += size;
 		tile_coord.x--;
 	}
+	changeOilTile(tile_coord);
+	if (map_num == 1)
+	{
+		if (oil[Point(68, 68)] == 0 && oil[Point(63, 68)] == 0 && oil[Point(58, 68)] == 0 &&
+			oil[Point(58, 63)] == 0 && oil[Point(58, 58)] == 0 && oil[Point(63, 58)] == 0 &&
+			oil[Point(68, 58)] == 0 && oil[Point(68, 53)] == 0)
+		{
+			getMap()->getLayer("hourse")->setTileGID(69, Point(61, 63));
+		}
+	}
 }
 
 //普通建筑被摧毁
@@ -322,6 +340,7 @@ void RAMap::destroyOilBuildings(Point des_pos, int size) {
 		tile_coord.y += size;
 		tile_coord.x--;
 	}
+	recoverOilTile(tile_coord);
 }
 
 //士兵占据这格
@@ -512,7 +531,7 @@ int RAMap::aStar(Point so_tilecoord, Point dest_tile, const int size) {
 }
 
 //士兵寻路
-std::vector<Point> RAMap::findRoutine(RASoldier* soldier, Point &dest, const int size) {
+std::vector<Point> RAMap::findRoutineAllAtOnce(RASoldier* soldier, Point &dest, const int size) {
 	routines.clear();
 	Point dest_tile = relatedCoordToTileCoord(dest);
 	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
@@ -637,6 +656,192 @@ std::vector<Point> RAMap::findRoutine(RASoldier* soldier, Point &dest, const int
 	}
 	aStar(so_tilecoord, dest_tile, size);
 	return routines;
+}
+
+std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, const int size) {
+	std::vector<float> answer = { -1, -1, -1 };
+	Point dest_tile = relatedCoordToTileCoord(dest);
+	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
+	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
+	bool cannotmove_1 = 0;
+	for (int x = 0; x != size; x++) {
+		for (int y = 0; y != size; y++) {
+			if (collision[Point(dest_tile.x - x, dest_tile.y - y)] ||
+				soldier_collision[Point(dest_tile.x - x, dest_tile.y - y)]) {
+				cannotmove_1 = 1;
+			}
+		}
+	}
+	if (cannotmove_1) {
+		for (int a = 1; a + dest_tile.x < 128 && dest_tile.x - a >0
+			&& dest_tile.y - a > 0 && a + dest_tile.y < 128; a++) {
+			bool cannotmove_2 = 0;
+			for (int x = 0; x != size; x++) {
+				for (int y = 0; y != size; y++) {
+					if (collision[Point(dest_tile.x + a - x, dest_tile.y + a - y)] ||
+						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y + a - y)]) {
+						cannotmove_2 = 1;
+					}
+				}
+			}
+			if (cannotmove_2) {
+				dest_tile = Point(dest_tile.x + a, dest_tile.y + a);
+				break;
+			}
+			cannotmove_2 = 0;
+			for (int x = 0; x != size; x++) {
+				for (int y = 0; y != size; y++) {
+					if (collision[Point(dest_tile.x + a - x, dest_tile.y - a - y)] ||
+						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y - a - y)]) {
+						cannotmove_2 = 1;
+					}
+				}
+			}
+			if (cannotmove_2) {
+				dest_tile = Point(dest_tile.x + a, dest_tile.y - a);
+				break;
+			}
+			cannotmove_2 = 0;
+			for (int x = 0; x != size; x++) {
+				for (int y = 0; y != size; y++) {
+					if (collision[Point(dest_tile.x - a - x, dest_tile.y - a - y)] ||
+						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y - a - y)]) {
+						cannotmove_2 = 1;
+					}
+				}
+			}
+			if (cannotmove_2) {
+				dest_tile = Point(dest_tile.x - a, dest_tile.y - a);
+				break;
+			}
+			cannotmove_2 = 0;
+			for (int x = 0; x != size; x++) {
+				for (int y = 0; y != size; y++) {
+					if (collision[Point(dest_tile.x - a - x, dest_tile.y + a - y)] ||
+						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y + a - y)]) {
+						cannotmove_2 = 1;
+					}
+				}
+			}
+			if (cannotmove_2) {
+				dest_tile = Point(dest_tile.x - a, dest_tile.y + a);
+				break;
+			}
+			cannotmove_2 = 0;
+			for (int x = 0; x != size; x++) {
+				for (int y = 0; y != size; y++) {
+					if (collision[Point(dest_tile.x + a - x, dest_tile.y - y)] ||
+						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y - y)]) {
+						cannotmove_2 = 1;
+					}
+				}
+			}
+			if (cannotmove_2) {
+				dest_tile = Point(dest_tile.x + a, dest_tile.y);
+				break;
+			}
+			cannotmove_2 = 0;
+			for (int x = 0; x != size; x++) {
+				for (int y = 0; y != size; y++) {
+					if (collision[Point(dest_tile.x - a - x, dest_tile.y - y)] ||
+						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y - y)]) {
+						cannotmove_2 = 1;
+					}
+				}
+			}
+			if (cannotmove_2) {
+				dest_tile = Point(dest_tile.x - a, dest_tile.y);
+				break;
+			}
+			cannotmove_2 = 0;
+			for (int x = 0; x != size; x++) {
+				for (int y = 0; y != size; y++) {
+					if (collision[Point(dest_tile.x - x, dest_tile.y - a - y)] ||
+						soldier_collision[Point(dest_tile.x - x, dest_tile.y - a - y)]) {
+						cannotmove_2 = 1;
+					}
+				}
+			}
+			if (cannotmove_2) {
+				dest_tile = Point(dest_tile.x, dest_tile.y - a);
+				break;
+			}
+			cannotmove_2 = 0;
+			for (int x = 0; x != size; x++) {
+				for (int y = 0; y != size; y++) {
+					if (collision[Point(dest_tile.x - x, dest_tile.y + a - y)] ||
+						soldier_collision[Point(dest_tile.x - x, dest_tile.y + a - y)]) {
+						cannotmove_2 = 1;
+					}
+				}
+			}
+			if (cannotmove_2) {
+				dest_tile = Point(dest_tile.x, dest_tile.y + a);
+				break;
+			}
+		}
+	}
+	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
+	auto next_step = open_list_1.begin();
+	auto start = open_list_1.begin();
+	while (start != open_list_1.end())
+	{
+		if (next_step->second > start->second)
+		{
+			next_step = start;
+		}
+		start++;
+	}
+	if (next_step->second == 10000)
+	{
+		answer[0] = soldier->getPosition().x;
+		answer[1] = soldier->getPosition().y;
+		answer[2] = 0;
+		return answer;
+	}
+	auto open_list_2 = tryEightdirection(next_step->first, dest_tile, size);
+	auto third_step = open_list_2.begin();
+	auto start2 = open_list_2.begin();
+	while (start2 != open_list_2.end())
+	{
+		if (third_step->second > start2->second)
+		{
+			third_step = start2;
+		}
+		start2++;
+	}
+	bool isfind = 0;
+	auto start3 = open_list_1.begin();
+	while (start3 != open_list_1.end())
+	{
+		if (start3->first == third_step->first)
+		{
+			isfind = 1;
+			break;
+		}
+		start3++;
+	}
+	if (isfind)
+	{
+		answer[0] = tileCoordToRelatedCoord(third_step->first).x;
+		answer[1] = tileCoordToRelatedCoord(third_step->first).y;
+		if (third_step->first == dest_tile)
+			answer[2] = 1;
+		else
+			answer[2] = 0;
+		return answer;
+	}
+	else 
+	{
+		answer[0] = tileCoordToRelatedCoord(next_step->first).x;
+		answer[1] = tileCoordToRelatedCoord(next_step->first).y + soldier->getScaleY(); 
+		if (next_step->first == dest_tile)
+			answer[2] = 1;
+		else
+			answer[2] = 0;
+		return answer;
+	}
+	return answer;
 }
 
 //将建筑物建在中心
@@ -835,6 +1040,28 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 					return answer;
 				}
 			}
+		}
+	}
+}
+
+void RAMap::changeOilTile(cocos2d::Point pos) 
+{
+	for (int x = 0; x < 4; x++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			_tiledMap->getLayer("oil")->removeTileAt(Point(pos.x - x, pos.y - y));
+		}
+	}
+}
+
+void RAMap::recoverOilTile(cocos2d::Point pos)
+{
+	for (int x = 0; x < 4; x++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			_tiledMap->getLayer("oil")->setTileGID(15, Point(pos.x - x, pos.y - y));
 		}
 	}
 }

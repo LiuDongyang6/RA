@@ -1,197 +1,234 @@
-[
-    {
+[{
         "id": 0,
         "name": "Base",
-        "original_hp":5000,
+        "original_hp": 5000,
         "power": 100,
         "capital": 100,
-        "UI": [0, 1, 2],
-        "UIFile":"Base/BaseUi.ExportJson",
-        "category":100,
-        "covering":6
+        "UI": [0, 1, 2, 16],
+        "UIFile": "Base/BaseUi.ExportJson",
+        "category": 100,
+        "covering": 6
     }, {
         "id": 1,
         "name": "PowerStation",
-        "original_hp":3000,
+        "original_hp": 3000,
         "power": -100,
         "capital": 100,
         "UI": [],
-        "UIFile":"PowerStation/PowerStationUi.ExportJson",
-        "category":100,
-        "covering":4
+        "UIFile": "PowerStation/PowerStationUi.ExportJson",
+        "category": 100,
+        "covering": 4
     }, {
         "id": 2,
         "name": "Barrack",
-        "original_hp":3000,
+        "original_hp": 3000,
         "power": 50,
         "capital": 150,
-        "UI": [3,4,5,6,7,9,10,11,13],
-        "UIFile":"Barrack/Barrack.ExportJson",
-        "category":100,
-        "covering":2
-    },{
+        "UI": [3, 4, 5, 6, 8, 9, 10, 11, 12],
+        "UIFile": "Barrack/Barrack.ExportJson",
+        "category": 100,
+        "covering": 3
+    }, {
         "id": 3,
         "name": "Fairy",
-        "original_hp":300,
+        "original_hp": 300,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":400,
-        "speed":200,
-        "hit":100,
-        "attack_speed":0.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 400,
+        "speed": 200,
+        "hit": 100,
+        "attack_speed": 0.5,
+        "covering": 2
     },
     {
         "id": 4,
         "name": "Assassin",
-        "original_hp":100,
+        "original_hp": 100,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":100,
-        "speed":400,
-        "hit":500,
-        "attack_speed":0.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 100,
+        "speed": 400,
+        "hit": 500,
+        "attack_speed": 0.5,
+        "covering": 2
     },
     {
         "id": 5,
         "name": "Lancer",
-        "original_hp":700,
+        "original_hp": 700,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":100,
-        "speed":150,
-        "hit":80,
-        "attack_speed":0.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 100,
+        "speed": 150,
+        "hit": 80,
+        "attack_speed": 0.5,
+        "covering": 2
     },
     {
         "id": 6,
         "name": "General",
-        "original_hp":1000,
+        "original_hp": 1000,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":100,
-        "speed":150,
-        "hit":100,
-        "attack_speed":0.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 100,
+        "speed": 150,
+        "hit": 100,
+        "attack_speed": 0.5,
+        "covering": 2
     },
     {
         "id": 7,
         "name": "AtomicBomb",
-        "original_hp":400,
+        "original_hp": 400,
         "power": 0,
         "capital": 300,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":100,
-        "speed":200,
-        "hit":100000,
-        "attack_speed":0.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 100,
+        "speed": 200,
+        "hit": 100000,
+        "attack_speed": 0.5,
+        "covering": 2
     },
     {
         "id": 8,
         "name": "BlackMagician",
-        "original_hp":800,
+        "original_hp": 800,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":300,
-        "speed":150,
-        "hit":200,
-        "attack_speed":0.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 300,
+        "speed": 150,
+        "hit": 200,
+        "attack_speed": 0.5,
+        "covering": 2
     },
     {
         "id": 9,
         "name": "Bomber",
-        "original_hp":800,
+        "original_hp": 800,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":100,
-        "speed":150,
-        "hit":100,
-        "attack_speed":2,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 100,
+        "speed": 150,
+        "hit": 100,
+        "attack_speed": 2,
+        "covering": 2
     },
     {
         "id": 10,
         "name": "Engineer",
-        "original_hp":400,
+        "original_hp": 400,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":100,
-        "speed":150,
-        "hit":100,
-        "attack_speed":0.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 100,
+        "speed": 150,
+        "hit": 100,
+        "attack_speed": 0.5,
+        "covering": 2
     },
     {
         "id": 11,
         "name": "WinterSoldier",
-        "original_hp":1000,
+        "original_hp": 1000,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":300,
-        "speed":300,
-        "hit":400,
-        "attack_speed":0.25,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 300,
+        "speed": 300,
+        "hit": 400,
+        "attack_speed": 0.25,
+        "covering": 2
     },
     {
         "id": 12,
         "name": "Witch",
-        "original_hp":1000,
+        "original_hp": 1000,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,14],//die move attack
-        "category":101,
-        "range":100,
-        "speed":150,
-        "hit":100,
-        "attack_speed":0.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 14], //die move attack
+        "category": 101,
+        "range": 100,
+        "speed": 150,
+        "hit": 100,
+        "attack_speed": 0.5,
+        "covering": 2
     },
     {
         "id": 13,
         "name": "Wizzard",
-        "original_hp":1000,
+        "original_hp": 1000,
         "power": 0,
         "capital": 150,
-        "frame_upper_bound":[5,9,18],//die move attack
-        "category":101,
-        "range":100,
-        "speed":150,
-        "hit":500,
-        "attack_speed":1.5,
-        "covering":2
+        "frame_upper_bound": [5, 9, 18], //die move attack
+        "UIFile": "Wizzard/WizzardUi.ExportJson",
+        "category": 101,
+        "range": 100,
+        "speed": 150,
+        "hit": 500,
+        "attack_speed": 1.5,
+        "covering": 2,
+        "skill_lasting": 5,
+        "skill_range": 1000
     },
     {
         "id": 14,
         "name": "OilField",
-        "original_hp":3000,
+        "original_hp": 3000,
         "power": 0,
-        "capital": 100,
+        "capital": 0,
         "UI": [],
-        "UIFile":"PowerStation/PowerStationUi.ExportJson",
-        "category":2,
-        "covering":4
+        "UIFile": "PowerStation/PowerStationUi.ExportJson",
+        "category": 90,
+        "covering": 4,
+        "income": 50,
+        "income_speed": 0.2
+    },
+    {
+        "id": 15,
+        "name": "DefendingBase",
+        "original_hp": 5000,
+        "power": 100,
+        "capital": 100,
+        "UI": [0, 1, 2, 17],
+        "UIFile": "DefendingBase/DefendingBaseUi.ExportJson",
+        "category": 100,
+        "covering": 6
+    },
+    {
+        "id": 16,
+        "name": "NuclearSilo",
+        "original_hp": 3000,
+        "power": 50,
+        "capital": 150,
+        "UI": [7],
+        "UIFile": "NuclearSilo/NuclearSilo.ExportJson",
+        "category": 100,
+        "covering": 5
+    },
+    {
+        "id": 17,
+        "name": "Manhattan",
+        "original_hp": 3000,
+        "power": 50,
+        "capital": 150,
+        "UI": [13],
+        "UIFile": "Manhattan/Manhattan.ExportJson",
+        "category": 100,
+        "covering": 3
     }
 ]
