@@ -40,15 +40,15 @@ bool PlayScene::init()
 	RAResourceUI::init();
 	ui_layer->addChild(RAResourceUI::ResourceUI);
 
-	auto base = RADefendingBase::create(Point(3000, 3000));
+	auto base = RABase::create(Point(3000, 3000));
 
 	littleMap::init(1);
 	this->addChild(littleMap::getLittleMap(), 20);
 
 	auto powerstation = RAPowerStation::create(Point(2800,2800));
 
-	RedAlert::HostileObjectAppear(3, Point(2500, 2500));
-	RedAlert::HostileObjectAppear(0, Point(1500, 1500));
+	RedAlert::HostileObjectAppear(3, Point(2500, 2500),30);
+	RedAlert::HostileObjectAppear(0, Point(1500, 1500),40);
 
 
 

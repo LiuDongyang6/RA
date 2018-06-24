@@ -18,7 +18,7 @@ public:
 	static const int getCapital() { return capital_; }
 	static const int getPower() {return power_; }
 	//give a unique counter in a game
-	static const int getCounter() { return unit_counter_++; }
+	static const int getCounter() { return (unit_counter_++)*10+edge; }
 	//player's capital will increase by quantity
 	static void resumeCapital(const int quantity);
 	//player's power will increase by quantity
@@ -30,16 +30,20 @@ public:
 
 	static Widget*& currentUI() { return current_UI_; }
 
-	static std::set<RASoldier*> selected_soldiers_;
+	static std::vector<RASoldier*> selected_soldiers_;
 	//all soldiers in my control, used to manipulate my soldiers
-	static std::set<RASoldier*> all_soldiers_;
+	static std::list<RASoldier*> all_soldiers_;
 	//enemies' buildings and soldiers, used to caclculate range attack
-	static std::set<RAObject*> enemies;
+	static std::list<RAObject*> enemies;
+	//
+	static std::unordered_map<int, RAObject*> master_table_;
+	//
 private:
 	static int capital_;
 	static int power_;
 	static int unit_counter_;
 	static Widget* current_UI_;
+	static int edge;
 };
 
 #endif // !_RA_PLAYER_H_

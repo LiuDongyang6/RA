@@ -21,7 +21,6 @@ public:
 		hp_(RAUtility::RAgetProperty(id, "original_hp").asInt()),
 		covering_(RAUtility::RAgetProperty(id, "covering").asInt()),
 		category_(RAUtility::RAgetProperty(id, "category").asInt()),
-		object_count_(RAPlayer::getCounter()),
 		id_(id)
 	{}
 	~RAObject()override {}
@@ -30,6 +29,7 @@ public:
 	void stopSufferAttack(RASoldier* attacker);
 	virtual bool annihilation();
 	virtual void changeControl(bool mine);
+	void setCount(int count) { object_count_ = count; };
 	int getCount() { return object_count_; }
 	int getId() { return id_; };
 	Point getCorePoint();
@@ -45,7 +45,7 @@ protected:
 	bool toBeOrNotToBe();
 	const int category_;
 	std::unordered_set<RASoldier*> attacking_me_;
-	const int object_count_;
+	int object_count_=-1;
 	Sprite* hp_bar;
 	const int id_;
 };

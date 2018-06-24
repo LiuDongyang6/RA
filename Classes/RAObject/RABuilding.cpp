@@ -111,10 +111,13 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 		}
 		else
 		{
-			auto TempSet = RAPlayer::selected_soldiers_;
-			for (auto soldier : TempSet)
+			/**反向遍历是为了避免遍历过程中元素移除
+			*从而会导致遍历混乱并报错
+			*/
+			auto& TempSet = RAPlayer::selected_soldiers_;
+			for (auto soldier = TempSet.end(); soldier != TempSet.begin();)
 			{
-				soldier->runToFight(this);
+				(*(--soldier))->runToFight(this);
 			}
 		}
 		return true;

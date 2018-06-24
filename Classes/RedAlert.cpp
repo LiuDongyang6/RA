@@ -98,7 +98,7 @@ void RedAlert::onTouchMoved(Touch* touch, Event* event)
 void RedAlert::onTouchEnded(Touch* touch, Event* event)
 {
 	//unmoved
-	if (touch->getStartLocation() == touch->getLocation())
+	if (touch->getStartLocation().distance(touch->getLocation())<10)
 		selectedSoldiersMove(touch);
 	//moved
 	else
@@ -119,15 +119,17 @@ void RedAlert::onTouchEnded(Touch* touch, Event* event)
 					RAPlayer::selected_soldiers_.clear();
 					cleared = 1;
 				}
-				RAPlayer::selected_soldiers_.insert(soldier);
+				RAPlayer::selected_soldiers_.push_back(soldier);
 			}
 		}
 	}
 	RAMap::getMap()->removeChild(selectBox);
 }
-void RedAlert::HostileObjectAppear(int id, Point location)
+void RedAlert::HostileObjectAppear(int id, Point location,int count)
 {
 	RAConstructButton::LaunchTest(id);
 	auto object=RAConstructButton::CreateWiki[id](location);
+	object->setCount(count);
+	RAPlayer::master_table_.insert({ count,object });
 	object->changeControl(0);
 }
