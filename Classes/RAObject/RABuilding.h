@@ -68,6 +68,19 @@ public:
 
 };
 //
+//RADefendingBase
+//
+class RADefendingBase :public RABuilding
+{
+public:
+	RADefendingBase() :
+		RABuilding(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 15;
+
+};
+//
 //RABarrack
 //
 class RABarrack :public RABuilding
@@ -97,6 +110,32 @@ public:
 	static const int id = 14;
 protected:
 	int income_value_;
+};
+//
+//RANuclearSilo
+//
+class RANuclearSilo :public RABuilding
+{
+public:
+	RANuclearSilo() :
+		RABuilding(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 16;
+
+};
+//
+//RAManhattan
+//
+class RAManhattan :public RABuilding
+{
+public:
+	RAManhattan() :
+		RABuilding(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 17;
+
 };
 #endif
 

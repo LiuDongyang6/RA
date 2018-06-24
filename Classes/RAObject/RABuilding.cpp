@@ -111,10 +111,13 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 		}
 		else
 		{
-			auto TempSet = RAPlayer::selected_soldiers_;
-			for (auto soldier : TempSet)
+			/**反向遍历是为了避免遍历过程中元素移除
+			*从而会导致遍历混乱并报错
+			*/
+			auto& TempSet = RAPlayer::selected_soldiers_;
+			for (auto soldier = TempSet.end(); soldier != TempSet.begin();)
 			{
-				soldier->runToFight(this);
+				(*(--soldier))->runToFight(this);
 			}
 		}
 		return true;
@@ -141,6 +144,20 @@ RAObject* RAPowerStation::create(Point location)
 RAObject* RABase::create(Point location)
 {
 	RABase* base = new RABase();
+
+	base->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	base->autorelease();
+
+	return base;
+}
+//
+//RADefendingBase
+//
+RAObject* RADefendingBase::create(Point location)
+{
+	RADefendingBase* base = new RADefendingBase();
 
 	base->initWithIdAndLocation(id, location);
 	//Initial UI
@@ -202,4 +219,32 @@ void RAOilField::changeControl(bool mine)
 {
 	RAObject::changeControl(mine);
 	initCapitalIncome();
+}
+//
+//RANuclearSilo
+//
+RAObject* RANuclearSilo::create(Point location)
+{
+	RANuclearSilo* NuclearSilo = new RANuclearSilo();
+
+	NuclearSilo->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	NuclearSilo->autorelease();
+
+	return NuclearSilo;
+}
+//
+//RAManhattan
+//
+RAObject* RAManhattan::create(Point location)
+{
+	RAManhattan* Manhattan = new RAManhattan();
+
+	Manhattan->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	Manhattan->autorelease();
+
+	return Manhattan;
 }

@@ -25,4 +25,8 @@
     <Project>Manhattan</Project>
     <GuidesList />
   </GuidesProject>
+  <GuidesProject>
+    <Project>Base_6</Project>
+    <GuidesList />
+  </GuidesProject>
 </ArrayOfGuidesProject>

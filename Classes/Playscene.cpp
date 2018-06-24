@@ -47,8 +47,8 @@ bool PlayScene::init()
 
 	auto powerstation = RAPowerStation::create(Point(2800,2800));
 
-	RedAlert::HostileObjectAppear(3, Point(2500, 2500));
-	RedAlert::HostileObjectAppear(0, Point(1500, 1500));
+	RedAlert::HostileObjectAppear(3, Point(2500, 2500),30);
+	RedAlert::HostileObjectAppear(0, Point(1500, 1500),40);
 
 
 

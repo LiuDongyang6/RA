@@ -12,6 +12,7 @@
     <string>Barrack.json</string>
     <string>NuclearSilo.json</string>
     <string>Manhattan.json</string>
+    <string>Base_6.json</string>
   </JsonList>
   <CanvasSize>
     <Width>400</Width>
@@ -22,10 +23,12 @@
   <ResRelativePath />
   <imageFileList>
     <string>Base0.plist</string>
+    <string>Base1.plist</string>
   </imageFileList>
   <imagePngList>
     <string>Base0.png</string>
+    <string>Base1.png</string>
   </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>NuclearSilo.json</CurrentUIJson>
+  <CurrentUIJson>BaseUi.json</CurrentUIJson>
 </UIProject>

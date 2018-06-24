@@ -26,6 +26,17 @@ bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
 
 bool RAObject::annihilation()
 {
+	//
+	//remove from archives
+	//从档案中删去
+	{
+		auto it1 = std::find(RAPlayer::enemies.begin(), RAPlayer::enemies.end(), this);
+		if (it1 != RAPlayer::enemies.end())RAPlayer::enemies.erase(it1);
+
+		RAPlayer::master_table_.erase(this->getCount());
+
+	}
+	NotificationCenter::getInstance()->postNotification("DIE", this);
 	//顺序不能颠倒
 	//释放tilemap占地
 	RAMap::destroyNormalBuildings(getPosition(), covering_);
@@ -59,12 +70,11 @@ bool RAObject::initWithSpriteFrameNameAndLocation(const std::string& filename, P
 	setPosition(location);
 	RAMap::getMap()->addChild(this, category_);
 	//initialize hp_bar
-	hp_bar = Sprite::create("hp_bar.png");
+	hp_bar = Sprite::createWithSpriteFrameName("hp_bar.png");
 	hp_bar->setPosition(getPosition());
 	hp_bar->setContentSize(Size(getContentSize().width,5));
 	hp_bar->setAnchorPoint(Vec2(0.5, 3.0));
 	RAMap::getMap()->addChild(hp_bar,99);
-	//
 	return true;
 }
 
@@ -81,7 +91,13 @@ void RAObject::changeControl(bool mine)
 	under_my_control = mine;
 	if (mine)//我方侵占对方单位
 	{
-		RAPlayer::enemies.erase(this);
+		hp_bar->setSpriteFrame("hp_bar.png");
+		hp_bar->setContentSize(Size(getContentSize().width, 5));
+		//从enemy中删去
+		auto it = std::find(RAPlayer::enemies.begin(), RAPlayer::enemies.end(), this);
+		if (it != RAPlayer::enemies.end())
+			RAPlayer::enemies.erase(it);
+
 		if (isBuilding())//建筑
 		{
 			//增加用电量
@@ -91,12 +107,14 @@ void RAObject::changeControl(bool mine)
 		{
 			auto p = static_cast<RASoldier*>(this);
 			p->stopCurrentBehavior();
-			RAPlayer::all_soldiers_.insert(p);
+			RAPlayer::all_soldiers_.push_back(p);
 		}
 	}
 	else//敌方侵占我方单位
 	{
-		RAPlayer::enemies.insert(this);
+		hp_bar->setSpriteFrame("hostile_hp_bar.png");
+		hp_bar->setContentSize(Size(getContentSize().width, 5));
+		RAPlayer::enemies.push_back(this);
 		if (isBuilding())
 		{
 			RAPlayer::resumePower(static_cast<RABuilding*>(this)->getPowerCost());
@@ -105,7 +123,14 @@ void RAObject::changeControl(bool mine)
 		{
 			auto p = static_cast<RASoldier*>(this);
 			p->stopCurrentBehavior();
-			RAPlayer::all_soldiers_.insert(p);
+			//从选中士兵和我方士兵中删去
+			{
+				auto it1 = std::find(RAPlayer::all_soldiers_.begin(), RAPlayer::all_soldiers_.end(), p);
+				if (it1 != RAPlayer::all_soldiers_.end())RAPlayer::all_soldiers_.erase(it1);
+				auto it2 = std::find(RAPlayer::selected_soldiers_.begin(), RAPlayer::selected_soldiers_.end(), p);
+				if (it2 != RAPlayer::selected_soldiers_.end())RAPlayer::selected_soldiers_.erase(it2);
+				
+			}
 		}
 	}
 }
@@ -191,6 +216,8 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 			//resources cost
 			RAPlayer::consumePower(power_cost_);
 			RAPlayer::consumeCapital(capital_cost_);
+			object->setCount(RAPlayer::getCounter());
+			RAPlayer::master_table_.insert({ object->getCount(),object });
 		}
 		else
 		{
@@ -203,7 +230,9 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 		RAPlayer::consumePower(power_cost_);
 		RAPlayer::consumeCapital(capital_cost_);
 		//record in archives
-		RAPlayer::all_soldiers_.insert(static_cast<RASoldier*>(object));
+		object->setCount(RAPlayer::getCounter());
+		RAPlayer::all_soldiers_.push_back(static_cast<RASoldier*>(object));
+		RAPlayer::master_table_.insert({object->getCount(),object});
 	}
 	tempObject->removeFromParentAndCleanup(true);
 	tempObject = NULL;
