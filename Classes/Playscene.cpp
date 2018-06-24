@@ -7,8 +7,20 @@ USING_NS_CC;
 using namespace cocostudio;
 using namespace cocos2d::ui;
 
+static std::string splayerName;
+static Client* clients;
+
+static LevelData* ptr = NULL;
+
 Scene* PlayScene::createScene(LevelData &data, Client* client, std::string playerName)
 {
+	data.retain();
+	
+	clients = client;
+	splayerName = playerName;
+
+	ptr = &data;
+
     return PlayScene::create();
 }
 
@@ -27,6 +39,20 @@ bool PlayScene::init()
     {
         return false;
     }
+
+	_thisScene = this;
+	_client = clients;
+	_inputData = ptr;
+	_localPlayerName = splayerName;
+	_playerList = ptr->player_list;
+	for (auto& playerData : _playerList)
+	{
+		if (_localPlayerName == playerData.player_name)
+		{
+			_localPlayerID = playerData.player_id;
+		}
+	}
+
 
 	RedAlert::getInstance()->initAll();
 
@@ -73,3 +99,7 @@ void PlayScene::menuCloseCallback(Ref* pSender)
 
 }
 
+
+
+// SendMessage:		_gamescene->_client->SendMessage(MOVE_UNIT, getMoveMessage(soldier, soldier->_route.front()));
+// executeOrder:	((temp = _gamescene->_client->executeOrder()) != "no")
