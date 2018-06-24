@@ -7,7 +7,7 @@ USING_NS_CC;
 using namespace cocostudio;
 using namespace cocos2d::ui;
 
-Scene* PlayScene::createScene()
+Scene* PlayScene::createScene(LevelData &data, Client* client, std::string playerName)
 {
     return PlayScene::create();
 }

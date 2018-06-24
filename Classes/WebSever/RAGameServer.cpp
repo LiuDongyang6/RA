@@ -1,9 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-#include "RAGameServer.h"
 #include <iostream>
 #include <fstream>
+#include "RAGameServer.h"
 
 using std::cout;
 using std::string;
@@ -459,6 +459,7 @@ void GameServer::GenerateProps()
 	}
 	cout << "\n";
 }
+
 
 void GameServer::sendProps(int ID)
 {
