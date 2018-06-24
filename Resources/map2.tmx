@@ -17,10 +17,7 @@
  <tileset firstgid="32" name="2A65D046331BC3EDDB497C7D23CE72EA" tilewidth="64" tileheight="32" tilecount="4" columns="2">
   <image source="2A65D046331BC3EDDB497C7D23CE72EA.png" width="179" height="90"/>
  </tileset>
- <tileset firstgid="36" name="2A65D046331BC3EDDB497C7D23CE72EA" tilewidth="64" tileheight="32" tilecount="4" columns="2">
-  <image source="2A65D046331BC3EDDB497C7D23CE72EA.png" width="179" height="90"/>
- </tileset>
- <tileset firstgid="40" name="手绘的山石-2d石头素材-00139" tilewidth="64" tileheight="64" tilecount="1" columns="1">
+ <tileset firstgid="36" name="手绘的山石-2d石头素材-00139" tilewidth="64" tileheight="64" tilecount="1" columns="1">
   <image source="手绘的山石-2d石头素材-00139.png" width="65" height="64"/>
  </tileset>
  <layer name="ground" width="128" height="128">
@@ -30,12 +27,12 @@
  </layer>
  <layer name="oil" width="128" height="128">
   <data encoding="base64" compression="zlib">
-   eJzt3TEKg1AURNFZyhTuf42xi0kd0DDnwO+Fy/uvEU0AAAAAAAAAAAAAAADgN/p12NLzHJfDlkb/ZY3+Sxr7fllj3pc1+i9r9F/S2PfLmves99Yn4Q6N+35Zo/+Sxr5f1nzOPFsa9/2yRv8ljX2/rLHvlzXu+2WN/ksa+35ZY96XNfova/Rf0tj3yxrzvqzRf1mjPwAAAAAAAAAAAP+v8T70skb/ZY3v2S1rvA+9pHHfL2vM+7JG/2WN/ksa+35ZY96XNfova/Rf0tj3yxrzvqzRf1mj/5LGvl/WmPdljf7LGv2XNPb9ssa8L2v0X9bov6Sx75c1/ke2rHHfL2v0BwAAAAAAAAAAAAAAAADgWV72WR3Z
+   eJzt2rENADEAAjFGYf8pv0+dIi9siQmuJQEAAAAAAAAAAAAAAIA7eowtjf7LGv2XNfovafRe1ui/rNF/WaP/kkbvZY3+yxr9lzX6L2n0Xtbov6zRf1mj/5JG72WN/ssa/Zc1+i9p9F7W6L+s0X9Zo/+SRu9ljf7LGv2XNfoDAAAAAAAAAADwf40/3LJG/2WN/ssa/Zc0ei9r9F/W6L+s0X9Jo/eyRv9ljf7LGv2XNHova/Rf1ui/rNF/SaP3skb/ZY3+yxr9lzR6L2v0X9bov6zRf0mj97JG/2WN/ssa/QEAAAAAAAAAAAAAAAAAeMsHAOocAQ==
   </data>
  </layer>
  <layer name="rocks" width="128" height="128">
   <data encoding="base64" compression="zlib">
-   eJzt2zFqA1EQREEdR/c/oQJHSvQNNmjmvyrYvKc7WRb28QAAAAAAAAAAAKqe3w7AV9m/zf5t9m+zf5v926btPy3P7ab1PS3P7ab1PS3P7ab1PS3P7ab1PS3P7ab1/fzw8P/02mb/Nvu32b/N/gAAAAAAAAAAAAAAAACz+e/+R+3ek1oftXtPan3U7j2p9VG796TWR+3ek1of3oPfVe8GAAAAAIBPfD9vs3+b/dvs32b/Nvu32b/N/m32b7N/m/3b7N9m/9+78d+Lzdmn2Nzh5uxTbO5wc/YpNne4OfsUmzvcnH2KzR1uzj7F5g43Z+fv7A8AAAAAAAAAAAAAAAAA0PICvTkNwQ==
+   eJzt2zFqA1EQREEdRvc/owJHSvQNNmjmvyrYvKc7WRb28QAAAAAAAAAAAKqe3w7AV9m/zf5t9m+zf5v926btPy3P7ab1PS3P7ab1PS3P7ab1PS3P7ab1PS3P7ab1/fzw8P/02mb/Nvu32b/N/gAAAAAAAAAAAAAAAACz+e/+R+3ek1oftXtPan3U7j2p9VG796TWR+3ek1of3oPfVe8GAAAAAIBPfD9vs3+b/dvs32b/Nvu32b/N/m32b7N/m/3b7N9m/9+78d+Lzdmn2Nzh5uxTbO5wc/YpNne4OfsUmzvcnH2KzR1uzj7F5g43Z+fv7A8AAAAAAAAAAAAAAAAA0PICQ+4MYQ==
   </data>
  </layer>
  <layer name="boudery" width="128" height="128">

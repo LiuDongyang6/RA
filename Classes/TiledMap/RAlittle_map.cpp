@@ -35,15 +35,19 @@ Sprite* littleMap::getLittleMap()
 }
 
 void littleMap::chooseMap(int num) {
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	if (num == 1)
 	{
-		auto visibleSize = Director::getInstance()->getVisibleSize();
-		Vec2 origin = Director::getInstance()->getVisibleOrigin();
-		little_map = Sprite::create("littlemap.png");
-		little_map->setAnchorPoint(Point(0, 0));
-		auto tiled_map = RAMap::getMap();
-		little_map->setScaleX(tiled_map->getContentSize().width / 16000);
-		little_map->setScaleY(tiled_map->getContentSize().height / 9000);
-		little_map->setPosition(50, visibleSize.height - little_map->getContentSize().height / 5 - 80);
+		little_map = Sprite::create("littlemap1.png");
 	}
+	else if (num == 2)
+	{
+		little_map = Sprite::create("littlemap2.png");
+	}
+	little_map->setAnchorPoint(Point(0, 0));
+	auto tiled_map = RAMap::getMap();
+	little_map->setScaleX(tiled_map->getContentSize().width / 16000);
+	little_map->setScaleY(tiled_map->getContentSize().height / 9000);
+	little_map->setPosition(50, visibleSize.height - little_map->getContentSize().height / 5 - 80);
 }
