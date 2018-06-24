@@ -75,8 +75,10 @@ bool RABuilding::annihilation()
 	UI_->cleanup();
 	UI_->release();
 	//恢复资源，发布消息
-	if(under_my_control)
-	RAPlayer::resumePower(power_cost_);
+	if (under_my_control)
+	{
+		RAPlayer::resumePower(power_cost_);
+	}
 	RAObject::annihilation();
 	return true;
 }
@@ -109,10 +111,13 @@ bool RABuilding::onTouchBegan(Touch* touch, Event* event)
 		}
 		else
 		{
-			auto TempSet = RAPlayer::selected_soldiers_;
-			for (auto soldier : TempSet)
+			/**反向遍历是为了避免遍历过程中元素移除
+			*从而会导致遍历混乱并报错
+			*/
+			auto& TempSet = RAPlayer::selected_soldiers_;
+			for (auto soldier = TempSet.end(); soldier != TempSet.begin();)
 			{
-				soldier->runToFight(this);
+				(*(--soldier))->runToFight(this);
 			}
 		}
 		return true;
@@ -147,6 +152,20 @@ RAObject* RABase::create(Point location)
 
 	return base;
 }
+//
+//RADefendingBase
+//
+RAObject* RADefendingBase::create(Point location)
+{
+	RADefendingBase* base = new RADefendingBase();
+
+	base->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	base->autorelease();
+
+	return base;
+}
 
 //
 //RABarrack
@@ -171,9 +190,61 @@ RAObject* RAOilField::create(Point location)
 	RAOilField* object = new RAOilField();
 
 	object->initWithIdAndLocation(id, location);
-	//Initial UI
+	object->initCapitalIncome();
 
 	object->autorelease();
 
 	return object;
+}
+void RAOilField::initCapitalIncome()
+{
+	if (under_my_control)
+	{
+		float dt = RAUtility::RAgetProperty(id, "income_speed").asFloat();
+		auto func = [&](float dt) {
+			this->getIncome(dt);
+		};
+		schedule(func, dt, std::string("Income"));
+	}
+	else
+		unschedule("Income");
+}
+
+void RAOilField::getIncome(float dt)
+{
+	RAPlayer::resumePower(income_value_);
+}
+
+void RAOilField::changeControl(bool mine)
+{
+	RAObject::changeControl(mine);
+	initCapitalIncome();
+}
+//
+//RANuclearSilo
+//
+RAObject* RANuclearSilo::create(Point location)
+{
+	RANuclearSilo* NuclearSilo = new RANuclearSilo();
+
+	NuclearSilo->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	NuclearSilo->autorelease();
+
+	return NuclearSilo;
+}
+//
+//RAManhattan
+//
+RAObject* RAManhattan::create(Point location)
+{
+	RAManhattan* Manhattan = new RAManhattan();
+
+	Manhattan->initWithIdAndLocation(id, location);
+	//Initial UI
+
+	Manhattan->autorelease();
+
+	return Manhattan;
 }

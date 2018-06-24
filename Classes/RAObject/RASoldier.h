@@ -36,6 +36,7 @@ public:
 	void runTo(Point point);
 	//
 	void runToFight(RAObject* object);
+	//
 	~RASoldier()override {	}
 protected:
 	std::vector<Vector<SpriteFrame*>> animation_;
@@ -152,14 +153,34 @@ public:
 	static RAObject* create(Point location);
 	static const int id = 11;
 };
+class RAWitch :public RASoldier
+{
+public:
+	RAWitch() :
+		RASoldier(id) {}
+
+	static RAObject* create(Point location);
+	static const int id = 12;
+};
 class RAWizzard :public RASoldier
 {
 public:
 	RAWizzard() :
 		RASoldier(id) {}
-
+	void initWizzard();
 	static RAObject* create(Point location);
 	static const int id = 13;
+	bool WizzardOnTouch(Touch* touch, Event* event);
+	void StartSkill();
+	bool annihilation() override;
+private:
+	Widget * UI_;
+};
+class RAWizzardSkill:public Sprite
+{
+public:
+	RAWizzardSkill() :Sprite() {};
+	static void create(RASoldier* soldier);
 };
 #endif // !__RASOLDIER_H__
 

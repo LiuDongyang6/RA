@@ -15,6 +15,7 @@ void RedAlert::initAll()
 	auto framecache = SpriteFrameCache::getInstance();
 	framecache->addSpriteFramesWithFile("Buildings.plist");
 	framecache->addSpriteFramesWithFile("OilField/OilField.plist");
+	framecache->addSpriteFramesWithFile("effects/effects.plist");
 	//
 	RAMap::init();
 	//initial selectBox
@@ -51,7 +52,11 @@ void RedAlert::initCreateWiki()
 	wiki.insert({ 9,RABomber::create });
 	wiki.insert({ 10,RAEngineer::create });
 	wiki.insert({ 11,RAWinterSoldier::create });
+	wiki.insert({ 12,RAWitch::create });
 	wiki.insert({ 13,RAWizzard::create });
+	wiki.insert({ 15,RADefendingBase::create });
+	wiki.insert({ 16,RANuclearSilo::create });
+	wiki.insert({ 17,RAManhattan::create });
 
 }
 void RedAlert::selectedSoldiersMove(Touch* touch)
@@ -93,7 +98,7 @@ void RedAlert::onTouchMoved(Touch* touch, Event* event)
 void RedAlert::onTouchEnded(Touch* touch, Event* event)
 {
 	//unmoved
-	if (touch->getStartLocation() == touch->getLocation())
+	if (touch->getStartLocation().distance(touch->getLocation())<10)
 		selectedSoldiersMove(touch);
 	//moved
 	else
@@ -114,16 +119,17 @@ void RedAlert::onTouchEnded(Touch* touch, Event* event)
 					RAPlayer::selected_soldiers_.clear();
 					cleared = 1;
 				}
-				RAPlayer::selected_soldiers_.insert(soldier);
+				RAPlayer::selected_soldiers_.push_back(soldier);
 			}
 		}
 	}
 	RAMap::getMap()->removeChild(selectBox);
 }
-void RedAlert::HostileObjectAppear(int id, Point location)
+void RedAlert::HostileObjectAppear(int id, Point location,int count)
 {
 	RAConstructButton::LaunchTest(id);
 	auto object=RAConstructButton::CreateWiki[id](location);
-	object->under_my_control = 0;
-	RAPlayer::enemies.insert(object);
+	object->setCount(count);
+	RAPlayer::master_table_.insert({ count,object });
+	object->changeControl(0);
 }
