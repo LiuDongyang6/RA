@@ -8,7 +8,7 @@ class RASoldier;
 class RAMap:public cocos2d::Node
 {
 public:
-    static bool init(int num = 1);
+    static bool init(int num);
 
 	static cocos2d::Point glCoordToTileCoord(cocos2d::Point gl_cood);
 	
@@ -33,13 +33,9 @@ public:
 	static void sureToBuildOil(cocos2d::Point pos, int size);
 
 	static std::map<cocos2d::Point, int> tryEightdirection(cocos2d::Point position,
-		cocos2d::Point dest, const int size);
-
-	static std::vector<cocos2d::Point> findRoutineAllAtOnce(RASoldier* soldier, cocos2d::Point &dest, const int size);
+		cocos2d::Point dest, int id);
 
 	static std::vector<float> findRoutineOneByOne(RASoldier* soldier, cocos2d::Point &dest, const int size);
-
-	static int aStar(cocos2d::Point so_pos, cocos2d::Point dest, const int size);
 
 	static void destroyNormalBuildings(cocos2d::Point pos, int size);
 
@@ -72,6 +68,10 @@ protected:
 	static std::map<cocos2d::Point, bool> soldier_collision;
 	static std::vector<cocos2d::Point> routines;
 	static int map_num;
+	static std::map<int, std::vector<cocos2d::Point>> soldier_routines;
+	static std::map<int, std::map<cocos2d::Point, int>> soldier_g;
+	static std::map<int, std::pair<cocos2d::Point, cocos2d::Point>> soldier_dests;
+	static std::vector<cocos2d::Point> future_dests;
 };
 
 #endif // __AB__
