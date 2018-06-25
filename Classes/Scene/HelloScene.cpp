@@ -67,7 +67,7 @@ bool Hello::init()
 		CC_CALLBACK_1(Hello::menuItemStartCallback, this));
 	startMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 2 / 3));
 
-	// ----------------------------------- image menu -----------------------------------
+	// ----------------------------------- setting menu -----------------------------------
 	MenuItemImage* settingMenuItem = MenuItemImage::create(
 		"Scene/setting-up1.png",
 		"Scene/setting-down1.png",
