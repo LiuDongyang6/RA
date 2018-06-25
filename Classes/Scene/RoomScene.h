@@ -70,6 +70,8 @@ public:
     void update(float delta);
  
     CREATE_FUNC(RoomScene);
+
+	static int map_num;
 };
 
 #endif /* _RoomScene_h_ */

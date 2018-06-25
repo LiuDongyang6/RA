@@ -84,4 +84,5 @@ std::string RAUtility::coortostr(Point point)
 	length = temp.size();
 	str.push_back(length);
 	str.append(temp);
+	return str;
 }

@@ -16,6 +16,7 @@ int     current_count;
 int     loop_you_in;
 bool    if_initial;
 bool    if_self_joined;
+int RoomScene::map_num;
 
 static int      roomMode;
 static Client*  client = nullptr;
@@ -335,6 +336,7 @@ bool RoomScene::initForServer()
                                            PageView* pageView   =   dynamic_cast<PageView*>(pSender);
                                            _selectLevelIndex    =   pageView->getCurPageIndex();
                                            start_button -> setTitleText(StringUtils::format("map%d", _selectLevelIndex + 1));
+										   map_num = _selectLevelIndex + 1;
                                        }
                                            break;
                                        default:break;

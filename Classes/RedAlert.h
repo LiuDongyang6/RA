@@ -8,7 +8,7 @@ class RedAlert
 public:
 	static RedAlert* getInstance();
 	void selectedSoldiersMove(Touch* touch);
-	void initAll();
+	void initAll(int num);
 	void initCreateWiki();
 	bool onTouchBegan(Touch* touch, Event* event);
 	bool OilOnTouBegan(Touch* touch, Event* event);

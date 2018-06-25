@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include"ResourceUI/ResourceUI.h"
 #include "TiledMap/RAlittle_map.h"
+#include "Scene/RoomScene.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -53,7 +54,7 @@ bool PlayScene::init()
 			_localPlayerID = playerData.player_id;
 		}
 	}
-	RedAlert::getInstance()->initAll();
+	RedAlert::getInstance()->initAll(RoomScene::map_num);
 
 	auto fight_layer = RAMap::getMap();
 	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);
@@ -96,7 +97,7 @@ void PlayScene::menuCloseCallback(Ref* pSender)
 
 void PlayScene::gameStart()
 {
-	RedAlert::getInstance()->initAll();
+	RedAlert::getInstance()->initAll(RoomScene::map_num);
 
 	auto fight_layer = RAMap::getMap();
 	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);
@@ -110,7 +111,7 @@ void PlayScene::gameStart()
 
 	auto base = RABase::create(Point(3000, 3000));
 
-	littleMap::init(1);
+	littleMap::init(RoomScene::map_num);
 	this->addChild(littleMap::getLittleMap(), 20);
 
 	auto powerstation = RAPowerStation::create(Point(2800, 2800));

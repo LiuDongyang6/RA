@@ -6,7 +6,7 @@ RedAlert* RedAlert::getInstance()
 		instance_ = new RedAlert();
 	return instance_;
 }
-void RedAlert::initAll()
+void RedAlert::initAll(int num)
 {
 	RAUtility::RAObjectProperty=FileUtils::getInstance()->getStringFromFile("RAObjectProperty.json");
 	//initial create_function wiki
@@ -17,7 +17,7 @@ void RedAlert::initAll()
 	framecache->addSpriteFramesWithFile("OilField/OilField.plist");
 	framecache->addSpriteFramesWithFile("effects/effects.plist");
 	//
-	RAMap::init(1);
+	RAMap::init(num);
 	//initial selectBox
 	selectBox = LayerColor::create(Color4B(145, 150, 134, 255));
 	selectBox->setOpacity(70);
