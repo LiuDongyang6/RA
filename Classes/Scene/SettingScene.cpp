@@ -1,4 +1,6 @@
 ﻿#include "SettingScene.h"
+#include "GameAudio.h"
+#include "Settings.h"
 
 USING_NS_CC;
 
@@ -114,4 +116,54 @@ void Setting::menuSoundToggleCallback(Ref* pSender)
 void Setting::menuMusicToggleCallback(Ref* pSender)
 {
 
+}
+
+/////////////////////////////////////////////
+cocos2d::Menu* Setting::createText()
+{
+	const auto buttons = Menu::create();
+
+	const auto backButton = MenuItemLabel::create(
+		Label::createWithTTF("OK", Setting::Font::Type::title, Setting::Font::Size::normal),
+		CC_CALLBACK_1(Setting::menuOkCallback, this));
+
+	const auto visibleSize = Director::getInstance()->getVisibleSize();
+	const auto baseY = visibleSize.height * 0.85f;
+
+	backButton->setPosition(visibleSize.width * 0.5f, visibleSize.height * 0.2f);
+	static_cast<Label*>(backButton->getLabel())->enableGlow(Color4B(0, 0, 0, 255 * 0.6f));
+
+	buttons->addChild(backButton, 1);
+
+	buttons->setPosition(0, 0);
+
+	return buttons;
+}
+
+void Setting::onEnter()
+{
+	Layer::onEnter();
+	GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
+}
+
+void Setting::menuOkCallback(cocos2d::Ref * pSender)
+{
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
+	Director::getInstance()->popScene();
+}
+
+cocos2d::ui::CheckBox * Setting::createCheckBox(std::function<void(Ref*, ui::CheckBox::EventType)> callback)
+{
+	auto checkBox = ui::CheckBox::create("Scene/checkbox_normal.png", "Scene/checkbox_active.png");
+	checkBox->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	checkBox->addEventListener(callback);
+	return checkBox;
+}
+
+cocos2d::Label * Setting::createLabel(const char * text)
+{
+	auto label = Label::createWithTTF(text, Setting::Font::Type::title, Setting::Font::Size::normal);
+	label->enableShadow(Color4B(0, 0, 0, 255 * 0.15f), Size(2, -2), 2);
+	label->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	return label;
 }
