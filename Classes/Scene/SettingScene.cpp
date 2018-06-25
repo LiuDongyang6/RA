@@ -59,45 +59,45 @@ bool Setting::init()
 	// add the label as a child to this layer
 	this->addChild(label, 1);
 
-	// ----------------------------------- sound button -----------------------------------
-	auto soundOnMenuItem = MenuItemImage::create(
-		"Scene/on.png",
-		"Scene/on.png");
-	auto soundOffMenuItem = MenuItemImage::create(
-		"Scene/off.png",
-		"Scene/off.png");
 
-	auto soundToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuSoundToggleCallback, this),
-		soundOnMenuItem,
-		soundOffMenuItem,
-		NULL);
-	soundToggleMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//=====================文本label：music============================
+	auto musicLabel = createLabel("Background Music");
+	auto musicCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type) {
+		GameAudio::getInstance()->setBgmOn(type == ui::CheckBox::EventType::SELECTED);
+	});
+	musicLabel->setPosition(Vec2(origin.x + visibleSize.width * 0.6, visibleSize.height * 0.7f));
+	musicCheckBox->setPosition(Vec2(origin.x + visibleSize.width * 0.6 + 20, visibleSize.height * 0.7f));
+	musicCheckBox->setSelected(GameAudio::getInstance()->getBgmOn());
+	addChild(musicLabel,1);
+	addChild(musicCheckBox,1);
 
-	// -----------------------------------  music button -----------------------------------
-	auto musicOnMenuItem = MenuItemImage::create(
-		"Scene/on.png",
-		"Scene/on.png");
-	auto musicOffMenuItem = MenuItemImage::create(
-		"Scene/off.png",
-		"Scene/off.png");
-	auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuMusicToggleCallback, this),
-		musicOnMenuItem,
-		musicOffMenuItem,
-		NULL);
-	musicToggleMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+	//=====================文本label：effect============================
+	auto effectLabel = createLabel("Effect Music");
+	auto effectCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type)
+	{
+		GameAudio::getInstance()->setEffectOn(type == ui::CheckBox::EventType::SELECTED);
+	});
+	effectLabel->setPosition(Vec2(origin.x + visibleSize.width * 0.6, visibleSize.height * 0.6f));
+	effectCheckBox->setPosition(Vec2(origin.x + visibleSize.width * 0.6 + 20, visibleSize.height * 0.6f));
+	effectCheckBox->setSelected(GameAudio::getInstance()->getBgmOn());
+	addChild(effectLabel,1);
+	addChild(effectCheckBox,1);
 
-	// ----------------------------------- lastpage button -----------------------------------
-	auto okMenuItem = MenuItemImage::create(
-		"Scene/ok-down1.png",
-		"Scene/ok-up1.png",
-		CC_CALLBACK_1(Setting::menuLastpageCallback, this));
+	//=====================“OK”按钮============================
+	addChild(createText());
 
-	okMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 4));
+	//=====================键盘事件：按ESC退出该场景============================
+	auto keyEventListener = EventListenerKeyboard::create();
+	keyEventListener->onKeyReleased = [](EventKeyboard::KeyCode code, Event* event)
+	{
+		if (code == EventKeyboard::KeyCode::KEY_ESCAPE)
+		{
+			Director::getInstance()->popScene();
+		}
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyEventListener, this);
 
-	// ----------------------------------- add all buttons above to menu -----------------------------------
-	Menu* mn = Menu::create(soundToggleMenuItem, musicToggleMenuItem, okMenuItem, NULL);
-	mn->setPosition(Vec2::ZERO);
-	this->addChild(mn);
 
 	return true;
 }
@@ -124,7 +124,7 @@ cocos2d::Menu* Setting::createText()
 	const auto buttons = Menu::create();
 
 	const auto backButton = MenuItemLabel::create(
-		Label::createWithTTF("OK", Setting::Font::Type::title, Setting::Font::Size::normal),
+		Label::createWithTTF("OK", Settings::Font::Type::title, Settings::Font::Size::normal),
 		CC_CALLBACK_1(Setting::menuOkCallback, this));
 
 	const auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -154,7 +154,7 @@ void Setting::menuOkCallback(cocos2d::Ref * pSender)
 
 cocos2d::ui::CheckBox * Setting::createCheckBox(std::function<void(Ref*, ui::CheckBox::EventType)> callback)
 {
-	auto checkBox = ui::CheckBox::create("Scene/checkbox_normal.png", "Scene/checkbox_active.png");
+	auto checkBox = ui::CheckBox::create("Scene/off.png", "Scene/on.png");
 	checkBox->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
 	checkBox->addEventListener(callback);
 	return checkBox;
@@ -162,7 +162,7 @@ cocos2d::ui::CheckBox * Setting::createCheckBox(std::function<void(Ref*, ui::Che
 
 cocos2d::Label * Setting::createLabel(const char * text)
 {
-	auto label = Label::createWithTTF(text, Setting::Font::Type::title, Setting::Font::Size::normal);
+	auto label = Label::createWithTTF(text, Settings::Font::Type::title, Settings::Font::Size::normal);
 	label->enableShadow(Color4B(0, 0, 0, 255 * 0.15f), Size(2, -2), 2);
 	label->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	return label;
