@@ -9,8 +9,12 @@ class RARoshambo : public Sprite
 	RARoshambo(int num) :num_(num), Sprite() {}
 	bool onTouchBegan(Touch* touch, Event* event);
 	static RARoshambo* create(int num);
-private:
+	static void showCard(bool isMe,int num_);
+	static void startCompete();
+	static RARoshambo* cards[3];
 	int num_;
+	static int contrast[2];
+	static void RoshamboReceive(std::string msg);
 };
 
 #endif // !__RA_ROSHAMBO_H__

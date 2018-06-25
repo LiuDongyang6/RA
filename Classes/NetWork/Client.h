@@ -187,8 +187,8 @@ public:
     * @param    message     要发送的指令
     *
     */
-    void sendMessage(const std::string & code, const std::string & message);
-    
+    void sendMessage(const std::string & message);
+	void sendMessage(const std::string & code, const std::string & message);
     /** 
     * @brief    启动client并搜索、连接server
     * 

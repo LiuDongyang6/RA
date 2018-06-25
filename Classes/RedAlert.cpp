@@ -133,3 +133,44 @@ void RedAlert::HostileObjectAppear(int id, Point location,int count)
 	RAPlayer::master_table_.insert({ count,object });
 	object->changeControl(0);
 }
+void RedAlert::catcher(std::string message)
+{
+	using namespace std;
+	char instruction_kind = message[0];
+	int aim = stoi(message.substr(1, 7));
+	message.erase(0,7);
+	switch (instruction_kind)
+	{
+	case 'a':
+	{
+		if (RAPlayer::master_table_.count(aim)!=0)
+		{
+			RAPlayer::master_table_[aim]->annihilation();
+		}
+		break;
+	}
+	case 'b':
+	{
+		if (RAPlayer::master_table_.count(aim) == 0)
+		{
+			int id = stoi(message.substr(0, 3));
+			message.erase(0, 3);
+			float coords[2];
+			for (int i = 0; i != 2; ++i)
+			{
+				int length = message[0];
+				coords[i] = RAUtility::stof(message.substr(1, length));
+				message.erase(0, length + 1);
+			}
+			Point location(coords);
+			HostileObjectAppear(id, location, aim);
+		}
+		break;
+	}
+	default:
+	{
+		RAPlayer::master_table_[aim]->followInstruction(message,instruction_kind);
+	}
+		break;
+	}
+}

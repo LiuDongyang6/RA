@@ -36,14 +36,52 @@ Json::Value RAUtility::RAgetProperty(const int id, const char* property)
 		return -1;
 	}
 }
+
 Point RAUtility::getPositionInMap(Point point)
 {
 	point -= RAMap::getMap()->getPosition();
 	return point;
 }
+
 Point RAUtility::getBottumHalfPoint(Sprite* sprite)
 {
 	auto halfHeight = (sprite->getContentSize().height) / 2;
 	Vec2 halfPoint = sprite->getPosition() - Vec2(0, halfHeight);
 	return halfPoint;
+}
+
+float RAUtility::stof(std::string str)
+{
+	char* chs = new char[str.size()];
+	for (int i = 0; i != str.size(); ++i)
+	{
+		chs[i] = str[i];
+	}
+	float f = *(float*)(chs);
+	delete chs;
+	return f;
+
+}
+std::string RAUtility::ftostr(float f)
+{
+	std::string str;
+	char* ch = (char*)(&f);
+	for (int i = 0; i != sizeof(f); ++i)
+	{
+		str.push_back(ch[i]);
+	}
+	return str;
+}
+
+std::string RAUtility::coortostr(Point point)
+{
+	std::string str;
+	std::string temp = ftostr(point.x);
+	char length=temp.size();
+	str.push_back(length);
+	str.append(temp);
+	temp = ftostr(point.y);
+	length = temp.size();
+	str.push_back(length);
+	str.append(temp);
 }

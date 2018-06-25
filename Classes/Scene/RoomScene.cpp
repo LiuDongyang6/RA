@@ -143,7 +143,6 @@ bool RoomScene::initForClient()
             msg.append("|");
             msg.append(temp->player_name);
             client->sendMessage(JOIN_ROOM, msg);
-            
             player_count++;
             role_layer->setVisible(false);
             

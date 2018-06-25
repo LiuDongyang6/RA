@@ -18,7 +18,7 @@ public:
 	cocos2d::Sprite*           small_map;
 
 	LevelData*                 _inputData;           ///选择人物时的数据
-	PlayScene*                 _thisScene;           ///等于This指针
+	static PlayScene*          _thisScene;           ///等于This指针
 	std::vector<PlayerData>    _playerList;          ///所有远程玩家的信息
 
 
@@ -42,6 +42,7 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(PlayScene);
 
+	void gameStart();
 };
 
 #endif // __PLAY_SCENE_H__

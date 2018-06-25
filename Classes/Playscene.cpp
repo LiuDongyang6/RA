@@ -9,6 +9,7 @@ using namespace cocos2d::ui;
 
 static std::string splayerName;
 static Client* clients;
+PlayScene* PlayScene::_thisScene;
 
 static LevelData* ptr = NULL;
 
@@ -20,7 +21,6 @@ Scene* PlayScene::createScene(LevelData &data, Client* client, std::string playe
 	splayerName = playerName;
 
 	ptr = &data;
-
     return PlayScene::create();
 }
 
@@ -45,6 +45,7 @@ bool PlayScene::init()
 	_inputData = ptr;
 	_localPlayerName = splayerName;
 	_playerList = ptr->player_list;
+
 	for (auto& playerData : _playerList)
 	{
 		if (_localPlayerName == playerData.player_name)
@@ -52,14 +53,12 @@ bool PlayScene::init()
 			_localPlayerID = playerData.player_id;
 		}
 	}
-
-
 	RedAlert::getInstance()->initAll();
 
 	auto fight_layer = RAMap::getMap();
 	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);
-	fight_layer->setPosition(0,0);
-	ui_layer->setPosition(1200,0);
+	fight_layer->setPosition(0, 0);
+	ui_layer->setPosition(1200, 0);
 	addChild(fight_layer, 1, 1);
 	addChild(ui_layer, 2, 2);
 
@@ -71,14 +70,10 @@ bool PlayScene::init()
 	littleMap::init(1);
 	this->addChild(littleMap::getLittleMap(), 20);
 
-	auto powerstation = RAPowerStation::create(Point(2800,2800));
+	auto powerstation = RAPowerStation::create(Point(2800, 2800));
 
-	RedAlert::HostileObjectAppear(3, Point(2500, 2500),30);
-	RedAlert::HostileObjectAppear(0, Point(1500, 1500),40);
-
-
-
-	return true;
+	RedAlert::HostileObjectAppear(3, Point(2500, 2500), 30);
+	RedAlert::HostileObjectAppear(0, Point(1500, 1500), 40);
 }
 
 
@@ -99,7 +94,31 @@ void PlayScene::menuCloseCallback(Ref* pSender)
 
 }
 
+void PlayScene::gameStart()
+{
+	RedAlert::getInstance()->initAll();
 
+	auto fight_layer = RAMap::getMap();
+	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);
+	fight_layer->setPosition(0, 0);
+	ui_layer->setPosition(1200, 0);
+	addChild(fight_layer, 1, 1);
+	addChild(ui_layer, 2, 2);
+
+	RAResourceUI::init();
+	ui_layer->addChild(RAResourceUI::ResourceUI);
+
+	auto base = RABase::create(Point(3000, 3000));
+
+	littleMap::init(1);
+	this->addChild(littleMap::getLittleMap(), 20);
+
+	auto powerstation = RAPowerStation::create(Point(2800, 2800));
+
+	RedAlert::HostileObjectAppear(3, Point(2500, 2500), 30);
+	RedAlert::HostileObjectAppear(0, Point(1500, 1500), 40);
+
+}
 
 // SendMessage:		_gamescene->_client->SendMessage(MOVE_UNIT, getMoveMessage(soldier, soldier->_route.front()));
 // executeOrder:	((temp = _gamescene->_client->executeOrder()) != "no")

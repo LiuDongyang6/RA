@@ -37,6 +37,8 @@ public:
 	bool under_my_control=true;
 	void setInvicible() { invicible_ = 1; }
 	void disSetInvicible() { invicible_ = 0; }
+	void followInstruction(std::string instruction,char kind);
+	std::string birthMessage();
 protected:
 	const int covering_;
 	int hp_;
@@ -93,4 +95,4 @@ private:
 	Sprite* tempObject;
 };
 
-#endif // __RA_SOLDIER__ 
+#endif // __RA_OBJECT__ 

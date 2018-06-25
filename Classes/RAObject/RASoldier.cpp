@@ -1,5 +1,7 @@
 #include"RASoldier.h"
 #include"RABuilding.h"
+#include"PlayScene.h"
+#include<iomanip>
 //
 //RASoldier
 //
@@ -97,6 +99,13 @@ bool RASoldier::annihilation()
 }
 void RASoldier::runTo(Point point)
 {
+	//online
+	{
+		using namespace std;
+		ostringstream os;
+		os << setfill('0') << 'f' << setw(6) << id_ <<RAUtility::coortostr(point);
+		PlayScene::_thisScene->_client->sendMessage(os.str());
+	}
 	stopCurrentBehavior();
 	//保存目的地
 	destination = point;
@@ -109,6 +118,13 @@ void RASoldier::runTo(Point point)
 }
 void RASoldier::runToFight(RAObject* object)
 {
+	//online
+	{
+		using namespace std;
+		ostringstream os;
+		os << setfill('0') << 'f' << setw(6) << id_ << setw(6) << object->getId();
+		PlayScene::_thisScene->_client->sendMessage(os.str());
+	}
 	//如不停止会以矢量和移动
 	//重置状态
 	stopCurrentBehavior();
