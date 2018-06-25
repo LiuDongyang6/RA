@@ -1,6 +1,9 @@
 #include"RAObject.h"
 #include"RASoldier.h"
 #include"RABuilding.h"
+#include"PlayScene.h"
+#include<sstream>
+#include<iomanip>
 
 USING_NS_CC;
 
@@ -26,6 +29,12 @@ bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
 
 bool RAObject::annihilation()
 {
+	{
+		using namespace std;
+		std::ostringstream os;
+		os << setfill('0') << 'a' << setw(6) << id_;
+		PlayScene::_thisScene->_client->sendMessage(os.str());
+	}
 	//
 	//remove from archives
 	//从档案中删去
@@ -139,6 +148,44 @@ Point RAObject::getCorePoint()
 {
 	return getPosition() + Point(0, getContentSize().height / 2);
 }
+
+void RAObject::followInstruction(std::string instruction,char kind)
+{
+	switch (kind)
+	{
+	case 'r':
+	{
+		float coords[2];
+		for (int i = 0; i != 2; ++i)
+		{
+			int length = instruction[0];
+			coords[i] = RAUtility::stof(instruction.substr(1, length));
+			instruction.erase(0, length + 1);
+		}
+		Point location(coords);
+		static_cast<RASoldier*>(this)->runTo(location);
+	}
+	break;
+	case 'f':
+	{
+		auto aim = RAPlayer::master_table_[std::stoi(instruction)];
+		static_cast<RASoldier*>(this)->runToFight(aim);
+	}
+	break;
+	}
+}
+
+std::string RAObject::birthMessage()
+{
+	using namespace std;
+	string str;
+	str.push_back('b');
+	ostringstream os;
+	os << right << setfill('0') << setw(6) << object_count_ << setw(3) << id_;
+	str.append(os.str());
+	str.append(RAUtility::coortostr(getPosition()));
+	return str;
+}
 //
 //RAConstructButton
 //
@@ -218,11 +265,9 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 			RAPlayer::consumeCapital(capital_cost_);
 			object->setCount(RAPlayer::getCounter());
 			RAPlayer::master_table_.insert({ object->getCount(),object });
+			PlayScene::_thisScene->_client->sendMessage(object->birthMessage());
 		}
-		else
-		{
-
-		}
+		else;
 	else //soldier
 	{
 		auto object = CreateWiki[id](this->getParent()->getPosition());
@@ -233,6 +278,7 @@ void RAConstructButton::onTouchEnded(Touch* touch, Event* type)
 		object->setCount(RAPlayer::getCounter());
 		RAPlayer::all_soldiers_.push_back(static_cast<RASoldier*>(object));
 		RAPlayer::master_table_.insert({object->getCount(),object});
+		PlayScene::_thisScene->_client->sendMessage(object->birthMessage());
 	}
 	tempObject->removeFromParentAndCleanup(true);
 	tempObject = NULL;

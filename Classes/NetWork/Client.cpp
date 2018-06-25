@@ -71,7 +71,6 @@ void chat_client::handle_write(const boost::system::error_code& error)
     }
 }
 
-
 void chat_client::handle_read_header(const boost::system::error_code& error)
 {
     if (!error && read_msg_.decode_header())
@@ -280,21 +279,33 @@ void Client::runClient(int mode)
     t.detach();
 }
 
-void Client::sendMessage(const std::string & code, const std::string & message)
+void Client::sendMessage(const std::string & message)
 {
     chat_message msg;
     std::string temp;
     
-    if(_filter_mode == true && code[0] != ANSWER_FOR_ROOM[0])
-    {
-        temp.append(sensitive_word.substr(0, 4));
-    }
-    temp.append(code);
     temp.append(message);
     msg.body_length(temp.size());
     memcpy(msg.body(), temp.c_str(), msg.body_length());
     msg.encode_header();
     _clientInstance->write(msg);
+}
+
+void Client::sendMessage(const std::string & code, const std::string & message)
+{
+	chat_message msg;
+	std::string temp;
+
+	if (_filter_mode == true && code[0] != ANSWER_FOR_ROOM[0])
+	{
+		temp.append(sensitive_word.substr(0, 4));
+	}
+	temp.append(code);
+	temp.append(message);
+	msg.body_length(temp.size());
+	memcpy(msg.body(), temp.c_str(), msg.body_length());
+	msg.encode_header();
+	_clientInstance->write(msg);
 }
 
 std::string Client::executeOrder (void)

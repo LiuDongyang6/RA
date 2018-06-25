@@ -19,5 +19,11 @@ public:
 	static Point getPositionInMap(Point point);
 	//
 	static Point getBottumHalfPoint(Sprite* sprite);
+	//
+	static float stof(std::string str);
+	//
+	static std::string ftostr(float);
+	//
+	static std::string coortostr(Point point);
 };
 #endif // !__RA_UTILITY_H__

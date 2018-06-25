@@ -143,7 +143,6 @@ bool RoomScene::initForClient()
             msg.append("|");
             msg.append(temp->player_name);
             client->sendMessage(JOIN_ROOM, msg);
-            
             player_count++;
             role_layer->setVisible(false);
             
@@ -303,7 +302,7 @@ bool RoomScene::initForServer()
     pageView->setAnchorPoint(Vec2(0.5,0.5));
     
     // add three layouts
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 2; ++i)
     {
         // set a layout
         Layout* layout = Layout::create();
@@ -312,7 +311,7 @@ bool RoomScene::initForServer()
         layout->setContentSize(Size(300.0f, 300.0f));
         
         // set a imageview
-        ImageView* imageView = ImageView::create(StringUtils::format("map%d.png", i + 1));
+        ImageView* imageView = ImageView::create(StringUtils::format("littlemap%d.png", i + 1));
         imageView->setContentSize(Size(300.0f, 3000.0f));
         imageView->setScale(300.0f / 680.0f);
         imageView->setPosition(Vec2
