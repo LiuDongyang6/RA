@@ -90,7 +90,7 @@ void PlayScene::gameStart(bool topSide)
 
 	RAResourceUI::init();
 	ui_layer->addChild(RAResourceUI::ResourceUI);
-	littleMap::init(RoomScene::map_num);
+	littleMap::init(1);
 	this->addChild(littleMap::getLittleMap(), 20);
 
 	auto sch = [&](float dt) {

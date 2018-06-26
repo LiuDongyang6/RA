@@ -2,5 +2,9 @@ a:士兵死亡 _6count
 b:object出现 _6count _3:id  n1:x坐标字节数 _n1:x坐标 n2:y坐标字节数 _n2:y坐标 
 r:士兵runTo _6:count n1:x原坐标字节数 _n1:x坐标 n2:y原坐标字节数 _n2:y坐标 m1:x坐标字节数 _m1:x坐标 m2:y坐标字节数 _m2:y坐标
 f:士兵runToFight _6:count n1:x原坐标字节数 _n1:x坐标 n2:y原坐标字节数 _6:目标count
-
-
+s:特殊 _6:count 
+   Engineer：   
+   rf： n1:x原坐标字节数 _n1:x坐标 n2:y原坐标字节数 _6:目标count
+   ro： n1:x原坐标字节数 _n1:x坐标 n2:y原坐标字节数 _n2:y坐标 m1:x坐标字节数 _m1:x坐标 m2:y坐标字节数 _m2:y坐标
+   Wizzard：
+   sk： 无

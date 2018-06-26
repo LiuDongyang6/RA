@@ -60,7 +60,6 @@ public:
 
 	static cocos2d::TMXTiledMap* &getMap() { return _tiledMap; };
 
-	static int map_num;
 protected:
 	static cocos2d::TMXTiledMap *_tiledMap;
 	static cocos2d::Point diff;

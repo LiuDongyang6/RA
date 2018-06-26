@@ -107,6 +107,7 @@ public:
 	void initCapitalIncome();
 	void getIncome(float dt);
 	static RAObject* create(Point location);
+	bool annihilation() override;
 	static const int id = 14;
 protected:
 	int income_value_;

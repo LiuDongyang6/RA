@@ -189,10 +189,11 @@ RAObject* RABarrack::create(Point location)
 //
 RAObject* RAOilField::create(Point location)
 {
+	RAMap::sureToBuildOil(location, 4);
+
 	RAOilField* object = new RAOilField();
 
 	object->initWithIdAndLocation(id, location);
-	object->initCapitalIncome();
 
 	object->autorelease();
 
@@ -200,16 +201,11 @@ RAObject* RAOilField::create(Point location)
 }
 void RAOilField::initCapitalIncome()
 {
-	if (under_my_control)
-	{
-		float dt = RAUtility::RAgetProperty(id, "income_speed").asFloat();
-		auto func = [&](float dt) {
-			this->getIncome(dt);
-		};
-		schedule(func, dt, std::string("Income"));
-	}
-	else
-		unschedule("Income");
+	float dt = RAUtility::RAgetProperty(id, "income_speed").asFloat();
+	auto func = [&](float dt) {
+		this->getIncome(dt);
+	};
+	schedule(func, dt, std::string("Income"));
 }
 
 void RAOilField::getIncome(float dt)
@@ -219,8 +215,20 @@ void RAOilField::getIncome(float dt)
 
 void RAOilField::changeControl(bool mine)
 {
+	if (!mine)//我方被占
+	{
+		unschedule("Income");
+	}
+	else
+	{
+		initCapitalIncome();
+	}
 	RAObject::changeControl(mine);
-	initCapitalIncome();
+}
+bool RAOilField::annihilation()
+{
+	unschedule("Income");
+	return RABuilding::annihilation();
 }
 //
 //RANuclearSilo

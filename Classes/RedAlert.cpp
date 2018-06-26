@@ -17,7 +17,7 @@ void RedAlert::initAll(int num)
 	framecache->addSpriteFramesWithFile("OilField/OilField.plist");
 	framecache->addSpriteFramesWithFile("effects/effects.plist");
 	//
-	RAMap::init(num);
+	RAMap::init(1);
 	//initial selectBox
 	selectBox = LayerColor::create(Color4B(145, 150, 134, 255));
 	selectBox->setOpacity(70);
