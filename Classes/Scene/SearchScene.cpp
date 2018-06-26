@@ -3,6 +3,7 @@
 #include "RoomScene.h"
 #include "SearchScene.h"
 #include "../NetWork/MessageCode.h"
+#include "GameAudio.h"
 
 USING_NS_CC;
 using namespace ui;
@@ -46,9 +47,20 @@ bool SearchScene::init()
     _room_list_bg = RoomListBg;
     this->addChild(RoomListBg,1);
     
-    auto bg = Sprite::create("bg.png");
-    bg->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
+    auto bg = Sprite::create("Scene/room-back.png");
+	// position the label on the center of the screen
+	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
+		origin.y + visibleSize.height / 2));
+	Size mywinsize = Director::getInstance()->getWinSize();
+	float winw = mywinsize.width;
+	float winh = mywinsize.height;
+	float spx = bg->getTextureRect().getMaxX();
+	float spy = bg->getTextureRect().getMaxY();
+	bg->setScaleX(winw / spx);
+	bg->setScaleY(winw / spx);
     this->addChild(bg);
+
+
     
     this->scheduleUpdate();
 
@@ -101,6 +113,8 @@ void SearchScene::update(float delta)
                     
                     in_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                         if (type == Widget::TouchEventType::ENDED) {
+
+							GameAudio::getInstance()->playEffect("Sound/button.mp3");
 
                             client->_filter_mode = true;
                             client->sensitive_word = button_owner_name;
