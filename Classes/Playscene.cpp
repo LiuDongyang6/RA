@@ -68,7 +68,7 @@ bool PlayScene::init()
 
 	auto base = RABase::create(Point(3000, 3000));
 
-	littleMap::init(1);
+	littleMap::init(RAMap::map_num);
 	this->addChild(littleMap::getLittleMap(), 20);
 
 	auto powerstation = RAPowerStation::create(Point(2800, 2800));

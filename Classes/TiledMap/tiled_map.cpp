@@ -1,4 +1,4 @@
-#include "tiled_map.h"
+ #include "tiled_map.h"
 #include"RAObject/RASoldier.h"
 #include "SimpleAudioEngine.h"
 #include "color_egg.h"
