@@ -2,6 +2,7 @@
 #include"RAObject/RASoldier.h"
 #include "SimpleAudioEngine.h"
 #include "color_egg.h"
+#include "Scene/RoomScene.h"
 
 #define random(a,b) (rand()%(b-a+1)+a)
 USING_NS_CC;
@@ -18,7 +19,6 @@ const float RAMap::speed = 30;
 const int RAMap::accurancy = 50;
 TMXTiledMap * RAMap::_tiledMap;
 Point RAMap::diff;
-int RAMap::map_num;
 std::map<Point, bool> RAMap::collision;
 std::map<Point, bool> RAMap::oil;
 std::map<Point, bool> RAMap::soldier_collision;
@@ -31,18 +31,17 @@ std::vector<Point> RAMap::future_dests;
 // on "init" you need to initialize your instance
 bool RAMap::init(int num)
 {
-	map_num = num;
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//创建地图
-	if (map_num == 1)
+	if (num == 1)
 	{
 		_tiledMap = TMXTiledMap::create("map1.tmx");
 		_tiledMap->getLayer("hourse")->getTileAt(Point(61, 64))->setOpacity(0);
 		_tiledMap->getLayer("hourse")->setZOrder(9000);
 	}
-	else if (map_num == 2)
+	else if (num == 2)
 		_tiledMap = TMXTiledMap::create("map2.tmx");
 	mapInit();
 	//testForCoord();
@@ -309,7 +308,7 @@ void RAMap::sureToBuildOil(Point build_point, int size) {
 		tile_coord.y += size;
 		tile_coord.x--;
 	}
-	if (map_num == 1)
+	if (RoomScene::map_num == 1)
 	{
 		if (oil[Point(68, 68)] == 0 && oil[Point(63, 68)] == 0 && oil[Point(58, 68)] == 0 &&
 			oil[Point(58, 63)] == 0 && oil[Point(58, 58)] == 0 && oil[Point(63, 58)] == 0 &&
