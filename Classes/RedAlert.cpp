@@ -137,7 +137,7 @@ void RedAlert::catcher(std::string message)
 {
 	using namespace std;
 	char instruction_kind = message[0];
-	int aim = stoi(message.substr(1, 7));
+	int aim = stoi(message.substr(1, 6));
 	message.erase(0,7);
 	switch (instruction_kind)
 	{
@@ -158,7 +158,7 @@ void RedAlert::catcher(std::string message)
 			float coords[2];
 			for (int i = 0; i != 2; ++i)
 			{
-				int length = message[0];
+				char length = message[0];
 				coords[i] = RAUtility::stof(message.substr(1, length));
 				message.erase(0, length + 1);
 			}

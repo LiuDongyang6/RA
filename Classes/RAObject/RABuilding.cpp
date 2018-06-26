@@ -43,11 +43,13 @@ bool RABuilding::initWithIdAndLocation(int id,Point location)
 	auto  strName = RAUtility::RAgetProperty(id, "name").asString();
 	const char* name = strName.c_str();
 	for (int i = 1; i != 4; ++i)
-		appearances.push_back(StringUtils::format("%s(%d).png", name,i));
+	{
+		appearances.push_back(StringUtils::format("%s(%d).png", name, i));
+	}
 	current_appearance_ = 0;
-	RAObject::initWithSpriteFrameNameAndLocation(appearances[0],location);
+	RAObject::initWithSpriteFrameNameAndLocation(appearances[0], location);
 	//initial UI
-	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id,"UIFile").asCString());
+	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id, "UIFile").asCString());
 	UI_->setPosition(Point(0, 0));
 	UI_->retain();
 	//initial buttons

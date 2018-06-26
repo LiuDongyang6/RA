@@ -6,7 +6,7 @@ RARoshambo* RARoshambo::cards[3];
 RARoshambo* RARoshambo::create(int num)
 {
 	auto object = new RARoshambo(num);
-	object->initWithSpriteFrameName(StringUtils::format("roshambo%d", num));
+	object->initWithSpriteFrameName(StringUtils::format("roshambo%d.png", num));
 
 	object->setPosition(Point(800, 300) + Point((num - 2) * 200, 0));
 	auto touch=EventListenerTouchOneByOne::create();
@@ -18,17 +18,19 @@ void RARoshambo::startCompete()
 {
 	auto &scene = PlayScene::_thisScene;
 	auto sch = [&](float dt) {
-		std::string temp;
-		if ((temp = scene->_client->executeOrder()) != "no")
+		std::queue<std::string> msgs;
+		scene->_client->RAGetMessage(msgs);
+		while(!msgs.empty())
 		{
-			RARoshambo::RoshamboReceive(temp);
+			RARoshambo::RoshamboReceive(msgs.front());
+			msgs.pop();
 		}
 	};
 	scene->schedule(sch, std::string("COMPETING"));
 	for (int i = 0; i != 3; ++i)
 	{
 		cards[i] = RARoshambo::create(i+1);
-		PlayScene::_thisScene->addChild(cards[i+1]);
+		PlayScene::_thisScene->addChild(cards[i]);
 	}
 }
 bool RARoshambo::onTouchBegan(Touch* touch,Event* event)
@@ -57,7 +59,8 @@ void RARoshambo::showCard(bool isMe, int num)
 	contrast[isMe] = num;
 	if (contrast[!isMe] != 0)//双方都已经出牌
 	{
-		auto opponent=Sprite::createWithSpriteFrameName(StringUtils::format("roshambo%d", contrast[0]));
+		auto opponent=Sprite::createWithSpriteFrameName(StringUtils::format("roshambo%d.png", contrast[0]));
+		PlayScene::_thisScene->addChild(opponent);
 		opponent->setRotation(180.0f);
 		opponent->setPosition(Point(800, 1200));
 		auto moveto = MoveTo::create(1.5f, Point(800, 600));
@@ -66,7 +69,7 @@ void RARoshambo::showCard(bool isMe, int num)
 		if (contrast[0] == contrast[1])
 		{
 			auto func = [=]() {
-				RARoshambo::cards[num]->removeFromParent();
+				RARoshambo::cards[contrast[1]-1]->removeFromParent();
 				RARoshambo::contrast[0] = RARoshambo::contrast[1] = 0;
 				opponent->removeFromParent();
 				RARoshambo::startCompete();
@@ -78,8 +81,9 @@ void RARoshambo::showCard(bool isMe, int num)
 		{
 			auto func = [=]() {
 				PlayScene::_thisScene->unschedule("COMPETING");
-				RARoshambo::cards[num]->removeFromParent();
+				RARoshambo::cards[contrast[1] - 1]->removeFromParent();
 				opponent->removeFromParent();
+				PlayScene::_thisScene->gameStart(true);
 			};
 			call = CallFunc::create(func);
 		}
@@ -88,8 +92,9 @@ void RARoshambo::showCard(bool isMe, int num)
 		{
 			auto func = [=]() {
 				PlayScene::_thisScene->unschedule("COMPETING");
-				RARoshambo::cards[num]->removeFromParent();
+				RARoshambo::cards[contrast[1] - 1]->removeFromParent();
 				opponent->removeFromParent();
+				PlayScene::_thisScene->gameStart(false);
 			};
 			call = CallFunc::create(func);
 		}
@@ -104,8 +109,10 @@ void RARoshambo::showCard(bool isMe, int num)
 }
 void RARoshambo::RoshamboReceive(std::string msg)
 {
+	log(msg.c_str());
+	log(int(msg[1]));
 	if (msg[0] == '$')
 	{
-		showCard(false, msg[1]);
+		showCard(false, msg[1]-'0');
 	}
 }

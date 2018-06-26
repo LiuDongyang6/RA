@@ -1,6 +1,7 @@
 ﻿#include <stdio.h>
 #include "Client.h"
 #include "MessageCode.h"
+#include"PlayScene.h"
 
 int ipindex;                                ///能正确连接的ip地址在ip列表里的索引
 int serverIndex;                            ///server所在的ip地址在ip列表里的索引
@@ -282,9 +283,11 @@ void Client::runClient(int mode)
 void Client::sendMessage(const std::string & message)
 {
     chat_message msg;
-    std::string temp;
-    
-    temp.append(message);
+	std::string temp;
+	//发送方
+	temp.append(PlayScene::_thisScene->_localPlayerName.substr(0,4));
+  
+	temp.append(message);
     msg.body_length(temp.size());
     memcpy(msg.body(), temp.c_str(), msg.body_length());
     msg.encode_header();
@@ -336,4 +339,19 @@ std::string Client::executeOrder (void)
     
     
     return temp;
+}
+void Client::RAGetMessage(std::queue<std::string>& vec)
+{
+	t_lock.lock();
+	while (_orderList.size() != 0) {
+		auto temp = _orderList.front();
+		_orderList.pop_front();
+		std::string filter_word =temp.substr(0, 4);
+		if (filter_word != PlayScene::_thisScene->_localPlayerName.substr(0, 4)) {
+			std::string real_order = temp.substr(4, temp.size() - 4);
+			temp = real_order;
+			vec.push(temp);
+		}
+	}
+	t_lock.unlock();
 }

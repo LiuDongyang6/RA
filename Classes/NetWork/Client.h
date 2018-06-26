@@ -179,7 +179,7 @@ public:
     *        -<em>std::string</em>      正确指令
     */
     std::string executeOrder (void);
-    
+	void RAGetMessage(std::queue<std::string>& vec);
     /** 
     * @brief    运行client
     * 

@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include"ResourceUI/ResourceUI.h"
 #include "TiledMap/RAlittle_map.h"
+#include"Roshambo\RARoshambo.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -53,27 +54,8 @@ bool PlayScene::init()
 			_localPlayerID = playerData.player_id;
 		}
 	}
-	RedAlert::getInstance()->initAll();
-
-	auto fight_layer = RAMap::getMap();
-	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);
-	fight_layer->setPosition(0, 0);
-	ui_layer->setPosition(1200, 0);
-	addChild(fight_layer, 1, 1);
-	addChild(ui_layer, 2, 2);
-
-	RAResourceUI::init();
-	ui_layer->addChild(RAResourceUI::ResourceUI);
-
-	auto base = RABase::create(Point(3000, 3000));
-
-	littleMap::init(1);
-	this->addChild(littleMap::getLittleMap(), 20);
-
-	auto powerstation = RAPowerStation::create(Point(2800, 2800));
-
-	RedAlert::HostileObjectAppear(3, Point(2500, 2500), 30);
-	RedAlert::HostileObjectAppear(0, Point(1500, 1500), 40);
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("roshambo/roshambo.plist");
+	RARoshambo::startCompete();
 }
 
 
@@ -94,7 +76,7 @@ void PlayScene::menuCloseCallback(Ref* pSender)
 
 }
 
-void PlayScene::gameStart()
+void PlayScene::gameStart(bool topSide)
 {
 	RedAlert::getInstance()->initAll();
 
@@ -107,17 +89,36 @@ void PlayScene::gameStart()
 
 	RAResourceUI::init();
 	ui_layer->addChild(RAResourceUI::ResourceUI);
-
-	auto base = RABase::create(Point(3000, 3000));
-
 	littleMap::init(1);
 	this->addChild(littleMap::getLittleMap(), 20);
 
-	auto powerstation = RAPowerStation::create(Point(2800, 2800));
+	auto sch = [&](float dt) {
+		std::queue<std::string> msgs;
+		PlayScene::_thisScene->_client->RAGetMessage(msgs);
+		while (!msgs.empty())
+		{
+			RedAlert::catcher(msgs.front());
+			msgs.pop();
+		}
+	};
+	_thisScene->schedule(sch, std::string("RAING"));
 
-	RedAlert::HostileObjectAppear(3, Point(2500, 2500), 30);
-	RedAlert::HostileObjectAppear(0, Point(1500, 1500), 40);
-
+	if (topSide)
+	{
+		RAPlayer::setEdge(1);
+		auto base = RABase::create(Point(2000, 3000));
+		base->setCount(RAPlayer::getCounter());
+		RAPlayer::master_table_.insert({ base->getCount(),base });
+		PlayScene::_thisScene->_client->sendMessage(base->birthMessage());
+	}
+	else
+	{
+		RAPlayer::setEdge(2);
+		auto base = RADefendingBase::create(Point(1500, 3000));
+		base->setCount(RAPlayer::getCounter());
+		RAPlayer::master_table_.insert({ base->getCount(),base });
+		PlayScene::_thisScene->_client->sendMessage(base->birthMessage());
+	}
 }
 
 // SendMessage:		_gamescene->_client->SendMessage(MOVE_UNIT, getMoveMessage(soldier, soldier->_route.front()));

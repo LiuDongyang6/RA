@@ -38,6 +38,7 @@ public:
 	//
 	static std::unordered_map<int, RAObject*> master_table_;
 	//
+	static void setEdge(int _edge) { edge = _edge; }
 private:
 	static int capital_;
 	static int power_;

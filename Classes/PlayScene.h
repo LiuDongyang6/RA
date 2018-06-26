@@ -42,7 +42,7 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(PlayScene);
 
-	void gameStart();
+	void gameStart(bool topSide);
 };
 
 #endif // __PLAY_SCENE_H__
