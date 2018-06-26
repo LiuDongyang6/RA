@@ -16,7 +16,7 @@ int     current_count;
 int     loop_you_in;
 bool    if_initial;
 bool    if_self_joined;
-int RoomScene::map_num;
+int RoomScene::map_num  = 1;
 
 static int      roomMode;
 static Client*  client = nullptr;
