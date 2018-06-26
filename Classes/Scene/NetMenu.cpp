@@ -29,9 +29,18 @@ bool NetMenu::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
-    auto bg = Sprite::create("bg.png");
+    auto bg = Sprite::create("Scene/room-back.png");
+	// position the label on the center of the screen
+	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
+		origin.y + visibleSize.height / 2));
+	Size mywinsize = Director::getInstance()->getWinSize();
+	float winw = mywinsize.width;
+	float winh = mywinsize.height;
+	float spx = bg->getTextureRect().getMaxX();
+	float spy = bg->getTextureRect().getMaxY();
+	bg->setScaleX(winw / spx);
+	bg->setScaleY(winw / spx);
     this->addChild(bg);
-    bg->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
 
     _selectLevelIndex = 0;
 
@@ -76,8 +85,8 @@ bool NetMenu::init()
 
 //=============================remote network button===========================
 
-    auto remote_button = Button::create("RemoteFight.png");
-    auto local_button = Button::create("LocalFight.png");
+    auto remote_button = Button::create("Scene/RemoteFight.png");
+    auto local_button = Button::create("Scene/LocalFight.png");
     remote_button->setScale(1.0);
     
     remote_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 5 * 3));
@@ -98,9 +107,9 @@ bool NetMenu::init()
             role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
             role_layer->addChild(role_selector);
             
-            auto back_button = Button::create("xButton.png");
-            auto create_button = Button::create("button.png");
-            auto join_button = Button::create("button.png");
+            auto back_button = Button::create("Scene/myClose1.png", "Scene/myClose2.png");
+            auto create_button = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
+            auto join_button = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
             
             role_selector->addChild(create_button);
             role_selector->addChild(join_button);
@@ -185,9 +194,9 @@ bool NetMenu::init()
             role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
             role_layer->addChild(role_selector);
             
-            auto back_button = Button::create("xButton.png");
-            auto create_button = Button::create("button.png");
-            auto join_button = Button::create("button.png");
+            auto back_button = Button::create("Scene/myClose1.png", "Scene/myClose2.png");
+            auto create_button = Button::create("Scene/button_normal.png","Scene/button_selected.png");
+            auto join_button = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
             
             role_selector->addChild(create_button);
             role_selector->addChild(join_button);
@@ -249,12 +258,12 @@ bool NetMenu::init()
     local_button->setVisible(false);
     this->addChild(local_button, 1);
 
-//=============================return button===========================
+	//return button
+	auto return_button = Button::create("Scene/backNormal.png", "Scene/backSelected.png");
+	return_button->setScale(1.0);
 
-    auto return_button = Button::create("return.png");
-    return_button->setScale(1.0);
+	return_button->setPosition(Vec2(origin.x + visibleSize.width / 4, origin.y + visibleSize.height*0.2));
     
-    return_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height*0.2));
     
     return_button->addTouchEventListener([](Ref* pSender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
@@ -267,11 +276,15 @@ bool NetMenu::init()
     return_button->setVisible(false);
     this->addChild(return_button, 1);
     
-    auto NameInput = Sprite::create("NameInput.png");
-    NameInput->setScale(0.7f,0.7f);
-    NameInput->setPosition(origin / 2 + visibleSize / 2);
-    this->addChild(NameInput,1);
+
     
+	auto label = Label::createWithTTF("Input Your Name: ", "fonts/Marker Felt.ttf", 24);
+	// position the label on the center of the screen
+	label->setPosition(origin / 2 + visibleSize / 2);
+
+	// add the label as a child to this layer
+	this->addChild(label, 1);
+
     cocos2d::ui::TextField* textField = cocos2d::ui::TextField::create("input words here", "Arial", 30);
     textField->setMaxLengthEnabled(true);
     textField->setMaxLength(20);
@@ -284,7 +297,7 @@ bool NetMenu::init()
     inputBox->setScale(0.6, 0.6);
     this->addChild(inputBox,1);
     
-    auto pleaseStartButton = Button::create("button.png");
+    auto pleaseStartButton = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
     pleaseStartButton->setScale(1.0);
     pleaseStartButton->setPosition(Vec2(origin.x + visibleSize.width /2, origin.y + visibleSize.height*0.5 - 230));
     
@@ -295,7 +308,7 @@ bool NetMenu::init()
     
     this->addChild(pleaseStartButton,3);
     
-    auto nameStartButton = Button::create("button.png");
+    auto nameStartButton = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
     nameStartButton->setScale(1.0);
     nameStartButton->setPosition(Vec2(origin.x + visibleSize.width /2, origin.y + visibleSize.height*0.5 - 230));
     
@@ -315,7 +328,7 @@ bool NetMenu::init()
                 textField->setVisible(false);
                 inputBox->setVisible(false);
                 nameStartButton->setVisible(false);
-                NameInput->setVisible(false);
+				label->setVisible(false);
             
                 local_button->setVisible(true);
                 remote_button->setVisible(true);

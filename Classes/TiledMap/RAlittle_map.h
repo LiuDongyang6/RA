@@ -6,7 +6,7 @@
 class littleMap
 {
 public:
-	static bool init(int num = 1);
+	static bool init(int num);
 
 	static cocos2d::Sprite* getLittleMap();
 

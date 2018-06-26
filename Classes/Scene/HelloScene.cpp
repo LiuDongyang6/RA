@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "SettingScene.h"
 #include "StartScene.h"
+#include "GameAudio.h"
 
 USING_NS_CC;
 
@@ -67,7 +68,7 @@ bool Hello::init()
 		CC_CALLBACK_1(Hello::menuItemStartCallback, this));
 	startMenuItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 2 / 3));
 
-	// ----------------------------------- image menu -----------------------------------
+	// ----------------------------------- setting menu -----------------------------------
 	MenuItemImage* settingMenuItem = MenuItemImage::create(
 		"Scene/setting-up1.png",
 		"Scene/setting-down1.png",
@@ -168,18 +169,21 @@ void Hello::menuCloseCallback(Ref* pSender)
 
 void Hello::menuItemSettingCallback(Ref* pSender)
 {
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
 	auto sc = Setting::createScene();
 	Director::getInstance()->pushScene(sc);
 }
 
 void Hello::menuItemHelpCallback(Ref* pSender)
 {
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
 	MenuItem* item = (MenuItem*)pSender;
 	log("Touch Help %p", item);
 }
 
 void Hello::menuItemStartCallback(Ref* pSender)
 {
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
 	auto sc = Start::createScene();
 	Director::getInstance()->pushScene(sc);
 }

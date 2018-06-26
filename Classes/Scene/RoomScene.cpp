@@ -16,6 +16,7 @@ int     current_count;
 int     loop_you_in;
 bool    if_initial;
 bool    if_self_joined;
+int RoomScene::map_num;
 
 static int      roomMode;
 static Client*  client = nullptr;
@@ -83,9 +84,18 @@ bool RoomScene::initForClient()
     // get the origin's position in opengl coordinate
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
-    auto bg = Sprite::create("bg.png");
-    this->addChild(bg);
-    bg->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
+	auto bg = Sprite::create("Scene/room-back.png");
+	// position the label on the center of the screen
+	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
+		origin.y + visibleSize.height / 2));
+	Size mywinsize = Director::getInstance()->getWinSize();
+	float winw = mywinsize.width;
+	float winh = mywinsize.height;
+	float spx = bg->getTextureRect().getMaxX();
+	float spy = bg->getTextureRect().getMaxY();
+	bg->setScaleX(winw / spx);
+	bg->setScaleY(winw / spx);
+	this->addChild(bg);
     
     // default begins at the first level, the index 0
     _selectLevelIndex = 0;
@@ -109,7 +119,7 @@ bool RoomScene::initForClient()
     role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
     role_layer->addChild(role_selector);
     
-    auto back_button = Button::create("xButton.png");
+    auto back_button = Button::create("Scene/myClose1.png", "Scene/myClose2.png");
 
     auto red_player_button = Button::create("player_down.png");
     auto black_player_button = Button::create("player2_down.png");
@@ -185,7 +195,7 @@ bool RoomScene::initForClient()
     
     room->addChild(_chatWindow,2);
     
-    auto send_message_button = Button::create("button.png");
+    auto send_message_button = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
     room->addChild(send_message_button);
     send_message_button->cocos2d::Node::setScale(0.7);
     send_message_button->setPosition(Vec2(
@@ -226,9 +236,18 @@ bool RoomScene::initForServer()
     // get the origin's position in opengl coordinate
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
-    auto bg = Sprite::create("bg.png");
-    this->addChild(bg);
-    bg->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
+	auto bg = Sprite::create("Scene/room-back.png");
+	// position the label on the center of the screen
+	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
+		origin.y + visibleSize.height / 2));
+	Size mywinsize = Director::getInstance()->getWinSize();
+	float winw = mywinsize.width;
+	float winh = mywinsize.height;
+	float spx = bg->getTextureRect().getMaxX();
+	float spy = bg->getTextureRect().getMaxY();
+	bg->setScaleX(winw / spx);
+	bg->setScaleY(winw / spx);
+	this->addChild(bg);
     
     // default begins at the first level, the index 0
     _selectLevelIndex = 0;
@@ -249,7 +268,7 @@ bool RoomScene::initForServer()
     
     room->addChild(_chatWindow,2);
     
-    auto start_game_button = Button::create("button.png");
+    auto start_game_button = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
     room->addChild(start_game_button);
     start_game_button->cocos2d::Node::setScale(0.7);
     start_game_button->setPosition(Vec2(
@@ -259,7 +278,7 @@ bool RoomScene::initForServer()
     start_game_button->setTitleFontSize(20);
     
     
-    auto send_message_button = Button::create("button.png");
+    auto send_message_button = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
     room->addChild(send_message_button);
     send_message_button->cocos2d::Node::setScale(0.7);
     send_message_button->setPosition(Vec2(
@@ -282,13 +301,13 @@ bool RoomScene::initForServer()
     
 
     
-    auto start_button = Button::create("button.png");
+    auto start_button = Button::create("Scene/button_normal.png", "Scene/button_selected.png");
     
     //====================================select map==============================
     auto board_bg = Layout::create();
     this->addChild(board_bg);
     board_bg->setPosition(Vec2(visibleSize.width / 2.0f, visibleSize.height / 2.0f));
-    auto board = ImageView::create("SelectMap.png");
+    auto board = ImageView::create("BlankBoard.png");
     board_bg->addChild(board);
     
     //create a pageView
@@ -302,7 +321,7 @@ bool RoomScene::initForServer()
     pageView->setAnchorPoint(Vec2(0.5,0.5));
     
     // add three layouts
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 2; ++i)
     {
         // set a layout
         Layout* layout = Layout::create();
@@ -311,7 +330,7 @@ bool RoomScene::initForServer()
         layout->setContentSize(Size(300.0f, 300.0f));
         
         // set a imageview
-        ImageView* imageView = ImageView::create(StringUtils::format("map%d.png", i + 1));
+        ImageView* imageView = ImageView::create(StringUtils::format("littlemap%d.png", i + 1));
         imageView->setContentSize(Size(300.0f, 3000.0f));
         imageView->setScale(300.0f / 680.0f);
         imageView->setPosition(Vec2
@@ -335,6 +354,7 @@ bool RoomScene::initForServer()
                                            PageView* pageView   =   dynamic_cast<PageView*>(pSender);
                                            _selectLevelIndex    =   pageView->getCurPageIndex();
                                            start_button -> setTitleText(StringUtils::format("map%d", _selectLevelIndex + 1));
+										   map_num = _selectLevelIndex + 1;
                                        }
                                            break;
                                        default:break;
@@ -349,7 +369,7 @@ bool RoomScene::initForServer()
     
     //====================================return_button==============================
     //return button
-    auto return_button = Button::create("return.png");
+    auto return_button = Button::create("Scene/backNormal.png", "Scene/backSelected.png");
     return_button->setScale(1.0);
     
     return_button->setPosition(Vec2(origin.x + visibleSize.width / 4, origin.y + visibleSize.height*0.2));
@@ -389,7 +409,7 @@ bool RoomScene::initForServer()
             role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
             role_layer->addChild(role_selector);
             
-            auto back_button = Button::create("xButton.png");
+            auto back_button = Button::create("Scene/myClose1.png", "Scene/myClose2.png");
             auto red_player_button = Button::create("player_down.png");
             auto black_player_button = Button::create("player2_down.png");
             
@@ -749,6 +769,7 @@ void RoomScene::update(float delta)
         }
     }
 }
+
 void RoomScene::textFieldEvent(Ref *pSender, cocos2d::ui::TextField::EventType type)
 {
     switch (type)
@@ -793,6 +814,7 @@ void RoomScene::textFieldEvent(Ref *pSender, cocos2d::ui::TextField::EventType t
             break;
     }
 }
+
 int RoomScene::findPlayerId()
 {
     for(int i = 0; i < player_list.size(); i++)

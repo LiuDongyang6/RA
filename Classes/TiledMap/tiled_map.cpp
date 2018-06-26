@@ -1,6 +1,7 @@
 #include "tiled_map.h"
 #include"RAObject/RASoldier.h"
 #include "SimpleAudioEngine.h"
+#include "color_egg.h"
 
 #define random(a,b) (rand()%(b-a+1)+a)
 USING_NS_CC;
@@ -22,6 +23,10 @@ std::map<Point, bool> RAMap::collision;
 std::map<Point, bool> RAMap::oil;
 std::map<Point, bool> RAMap::soldier_collision;
 std::vector<Point> RAMap::routines;
+std::map<int, std::vector<Point>> RAMap::soldier_routines;
+std::map<int, std::map<Point, int>> RAMap::soldier_g;
+std::map<int, std::pair<Point, Point>> RAMap::soldier_dests;
+std::vector<Point> RAMap::future_dests;
 
 // on "init" you need to initialize your instance
 bool RAMap::init(int num)
@@ -32,10 +37,13 @@ bool RAMap::init(int num)
 
 	//创建地图
 	if (map_num == 1)
+	{
 		_tiledMap = TMXTiledMap::create("map1.tmx");
+		_tiledMap->getLayer("hourse")->getTileAt(Point(61, 64))->setOpacity(0);
+		_tiledMap->getLayer("hourse")->setZOrder(9000);
+	}
 	else if (map_num == 2)
 		_tiledMap = TMXTiledMap::create("map2.tmx");
-
 	mapInit();
 	//testForCoord();
 	setMovePosition();
@@ -77,11 +85,9 @@ void RAMap::testForCoord(void) {
 		auto relate = relatedCoordToTileCoord(relate_1);
 		log("-------------tile %f, %f", tile.x, tile.y);
 		/*log("-------------relate %f, %f", relate_1.x, relate_1.y);
-		log("-------------%f, %f", relate.x, relate.y);
+		log("-------------%f, %f", relate.x, relate.y);*/
 		log("-------------soldier collision %d %f,%f", 
-			soldier_collision[Point(tile.x - 3, tile.y - 3)], tile.x - 3, tile.y - 3);*/
-		auto gid1 = getMap()->getLayer("hourse")->getTileGIDAt(tile);
-		log("-------------gid %d", gid1);
+			soldier_collision[Point(tile.x - 1, tile.y - 1)], tile.x - 1, tile.y - 1);
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, _tiledMap);
@@ -294,6 +300,7 @@ void RAMap::sureToBuildNormal(Point build_point, int size) {
 //确定建造油井 
 void RAMap::sureToBuildOil(Point build_point, int size) {
 	Point tile_coord = relatedCoordToTileCoord(build_point);
+	changeOilTile(tile_coord);
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
 			oil[tile_coord] = 0;
@@ -302,14 +309,15 @@ void RAMap::sureToBuildOil(Point build_point, int size) {
 		tile_coord.y += size;
 		tile_coord.x--;
 	}
-	changeOilTile(tile_coord);
 	if (map_num == 1)
 	{
 		if (oil[Point(68, 68)] == 0 && oil[Point(63, 68)] == 0 && oil[Point(58, 68)] == 0 &&
 			oil[Point(58, 63)] == 0 && oil[Point(58, 58)] == 0 && oil[Point(63, 58)] == 0 &&
 			oil[Point(68, 58)] == 0 && oil[Point(68, 53)] == 0)
 		{
-			getMap()->getLayer("hourse")->setTileGID(69, Point(61, 63));
+			_tiledMap->getLayer("hourse")->getTileAt(Point(61, 64))->setOpacity(255);
+			auto color = colorEgg::create();
+			Director::getInstance()->getRunningScene()->addChild(color, 900);
 		}
 	}
 }
@@ -331,6 +339,7 @@ void RAMap::destroyNormalBuildings(Point des_pos, int size) {
 //油田被摧毁
 void RAMap::destroyOilBuildings(Point des_pos, int size) {
 	Point tile_coord = relatedCoordToTileCoord(des_pos);
+	recoverOilTile(tile_coord);
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
 			oil[tile_coord] = 1;
@@ -340,509 +349,363 @@ void RAMap::destroyOilBuildings(Point des_pos, int size) {
 		tile_coord.y += size;
 		tile_coord.x--;
 	}
-	recoverOilTile(tile_coord);
 }
 
 //士兵占据这格
 void RAMap::setSoldierCollision(Point pos, const int size) {
 	Point tile_coord = relatedCoordToTileCoord(pos);
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			soldier_collision[Point(tile_coord.x - x, tile_coord.y - y)] = 1;
-		}
-	}
+	soldier_collision[Point(tile_coord.x, tile_coord.y)] = 1;
 }
 
 //士兵离开这格
 void RAMap::removeSoldierCollision(Point pos, const int size) {
 	Point tile_coord = relatedCoordToTileCoord(pos);
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			soldier_collision[Point(tile_coord.x - x, tile_coord.y - y)] = 0;
-		}
-	}
+	soldier_collision[Point(tile_coord.x, tile_coord.y)] = 0;
 }
 
 //不想解释
-std::map<Point, int> RAMap::tryEightdirection(Point position, Point dest, const int size) {
+std::map<Point, int> RAMap::tryEightdirection(Point position, Point dest, int id) {
 	std::map<Point, int> open_list;
-	bool cannotmove = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x - 1 - x, position.y - y)]) {
-				cannotmove = 1;
-				goto left;
-			}
-		}
-	}
-left:	if (cannotmove)//1
+	if (collision[Point(position.x - 1, position.y)] /*|| 
+		soldier_collision[Point(position.x - 1, position.y)]*/)
 		open_list[Point(position.x - 1, position.y)] = 10000;
 	else
+	{
+		if (soldier_g[id][Point(position.x - 1, position.y)] == 0)
+			soldier_g[id][Point(position.x - 1, position.y)] = 
+			soldier_g[id][Point(position.x, position.y)] + 10;
 		open_list[Point(position.x - 1, position.y)] =
-		10 + 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y));
-	cannotmove = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x + 1 - x, position.y - y)]) {
-				cannotmove = 1;
-				goto right;
-			}
-		}
+			soldier_g[id][Point(position.x - 1, position.y)]
+			+ 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y));
 	}
-right:	if (cannotmove)//2
+	if (collision[Point(position.x + 1, position.y)] /*|| 
+		soldier_collision[Point(position.x + 1, position.y)]*/)
 		open_list[Point(position.x + 1, position.y)] = 10000;
 	else
+	{
+		if (soldier_g[id][Point(position.x + 1, position.y)] == 0)
+			soldier_g[id][Point(position.x + 1, position.y)] =
+			soldier_g[id][Point(position.x, position.y)] + 10;
 		open_list[Point(position.x + 1, position.y)] =
-		10 + 10 * (abs(dest.x - position.x - 1) + abs(dest.y - position.y));
-	cannotmove = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x - x, position.y - 1 - y)]) {
-				cannotmove = 1;
-				goto down;
-			}
-		}
+			soldier_g[id][Point(position.x + 1, position.y)]
+			+ 10 * (abs(dest.x - position.x - 1) + abs(dest.y - position.y));
 	}
-down:	if (cannotmove)//3
+	if (collision[Point(position.x, position.y - 1)] /*|| 
+		soldier_collision[Point(position.x, position.y - 1)]*/)
 		open_list[Point(position.x, position.y - 1)] = 10000;
 	else
+	{
+		if (soldier_g[id][Point(position.x, position.y - 1)] == 0)
+			soldier_g[id][Point(position.x, position.y - 1)] =
+			soldier_g[id][Point(position.x, position.y)] + 10;
 		open_list[Point(position.x, position.y - 1)] =
-		10 + 10 * (abs(dest.x - position.x) + abs(dest.y - position.y + 1));
-	cannotmove = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x - x, position.y + 1 - y)]) {
-				cannotmove = 1;
-				goto up;
-			}
-		}
+			soldier_g[id][Point(position.x, position.y - 1)]
+			+ 10 * (abs(dest.x - position.x) + abs(dest.y - position.y + 1));
 	}
-up:	if (cannotmove)//4
+	if (collision[Point(position.x, position.y + 1)] /*||
+		soldier_collision[Point(position.x, position.y + 1)]*/)
 		open_list[Point(position.x, position.y + 1)] = 10000;
 	else
+	{
+		if (soldier_g[id][Point(position.x, position.y + 1)] == 0)
+			soldier_g[id][Point(position.x, position.y + 1)] =
+			soldier_g[id][Point(position.x, position.y)] + 10;
 		open_list[Point(position.x, position.y + 1)] =
-		10 + 10 * (abs(dest.x - position.x) + abs(dest.y - position.y - 1));
-	cannotmove = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x + 1 - x, position.y + 1 - y)]) {
-				cannotmove = 1;
-				goto upright;
-			}
-		}
+			soldier_g[id][Point(position.x, position.y + 1)]
+			+ 10 * (abs(dest.x - position.x) + abs(dest.y - position.y - 1));
 	}
-upright:	if (cannotmove)//5
+	if (collision[Point(position.x + 1, position.y + 1)] /*||
+		soldier_collision[Point(position.x + 1, position.y + 1)]*/)
 		open_list[Point(position.x + 1, position.y + 1)] = 10000;
 	else
+	{
+		if (soldier_g[id][Point(position.x + 1, position.y + 1)] == 0)
+			soldier_g[id][Point(position.x + 1, position.y + 1)] =
+			soldier_g[id][Point(position.x, position.y)] + 14;
 		open_list[Point(position.x + 1, position.y + 1)] =
-		14 + 10 * (abs(dest.x - position.x - 1) + abs(dest.y - position.y - 1));
-	cannotmove = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x - 1 - x, position.y - 1 - y)]) {
-				cannotmove = 1;
-				goto downleft;
-			}
-		}
+			soldier_g[id][Point(position.x + 1, position.y + 1)]
+			+ 10 * (abs(dest.x - position.x - 1) + abs(dest.y - position.y - 1));
 	}
-downleft:	if (cannotmove)//6
+	if (collision[Point(position.x - 1, position.y - 1)] /*||
+		soldier_collision[Point(position.x - 1, position.y - 1)]*/)
 		open_list[Point(position.x - 1, position.y - 1)] = 10000;
 	else
+	{
+		if (soldier_g[id][Point(position.x - 1, position.y - 1)] == 0)
+			soldier_g[id][Point(position.x - 1, position.y - 1)] =
+			soldier_g[id][Point(position.x, position.y)] + 14;
 		open_list[Point(position.x - 1, position.y - 1)] =
-		14 + 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y + 1));
-	cannotmove = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x -1 - x, position.y + 1 - y)]) {
-					cannotmove = 1;
-					goto upleft;
-			}
-		}
+			soldier_g[id][Point(position.x - 1, position.y - 1)]
+			+ 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y + 1));
 	}
-upleft:	if (cannotmove)//7
+	if (collision[Point(position.x -1, position.y + 1)] /*||
+		soldier_collision[Point(position.x - 1, position.y + 1)]*/)
 		open_list[Point(position.x - 1, position.y + 1)] = 10000;
 	else
+	{
+		if (soldier_g[id][Point(position.x - 1, position.y + 1)] == 0)
+			soldier_g[id][Point(position.x - 1, position.y + 1)] =
+			soldier_g[id][Point(position.x, position.y)] + 14;
 		open_list[Point(position.x - 1, position.y + 1)] =
-		14 + 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y - 1));
-	cannotmove = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(position.x + 1 - x, position.y - 1 - y)]) {
-				cannotmove = 1;
-				goto downright;
-			}
-		}
+			soldier_g[id][Point(position.x - 1, position.y + 1)]
+			+ 10 * (abs(dest.x - position.x + 1) + abs(dest.y - position.y - 1));
 	}
-downright:	if (cannotmove)//8
+	if (collision[Point(position.x + 1, position.y - 1)] /*||
+		soldier_collision[Point(position.x + 1, position.y - 1)]*/)
 		open_list[Point(position.x + 1, position.y - 1)] = 10000;
 	else
+	{
+		if (soldier_g[id][Point(position.x + 1, position.y - 1)] == 0)
+			soldier_g[id][Point(position.x + 1, position.y - 1)] =
+			soldier_g[id][Point(position.x, position.y)] + 14;
 		open_list[Point(position.x + 1, position.y - 1)] =
-		14 + 10 * (abs(dest.x - position.x - 1) + abs(dest.y - position.y + 1));
+			soldier_g[id][Point(position.x + 1, position.y - 1)]
+			+ 10 * (abs(dest.x - position.x - 1) + abs(dest.y - position.y + 1));
+	}
 	return open_list;
 }
 
-int RAMap::aStar(Point so_tilecoord, Point dest_tile, const int size) {
-	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
-	auto next_step = open_list_1.begin();
-	auto start = open_list_1.begin();
-	for (start; start != open_list_1.end(); start++) {
-		if (start->second < next_step->second)
-			next_step = start;
-	}
-	if (next_step->second == 10000) {
-		routines.push_back(tileCoordToRelatedCoord(so_tilecoord));
-		aStar(so_tilecoord, dest_tile, size);
-		return 1;
-	}
-	auto open_list_2 = tryEightdirection(next_step->first, dest_tile, size);
-	auto third_step = open_list_2.begin();
-	auto start_2 = open_list_2.begin();
-	for (start_2; start_2 != open_list_2.end(); start_2++) {
-		if (start_2->second < third_step->second)
-			third_step = start_2;
-	}
-	bool isfind = 0;
-	if (third_step->second != 10000) {
-		for (auto pos : open_list_1) {
-			if (pos.first == third_step->first) {
-				isfind = 1;
-				break;
-			}
-		}
-	}
-	if (isfind) {
-		routines.push_back(tileCoordToRelatedCoord(third_step->first));
-		if (third_step->first == dest_tile)
-			return 1;
-		else {
-			aStar(third_step->first, dest_tile, size);
-			return 1;
-		}
-	}
-	else {
-		routines.push_back(tileCoordToRelatedCoord(next_step->first));
-		if (next_step->first == dest_tile)
-			return 1;
-		else {
-			aStar(next_step->first, dest_tile, size);
-			return 1;
-		}
-	}
-}
-
-//士兵寻路
-std::vector<Point> RAMap::findRoutineAllAtOnce(RASoldier* soldier, Point &dest, const int size) {
-	routines.clear();
-	Point dest_tile = relatedCoordToTileCoord(dest);
-	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
-	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
-	bool cannotmove_1 = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(dest_tile.x - x, dest_tile.y - y)] ||
-				soldier_collision[Point(dest_tile.x - x, dest_tile.y - y)]) {
-				cannotmove_1 = 1;
-			}
-		}
-	}
-	if (cannotmove_1) {
-		for (int a = 1; a + dest_tile.x < 128 && dest_tile.x - a >0 
-			&& dest_tile.y - a > 0 && a + dest_tile.y < 128; a++) {
-			bool cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x + a - x, dest_tile.y  + a - y)] ||
-						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y +a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x + a, dest_tile.y + a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x + a - x, dest_tile.y - a - y)] ||
-						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y - a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x + a, dest_tile.y - a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - a - x, dest_tile.y - a - y)] ||
-						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y - a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x - a, dest_tile.y - a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - a - x, dest_tile.y + a - y)] ||
-						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y + a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x - a, dest_tile.y + a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x + a - x, dest_tile.y - y)] ||
-						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x + a, dest_tile.y);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - a - x, dest_tile.y - y)] ||
-						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x - a, dest_tile.y);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - x, dest_tile.y - a - y)] ||
-						soldier_collision[Point(dest_tile.x - x, dest_tile.y - a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x, dest_tile.y - a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - x, dest_tile.y + a - y)] ||
-						soldier_collision[Point(dest_tile.x - x, dest_tile.y + a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x, dest_tile.y + a);
-				break;
-			}
-		}
-	}
-	aStar(so_tilecoord, dest_tile, size);
-	return routines;
-}
-
-std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, const int size) {
+std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, const int size)
+{
+	auto id = soldier->getCount();
+	auto &old = soldier_routines[id];
 	std::vector<float> answer = { -1, -1, -1 };
 	Point dest_tile = relatedCoordToTileCoord(dest);
 	Point so_related_coord = Point(soldier->getPosition().x, soldier->getPosition().y);
 	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
-	bool cannotmove_1 = 0;
-	for (int x = 0; x != size; x++) {
-		for (int y = 0; y != size; y++) {
-			if (collision[Point(dest_tile.x - x, dest_tile.y - y)] ||
-				soldier_collision[Point(dest_tile.x - x, dest_tile.y - y)]) {
-				cannotmove_1 = 1;
+	if (soldier_dests[id].first != dest_tile)
+	{
+		soldier_dests[id].first = dest_tile;
+		if (collision[dest_tile] ||
+			soldier_collision[dest_tile] ||
+			find(future_dests.begin(), future_dests.end(),dest_tile) != future_dests.end()) 
+		{
+			for (int a = 1; a + dest_tile.x < 128 && dest_tile.x - a >0
+				&& dest_tile.y - a > 0 && a + dest_tile.y < 128; a++) {
+				if (collision[Point(dest_tile.x + a, dest_tile.y + a)] ||
+					soldier_collision[Point(dest_tile.x + a, dest_tile.y + a)] ||
+					find(future_dests.begin(), future_dests.end(), 
+						Point(dest_tile.x + a, dest_tile.y + a)) != future_dests.end());
+				else
+				{
+					dest_tile = Point(dest_tile.x + a, dest_tile.y + a);
+					future_dests.push_back(dest_tile);
+					soldier_dests[id].second = dest_tile;
+					break;
+				}
+				if (collision[Point(dest_tile.x + a, dest_tile.y - a)] ||
+					soldier_collision[Point(dest_tile.x + a, dest_tile.y - a)] ||
+					find(future_dests.begin(), future_dests.end(),
+						Point(dest_tile.x + a, dest_tile.y - a)) != future_dests.end());
+				else
+				{
+					dest_tile = Point(dest_tile.x + a, dest_tile.y - a);
+					future_dests.push_back(dest_tile);
+					soldier_dests[id].second = dest_tile;
+					break;
+				}
+				if (collision[Point(dest_tile.x - a, dest_tile.y - a)] ||
+					soldier_collision[Point(dest_tile.x - a, dest_tile.y - a)] ||
+					find(future_dests.begin(), future_dests.end(),
+						Point(dest_tile.x - a, dest_tile.y - a)) != future_dests.end());
+				else {
+					dest_tile = Point(dest_tile.x - a, dest_tile.y - a);
+					future_dests.push_back(dest_tile);
+					soldier_dests[id].second = dest_tile;
+					break;
+				}
+				if (collision[Point(dest_tile.x - a, dest_tile.y + a)] ||
+					soldier_collision[Point(dest_tile.x - a, dest_tile.y + a)] ||
+					find(future_dests.begin(), future_dests.end(),
+						Point(dest_tile.x - a, dest_tile.y + a)) != future_dests.end());
+				else
+				{
+					dest_tile = Point(dest_tile.x - a, dest_tile.y + a);
+					future_dests.push_back(dest_tile);
+					soldier_dests[id].second = dest_tile;
+					break;
+				}
+				if (collision[Point(dest_tile.x + a, dest_tile.y)] ||
+					soldier_collision[Point(dest_tile.x + a, dest_tile.y)] ||
+					find(future_dests.begin(), future_dests.end(),
+						Point(dest_tile.x + a, dest_tile.y)) != future_dests.end());
+				else
+				{
+					dest_tile = Point(dest_tile.x + a, dest_tile.y);
+					future_dests.push_back(dest_tile);
+					soldier_dests[id].second = dest_tile;
+					break;
+				}
+				if (collision[Point(dest_tile.x - a, dest_tile.y)] ||
+					soldier_collision[Point(dest_tile.x - a, dest_tile.y)] ||
+					find(future_dests.begin(), future_dests.end(),
+						Point(dest_tile.x - a, dest_tile.y)) != future_dests.end());
+				else
+				{
+					dest_tile = Point(dest_tile.x - a, dest_tile.y);
+					future_dests.push_back(dest_tile);
+					soldier_dests[id].second = dest_tile;
+					break;
+				}
+				if (collision[Point(dest_tile.x, dest_tile.y - a)] ||
+					soldier_collision[Point(dest_tile.x, dest_tile.y - a)] ||
+					find(future_dests.begin(), future_dests.end(),
+						Point(dest_tile.x, dest_tile.y - a)) != future_dests.end());
+				else
+				{
+					dest_tile = Point(dest_tile.x, dest_tile.y - a);
+					future_dests.push_back(dest_tile);
+					soldier_dests[id].second = dest_tile;
+					break;
+				}
+				if (collision[Point(dest_tile.x, dest_tile.y + a)] ||
+					soldier_collision[Point(dest_tile.x, dest_tile.y + a)] ||
+					find(future_dests.begin(), future_dests.end(),
+						Point(dest_tile.x, dest_tile.y + a)) != future_dests.end());
+				else
+				{
+					dest_tile = Point(dest_tile.x, dest_tile.y + a);
+					future_dests.push_back(dest_tile);
+					soldier_dests[id].second = dest_tile;
+					break;
+				}
 			}
 		}
-	}
-	if (cannotmove_1) {
-		for (int a = 1; a + dest_tile.x < 128 && dest_tile.x - a >0
-			&& dest_tile.y - a > 0 && a + dest_tile.y < 128; a++) {
-			bool cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x + a - x, dest_tile.y + a - y)] ||
-						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y + a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x + a, dest_tile.y + a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x + a - x, dest_tile.y - a - y)] ||
-						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y - a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x + a, dest_tile.y - a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - a - x, dest_tile.y - a - y)] ||
-						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y - a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x - a, dest_tile.y - a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - a - x, dest_tile.y + a - y)] ||
-						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y + a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x - a, dest_tile.y + a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x + a - x, dest_tile.y - y)] ||
-						soldier_collision[Point(dest_tile.x + a - x, dest_tile.y - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x + a, dest_tile.y);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - a - x, dest_tile.y - y)] ||
-						soldier_collision[Point(dest_tile.x - a - x, dest_tile.y - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x - a, dest_tile.y);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - x, dest_tile.y - a - y)] ||
-						soldier_collision[Point(dest_tile.x - x, dest_tile.y - a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x, dest_tile.y - a);
-				break;
-			}
-			cannotmove_2 = 0;
-			for (int x = 0; x != size; x++) {
-				for (int y = 0; y != size; y++) {
-					if (collision[Point(dest_tile.x - x, dest_tile.y + a - y)] ||
-						soldier_collision[Point(dest_tile.x - x, dest_tile.y + a - y)]) {
-						cannotmove_2 = 1;
-					}
-				}
-			}
-			if (cannotmove_2) {
-				dest_tile = Point(dest_tile.x, dest_tile.y + a);
-				break;
-			}
+		else
+		{
+			soldier_dests[id].second = dest_tile;
+			future_dests.push_back(dest_tile);
 		}
 	}
-	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, size);
+	dest_tile = soldier_dests[id].second;
+	Point start_pos, pre_pos;
+	std::map<Point, bool> cam_list;
+	if (old.size() == 0)
+	{
+		start_pos = so_tilecoord;
+		pre_pos = so_tilecoord;
+		old.push_back(so_tilecoord);
+	}
+	else
+	{
+		start_pos = old[0];
+		auto ptr = --old.end();
+		pre_pos = *(--ptr);
+		auto open_list_0 = tryEightdirection(pre_pos, dest_tile, id);
+		for (auto a : open_list_0)
+		{
+			if (a.second == 10000)
+				continue;
+			if (find(old.begin(), old.end(), a.first) != old.end())
+				continue;
+			if (a.first == so_tilecoord)
+				continue;
+			cam_list[a.first] = 1;
+		}
+	}
+	log("id %d dest %f, %f", id, dest_tile.x, dest_tile.y);
+	if (dest_tile == so_tilecoord)
+	{
+		answer[0] = so_related_coord.x;
+		answer[1] = so_related_coord.y;
+		answer[2] = 1;
+		old.clear();
+		return answer;
+	}
+	auto open_list_1 = tryEightdirection(so_tilecoord, dest_tile, id);
 	auto next_step = open_list_1.begin();
 	auto start = open_list_1.begin();
+	bool beside_dest = 0;
 	while (start != open_list_1.end())
 	{
-		if (next_step->second > start->second)
+		if (start->first == dest_tile)
+		{
+			beside_dest = 1;
+			break;
+		}
+		if (next_step == start || start->second == 10000 )
+		{
+			start++;
+			continue;
+		}
+		if (find(old.begin(), old.end(), start->first) != old.end())
+		{
+			start++;
+			continue;
+		}
+		if (next_step->second == 10000 && start->second != 10000)
 		{
 			next_step = start;
+			start++;
+			continue;
+		}
+
+
+		if (cam_list[next_step->first] == 0 && cam_list[start->first] == 0)
+		{
+			if (abs(next_step->first.x - dest_tile.x) + abs(next_step->first.y - dest_tile.y)
+			> abs(start->first.x - dest_tile.x) + abs(start->first.y - dest_tile.y))
+			{
+				next_step = start;
+			}
+			else if (abs(next_step->first.x - dest_tile.x) + abs(next_step->first.y - dest_tile.y)
+				== abs(start->first.x - dest_tile.x) + abs(start->first.y - dest_tile.y))
+			{
+				if (next_step->second < start->second)
+				{
+					next_step = start;
+				}
+			}
+		}
+		else
+		{
+			if (cam_list[next_step->first] != 0 || cam_list[start->first] != 0)
+			{
+				if (soldier_g[id][next_step->first] < soldier_g[id][start->first])
+				{
+					next_step = start;
+				}
+			}
 		}
 		start++;
+	}
+	if (beside_dest)
+	{
+		answer[0] = tileCoordToRelatedCoord(dest_tile).x;
+		answer[1] = tileCoordToRelatedCoord(dest_tile).y;
+		answer[2] = 1;
+		old.clear();
+		soldier_g[id].clear();
+		auto ptr = find(future_dests.begin(), future_dests.end(), dest_tile);
+		future_dests.erase(ptr);
+		return answer;
 	}
 	if (next_step->second == 10000)
 	{
 		answer[0] = soldier->getPosition().x;
 		answer[1] = soldier->getPosition().y;
-		answer[2] = 0;
-		return answer;
-	}
-	auto open_list_2 = tryEightdirection(next_step->first, dest_tile, size);
-	auto third_step = open_list_2.begin();
-	auto start2 = open_list_2.begin();
-	while (start2 != open_list_2.end())
-	{
-		if (third_step->second > start2->second)
+		if (beside_dest)
 		{
-			third_step = start2;
+			answer[2] = 1;
+			old.clear();
+			soldier_g[id].clear();
+			auto ptr = find(future_dests.begin(), future_dests.end(), dest_tile);
+			future_dests.erase(ptr);
 		}
-		start2++;
-	}
-	bool isfind = 0;
-	auto start3 = open_list_1.begin();
-	while (start3 != open_list_1.end())
-	{
-		if (start3->first == third_step->first)
+		else
 		{
-			isfind = 1;
-			break;
+			answer[2] = 0;
+			old.push_back(so_tilecoord);
 		}
-		start3++;
-	}
-	if (isfind)
-	{
-		answer[0] = tileCoordToRelatedCoord(third_step->first).x;
-		answer[1] = tileCoordToRelatedCoord(third_step->first).y;
-		if (third_step->first == dest_tile)
-			answer[2] = 1;
-		else
-			answer[2] = 0;
 		return answer;
 	}
-	else 
-	{
-		answer[0] = tileCoordToRelatedCoord(next_step->first).x;
-		answer[1] = tileCoordToRelatedCoord(next_step->first).y + soldier->getScaleY(); 
-		if (next_step->first == dest_tile)
-			answer[2] = 1;
-		else
-			answer[2] = 0;
-		return answer;
-	}
+	answer[0] = tileCoordToRelatedCoord(next_step->first).x;
+	answer[1] = tileCoordToRelatedCoord(next_step->first).y + soldier->getScaleY();
+	answer[2] = 0;
+	old.push_back(next_step->first);
 	return answer;
 }
+	
 
 //将建筑物建在中心
 Point RAMap::setCenter(Point pos) {
@@ -860,21 +723,9 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 			if (collision[Point(x, build_tile.y)] || soldier_collision[Point(x, build_tile.y)])
 				continue;
 			else {
-				bool canreach = 1;
-				for (int i = 0; i != size; i++) {
-					for (int j = 0; j != size; j++) {
-						if (collision[Point(x - i, build_tile.y - j)] ||
-							soldier_collision[Point(x - i, build_tile.y - j)]) {
-							canreach = 0;
-							continue;
-						}
-					}
-				}
-				if (canreach) {
-					auto answer = tileCoordToRelatedCoord(Point(x, build_tile.y));
-					setSoldierCollision(answer, size);
-					return answer;
-				}
+				auto answer = tileCoordToRelatedCoord(Point(x, build_tile.y));
+				setSoldierCollision(answer, size);
+				return answer;
 			}
 		}
 		direction++;
@@ -884,21 +735,9 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 			if (collision[Point(x, build_tile.y)] || soldier_collision[Point(x, build_tile.y)])
 				continue;
 			else {
-				bool canreach = 1;
-				for (int i = 0; i != size; i++) {
-					for (int j = 0; j != size; j++) {
-						if (collision[Point(x - i, build_tile.y - j)] ||
-							soldier_collision[Point(x - i, build_tile.y - j)]) {
-							canreach = 0;
-							continue;
-						}
-					}
-				}
-				if (canreach) {
-					auto answer = tileCoordToRelatedCoord(Point(x, build_tile.y));
-					setSoldierCollision(answer, size);
-					return answer;
-				}
+				auto answer = tileCoordToRelatedCoord(Point(x, build_tile.y));
+				setSoldierCollision(answer, size);
+				return answer;
 			}
 		}
 		direction++;
@@ -908,21 +747,9 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 			if (collision[Point(build_tile.x, y)] || soldier_collision[Point(build_tile.x, y)])
 				continue;
 			else {
-				bool canreach = 1;
-				for (int i = 0; i != size; i++) {
-					for (int j = 0; j != size; j++) {
-						if (collision[Point(build_tile.x - i, y - j)] ||
-							soldier_collision[Point(build_tile.x - i, y - j)]) {
-							canreach = 0;
-							continue;
-						}
-					}
-				}
-				if (canreach) {
-					auto answer = tileCoordToRelatedCoord(Point(build_tile.x, y));
-					setSoldierCollision(answer, size);
-					return answer;
-				}
+				auto answer = tileCoordToRelatedCoord(Point(build_tile.x, y));
+				setSoldierCollision(answer, size);
+				return answer;
 			}
 		}
 		direction++;
@@ -932,21 +759,9 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 			if (collision[Point(build_tile.x, y)] || soldier_collision[Point(build_tile.x, y)])
 				continue;
 			else {
-				bool canreach = 1;
-				for (int i = 0; i != size; i++) {
-					for (int j = 0; j != size; j++) {
-						if (collision[Point(build_tile.x - i, y - j)] ||
-							soldier_collision[Point(build_tile.x - i, y - j)]) {
-							canreach = 0;
-							continue;
-						}
-					}
-				}
-				if (canreach) {
-					auto answer = tileCoordToRelatedCoord(Point(build_tile.x, y));
-					setSoldierCollision(answer, size);
-					return answer;
-				}
+				auto answer = tileCoordToRelatedCoord(Point(build_tile.x, y));
+				setSoldierCollision(answer, size);
+				return answer;
 			}
 		}
 		direction++;
@@ -956,20 +771,9 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 			if (collision[Point(x, y)] || soldier_collision[Point(x, y)])
 				continue;
 			else {
-				bool canreach = 1;
-				for (int i = 0; i != size; i++) {
-					for (int j = 0; j != size; j++) {
-						if (collision[Point(x - i, y - j)] || soldier_collision[Point(x - i, y - j)]) {
-							canreach = 0;
-							continue;
-						}
-					}
-				}
-				if (canreach) {
-					auto answer = tileCoordToRelatedCoord(Point(x, y));
-					setSoldierCollision(answer, size);
-					return answer;
-				}
+				auto answer = tileCoordToRelatedCoord(Point(x, y));
+				setSoldierCollision(answer, size);
+				return answer;
 			}
 		}
 		direction++;
@@ -979,20 +783,9 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 			if (collision[Point(x, y)] || soldier_collision[Point(x, y)])
 				continue;
 			else {
-				bool canreach = 1;
-				for (int i = 0; i != size; i++) {
-					for (int j = 0; j != size; j++) {
-						if (collision[Point(x - i, y - j)] || soldier_collision[Point(x - i, y - j)]) {
-							canreach = 0;
-							continue;
-						}
-					}
-				}
-				if (canreach) {
-					auto answer = tileCoordToRelatedCoord(Point(x, y));
-					setSoldierCollision(answer, size);
-					return answer;
-				}
+				auto answer = tileCoordToRelatedCoord(Point(x, y));
+				setSoldierCollision(answer, size);
+				return answer;
 			}
 		}
 		direction++;
@@ -1002,20 +795,9 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 			if (collision[Point(x, y)] || soldier_collision[Point(x, y)])
 				continue;
 			else {
-				bool canreach = 1;
-				for (int i = 0; i != size; i++) {
-					for (int j = 0; j != size; j++) {
-						if (collision[Point(x - i, y - j)] || soldier_collision[Point(x - i, y - j)]) {
-							canreach = 0;
-							continue;
-						}
-					}
-				}
-				if (canreach) {
-					auto answer = tileCoordToRelatedCoord(Point(x, y));
-					setSoldierCollision(answer, size);
-					return answer;
-				}
+				auto answer = tileCoordToRelatedCoord(Point(x, y));
+				setSoldierCollision(answer, size);
+				return answer;
 			}
 		}
 		direction++;
@@ -1025,20 +807,9 @@ Point RAMap::soldierBirth(Point build_pos, const int size) {
 			if (collision[Point(x, y)] || soldier_collision[Point(x, y)])
 				continue;
 			else {
-				bool canreach = 1;
-				for (int i = 0; i != size; i++) {
-					for (int j = 0; j != size; j++) {
-						if (collision[Point(x - i, y - j)] || soldier_collision[Point(x - i, y - j)]) {
-							canreach = 0;
-							continue;
-						}
-					}
-				}
-				if (canreach) {
-					auto answer = tileCoordToRelatedCoord(Point(x, y));
-					setSoldierCollision(answer, size);
-					return answer;
-				}
+				auto answer = tileCoordToRelatedCoord(Point(x, y));
+				setSoldierCollision(answer, size);
+				return answer;
 			}
 		}
 	}

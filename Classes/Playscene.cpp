@@ -3,6 +3,7 @@
 #include"ResourceUI/ResourceUI.h"
 #include "TiledMap/RAlittle_map.h"
 #include"Roshambo\RARoshambo.h"
+#include "Scene/RoomScene.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -78,7 +79,7 @@ void PlayScene::menuCloseCallback(Ref* pSender)
 
 void PlayScene::gameStart(bool topSide)
 {
-	RedAlert::getInstance()->initAll();
+	RedAlert::getInstance()->initAll(RoomScene::map_num);
 
 	auto fight_layer = RAMap::getMap();
 	auto ui_layer = LayerColor::create(Color4B(0, 128, 128, 100), 400, 900);
@@ -89,7 +90,7 @@ void PlayScene::gameStart(bool topSide)
 
 	RAResourceUI::init();
 	ui_layer->addChild(RAResourceUI::ResourceUI);
-	littleMap::init(1);
+	littleMap::init(RoomScene::map_num);
 	this->addChild(littleMap::getLittleMap(), 20);
 
 	auto sch = [&](float dt) {
