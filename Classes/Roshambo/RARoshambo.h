@@ -6,6 +6,7 @@ USING_NS_CC;
 
 class RARoshambo : public Sprite
 {
+public:
 	RARoshambo(int num) :num_(num), Sprite() {}
 	bool onTouchBegan(Touch* touch, Event* event);
 	static RARoshambo* create(int num);

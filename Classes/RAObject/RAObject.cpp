@@ -29,10 +29,11 @@ bool RAObject::toBeOrNotToBe()//this should be called after getting attacked
 
 bool RAObject::annihilation()
 {
+	if(under_my_control)
 	{
 		using namespace std;
 		std::ostringstream os;
-		os << setfill('0') << 'a' << setw(6) << id_;
+		os << setfill('0') << 'a' << setw(6) << object_count_;
 		PlayScene::_thisScene->_client->sendMessage(os.str());
 	}
 	//
@@ -158,7 +159,7 @@ void RAObject::followInstruction(std::string instruction,char kind)
 		float coords[2];
 		for (int i = 0; i != 2; ++i)
 		{
-			int length = instruction[0];
+			char length = instruction[0];
 			coords[i] = RAUtility::stof(instruction.substr(1, length));
 			instruction.erase(0, length + 1);
 		}

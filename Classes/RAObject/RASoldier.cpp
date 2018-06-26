@@ -100,10 +100,11 @@ bool RASoldier::annihilation()
 void RASoldier::runTo(Point point)
 {
 	//online
+	if(under_my_control)
 	{
 		using namespace std;
 		ostringstream os;
-		os << setfill('0') << 'f' << setw(6) << id_ <<RAUtility::coortostr(point);
+		os << setfill('0') << 'r' << setw(6) << object_count_ <<RAUtility::coortostr(point);
 		PlayScene::_thisScene->_client->sendMessage(os.str());
 	}
 	stopCurrentBehavior();
@@ -119,10 +120,11 @@ void RASoldier::runTo(Point point)
 void RASoldier::runToFight(RAObject* object)
 {
 	//online
+	if(under_my_control)
 	{
 		using namespace std;
 		ostringstream os;
-		os << setfill('0') << 'f' << setw(6) << id_ << setw(6) << object->getId();
+		os << setfill('0') << 'f' << setw(6) << object_count_ << setw(6) << object->getCount();
 		PlayScene::_thisScene->_client->sendMessage(os.str());
 	}
 	//如不停止会以矢量和移动

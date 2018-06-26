@@ -77,6 +77,8 @@ std::string RAUtility::coortostr(Point point)
 {
 	std::string str;
 	std::string temp = ftostr(point.x);
+	//caution
+	//length is ACSII
 	char length=temp.size();
 	str.push_back(length);
 	str.append(temp);
