@@ -3,6 +3,7 @@
 #include "RoomScene.h"
 #include "SearchScene.h"
 #include "../NetWork/MessageCode.h"
+#include "GameAudio.h"
 
 USING_NS_CC;
 using namespace ui;
@@ -58,6 +59,8 @@ bool SearchScene::init()
 	bg->setScaleX(winw / spx);
 	bg->setScaleY(winw / spx);
     this->addChild(bg);
+
+
     
     this->scheduleUpdate();
 
@@ -110,6 +113,8 @@ void SearchScene::update(float delta)
                     
                     in_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                         if (type == Widget::TouchEventType::ENDED) {
+
+							GameAudio::getInstance()->playEffect("Sound/button.mp3");
 
                             client->_filter_mode = true;
                             client->sensitive_word = button_owner_name;
