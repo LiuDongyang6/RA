@@ -120,7 +120,7 @@ void PlayScene::gameStart(bool topSide)
 	if (topSide)
 	{
 		RAPlayer::setEdge(1);
-		auto base = RABase::create(Point(1200, 2500));
+		auto base = RABase::create(RAMap::tileCoordToRelatedCoord(Point(5,5)));
 		base->setCount(RAPlayer::getCounter());
 		RAPlayer::master_table_.insert({ base->getCount(),base });
 		PlayScene::_thisScene->_client->sendMessage(base->birthMessage());
@@ -128,7 +128,7 @@ void PlayScene::gameStart(bool topSide)
 	else
 	{
 		RAPlayer::setEdge(2);
-		auto base = RADefendingBase::create(Point(1200, 1000));
+		auto base = RADefendingBase::create(RAMap::tileCoordToRelatedCoord(Point(125, 125)));
 		base->setCount(RAPlayer::getCounter());
 		RAPlayer::master_table_.insert({ base->getCount(),base });
 		PlayScene::_thisScene->_client->sendMessage(base->birthMessage());
