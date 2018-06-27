@@ -154,6 +154,14 @@ void RASoldier::findRoadAndLetGo()
 	RAMap::removeSoldierCollision(getPosition(), covering_);
 	auto vec = RAMap::findRoutineOneByOne(this,destination,covering_);
 	next_step = Point(vec[0], vec[1]);
+	if (next_step.x < getPosition().x)
+	{
+		setFlippedX(true);
+	}
+	else
+	{
+		setFlippedX(false);
+	}
 	RAMap::setSoldierCollision(next_step, covering_);
 	if (vec[2] == 0)
 	{
@@ -182,6 +190,14 @@ void RASoldier::findRoadAndLetGoForFight()
 		RAMap::removeSoldierCollision(getPosition(), covering_);
 		auto vec = RAMap::findRoutineOneByOne(this, Point(AimEnemy->getPosition()), covering_);
 		next_step = Point(vec[0], vec[1]);
+		if (next_step.x < getPosition().x)
+		{
+			setFlippedX(true);
+		}
+		else
+		{
+			setFlippedX(false);
+		}
 		RAMap::setSoldierCollision(next_step, covering_);
 		if (vec[2] == 0)
 		{
@@ -212,9 +228,9 @@ void RASoldier::doAttack()
 	AimEnemy->sufferAttack(attack_speed_, hit_,this);
 
 	auto func= [&](float dt){
-		if (getPosition().distance(this->AimEnemy->getPosition()) > range_)
+		if (getPosition().distance(this->AimEnemy->getPosition()) > range_+20)
 		{
-			stopCurrentBehavior();
+			findRoadAndLetGoForFight();
 		}
 	};
 	schedule(func, 0.2f, std::string("IN_RANGE_CHECK"));
@@ -416,9 +432,9 @@ void RABomber::doAttack()
 	AimEnemy->sufferAttack(attack_speed_, hit_, this);
 
 	auto func = [&](float dt) {
-		if (getPosition().distance(this->AimEnemy->getCorePoint()) > range_)
+		if (getPosition().distance(this->AimEnemy->getCorePoint()) > range_+20)
 		{
-			stopCurrentBehavior();
+			findRoadAndLetGoForFight();
 		}
 	};
 	schedule(func, 0.2f, std::string("IN_RANGE_CHECK"));
@@ -486,6 +502,14 @@ void RAEngineer::findRoadAndLetGoForOilField()
 		RAMap::removeSoldierCollision(getPosition(), covering_);
 		auto vec = RAMap::findRoutineOneByOne(this, Point(destination), covering_);
 		next_step = Point(vec[0], vec[1]);
+		if (next_step.x < getPosition().x)
+		{
+			setFlippedX(true);
+		}
+		else
+		{
+			setFlippedX(false);
+		}
 		RAMap::setSoldierCollision(next_step, covering_);
 		if (vec[2] == 0)
 		{
@@ -525,13 +549,14 @@ void RAEngineer::followInstruction(std::string instruction, char kind)
 	case 's':
 	{
 		char command = instruction[0];
-		instruction.erase(0);
+		instruction.erase(0,1);
 		if (command == 'o')
 		{
 			float coords[2];
 			for (int i = 0; i != 2; ++i)
 			{
 				char length = instruction[0];
+				int temp = length - '0';
 				coords[i] = RAUtility::stof(instruction.substr(1, length));
 				instruction.erase(0, length + 1);
 			}
@@ -590,7 +615,7 @@ void RAWizzard::initWizzard()
 {
 	//initial UI
 	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id, "UIFile").asCString());
-	UI_->setPosition(Point(0, 0));
+	UI_->setPosition(Point(50.0, 0));
 	UI_->retain();
 	//init onTouch
 	_eventDispatcher->removeEventListenersForTarget(this);
@@ -648,13 +673,13 @@ void RAWizzard::StartSkill()
 	}
 	else
 	{
-		for (auto soldier : RAPlayer::all_soldiers_)
+		for (auto soldier : RAPlayer::enemies)
 		{
 			if (!soldier->isBuilding())
 			{
 				if (getPosition().distance(soldier->getPosition()) < range)
 				{
-					RAWizzardSkill::create(soldier);
+					RAWizzardSkill::create(static_cast<RASoldier*>(soldier));
 				}
 			}
 		}

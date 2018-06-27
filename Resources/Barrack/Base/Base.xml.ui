@@ -23,12 +23,8 @@
   <ResRelativePath />
   <imageFileList>
     <string>Base0.plist</string>
-    <string>Base1.plist</string>
   </imageFileList>
-  <imagePngList>
-    <string>Base0.png</string>
-    <string>Base1.png</string>
-  </imagePngList>
+  <imagePngList />
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>BaseUi.json</CurrentUIJson>
+  <CurrentUIJson>PowerStation Ui.json</CurrentUIJson>
 </UIProject>

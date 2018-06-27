@@ -1,4 +1,5 @@
 #include"RedAlert.h"
+#include<fstream>
 RedAlert* RedAlert::instance_ = NULL;
 RedAlert* RedAlert::getInstance()
 {
@@ -54,6 +55,7 @@ void RedAlert::initCreateWiki()
 	wiki.insert({ 11,RAWinterSoldier::create });
 	wiki.insert({ 12,RAWitch::create });
 	wiki.insert({ 13,RAWizzard::create });
+	wiki.insert({ 14,RAOilField::create });
 	wiki.insert({ 15,RADefendingBase::create });
 	wiki.insert({ 16,RANuclearSilo::create });
 	wiki.insert({ 17,RAManhattan::create });
@@ -170,6 +172,8 @@ void RedAlert::catcher(std::string message)
 	default:
 	{
 		RAPlayer::master_table_[aim]->followInstruction(message,instruction_kind);
+		std::ofstream os("arecords.txt",std::ofstream::app);
+		os << message << ' ' << instruction_kind << endl;
 	}
 		break;
 	}
