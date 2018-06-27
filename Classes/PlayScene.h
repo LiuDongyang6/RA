@@ -44,8 +44,8 @@ public:
 	static std::queue<std::string>msgs;
 	static int                 msg_count;                 ///消息计数
 	static int                 received_count;            ///消息计数
-	static std::priority_queue<instruction,std::vector<instruction>,ins_compare> ins;          ///消息队列
-
+	static std::priority_queue<instruction,std::vector<instruction>,ins_compare> ins;          ///接受消息队列
+	static std::vector<chat_message> msg_to_send_twice;
 public:
     static cocos2d::Scene* createScene(LevelData &data, Client* client, std::string playerName);
 

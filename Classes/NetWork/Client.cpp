@@ -297,6 +297,8 @@ void Client::sendMessage(const std::string & message)
 	{
 		_clientInstance->write(msg);
 	}
+	for (int i = 0; i != 3; ++i)
+		PlayScene::msg_to_send_twice.push_back(msg);
 }
 
 void Client::sendMessage(const std::string & code, const std::string & message)
@@ -380,7 +382,7 @@ void Client::RAGetMessage(std::queue<std::string>& vec)
 						PlayScene::received_count++;
 						if (PlayScene::received_count == 9001)
 						{
-							PlayScene::received_count == 0;
+							PlayScene::received_count = 0;
 							while (!PlayScene::ins.empty())
 							{
 								PlayScene::ins.pop();

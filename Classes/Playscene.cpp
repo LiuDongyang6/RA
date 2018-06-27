@@ -16,6 +16,7 @@ int PlayScene::msg_count=0;
 int PlayScene::received_count= 0;
 std::priority_queue<instruction, std::vector<instruction>, ins_compare> PlayScene::ins;
 PlayScene* PlayScene::_thisScene;
+std::vector<chat_message> PlayScene::msg_to_send_twice;
 
 static LevelData* ptr = NULL;
 
@@ -119,7 +120,15 @@ void PlayScene::gameStart(bool topSide)
 		}
 	};
 	_thisScene->schedule(sch, std::string("RAING"));
-
+	auto send_twice = [&](float dt) {
+		while (!PlayScene::msg_to_send_twice.empty())
+		{
+			for (auto msg : PlayScene::msg_to_send_twice)
+				_thisScene->_client->_clientInstance->write(msg);
+			PlayScene::msg_to_send_twice.clear();
+		}
+	};
+	_thisScene->schedule(sch,0.1f,std::string("SEND_TWICE"));
 	if (topSide)
 	{
 		RAPlayer::setEdge(1);
