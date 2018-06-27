@@ -11,7 +11,18 @@ USING_NS_CC;
 using namespace cocostudio;
 using namespace cocos2d::ui;
 
-
+struct instruction
+{
+	instruction(int num,std::string m):count(num),msg(m){}
+	int count;
+	std::string msg;
+};
+struct ins_compare
+{
+	bool operator()(instruction lhs, instruction rhs) {
+		return lhs.count > rhs.count;
+	}
+};
 class PlayScene : public cocos2d::Scene
 {
 public:
@@ -30,7 +41,10 @@ public:
 
 	std::queue<std::string>    _commands;             ///每次读取的命令
 
-	std::queue<std::string>    msgs;
+	static std::queue<std::string>msgs;
+	static int                 msg_count;                 ///消息计数
+	static int                 received_count;            ///消息计数
+	static std::priority_queue<instruction,std::vector<instruction>,ins_compare> ins;          ///消息队列
 
 public:
     static cocos2d::Scene* createScene(LevelData &data, Client* client, std::string playerName);

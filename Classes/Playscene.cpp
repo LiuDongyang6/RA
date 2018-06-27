@@ -11,7 +11,10 @@ using namespace cocos2d::ui;
 
 static std::string splayerName;
 static Client* clients;
-static std::queue<std::string> msgs;
+std::queue<std::string> PlayScene::msgs;
+int PlayScene::msg_count=0;
+int PlayScene::received_count= 0;
+std::priority_queue<instruction, std::vector<instruction>, ins_compare> PlayScene::ins;
 PlayScene* PlayScene::_thisScene;
 
 static LevelData* ptr = NULL;
