@@ -16,6 +16,9 @@
 class SearchScene : public cocos2d::Layer
 {
 private:
+	void onEnter();
+
+private:
 
     int                 _selectLevelIndex;      ///地图索引
     Sprite*             _room_list_bg;          ///房间列表的背景图片名称

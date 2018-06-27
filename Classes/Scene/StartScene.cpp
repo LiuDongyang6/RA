@@ -3,6 +3,8 @@
 #include "RoomScene.h"
 #include "NetMenu.h"
 #include "PlayScene.h"
+#include "GameAudio.h"
+#include "Settings.h"
 
 USING_NS_CC;
 
@@ -108,4 +110,10 @@ void Start::menuMultiplayerCallback(Ref* pSender)
 {
 	auto sc = NetMenu::createScene();
 	Director::getInstance()->pushScene(sc);
+}
+
+void Start::onEnter()
+{
+	Layer::onEnter();
+	GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
 }

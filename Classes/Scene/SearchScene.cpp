@@ -4,6 +4,7 @@
 #include "SearchScene.h"
 #include "../NetWork/MessageCode.h"
 #include "GameAudio.h"
+#include "Settings.h"
 
 USING_NS_CC;
 using namespace ui;
@@ -136,4 +137,10 @@ void SearchScene::update(float delta)
         }
     }
     
+}
+
+void SearchScene::onEnter()
+{
+	Layer::onEnter();
+	GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
 }
