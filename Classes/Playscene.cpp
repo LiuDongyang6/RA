@@ -11,8 +11,12 @@ using namespace cocos2d::ui;
 
 static std::string splayerName;
 static Client* clients;
-static std::queue<std::string> msgs;
+std::queue<std::string> PlayScene::msgs;
+int PlayScene::msg_count=0;
+int PlayScene::received_count= 0;
+std::priority_queue<instruction, std::vector<instruction>, ins_compare> PlayScene::ins;
 PlayScene* PlayScene::_thisScene;
+std::vector<chat_message> PlayScene::msg_to_send_twice;
 
 static LevelData* ptr = NULL;
 
@@ -116,11 +120,19 @@ void PlayScene::gameStart(bool topSide)
 		}
 	};
 	_thisScene->schedule(sch, std::string("RAING"));
-
+	auto send_twice = [&](float dt) {
+		while (!PlayScene::msg_to_send_twice.empty())
+		{
+			for (auto msg : PlayScene::msg_to_send_twice)
+				_thisScene->_client->_clientInstance->write(msg);
+			PlayScene::msg_to_send_twice.clear();
+		}
+	};
+	_thisScene->schedule(sch,0.1f,std::string("SEND_TWICE"));
 	if (topSide)
 	{
 		RAPlayer::setEdge(1);
-		auto base = RABase::create(Point(1200, 2500));
+		auto base = RABase::create(RAMap::tileCoordToRelatedCoord(Point(5,5)));
 		base->setCount(RAPlayer::getCounter());
 		RAPlayer::master_table_.insert({ base->getCount(),base });
 		PlayScene::_thisScene->_client->sendMessage(base->birthMessage());
@@ -128,7 +140,7 @@ void PlayScene::gameStart(bool topSide)
 	else
 	{
 		RAPlayer::setEdge(2);
-		auto base = RADefendingBase::create(Point(1200, 1000));
+		auto base = RADefendingBase::create(RAMap::tileCoordToRelatedCoord(Point(125, 125)));
 		base->setCount(RAPlayer::getCounter());
 		RAPlayer::master_table_.insert({ base->getCount(),base });
 		PlayScene::_thisScene->_client->sendMessage(base->birthMessage());

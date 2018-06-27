@@ -286,12 +286,19 @@ void Client::sendMessage(const std::string & message)
 	std::string temp;
 	//发送方
 	temp.append(PlayScene::_thisScene->_localPlayerName.substr(0,4));
-  
+	temp.append(StringUtils::format("%4d", PlayScene::msg_count++));
+	if (PlayScene::msg_count == 9000)
+		PlayScene::msg_count = 0;
 	temp.append(message);
     msg.body_length(temp.size());
     memcpy(msg.body(), temp.c_str(), msg.body_length());
     msg.encode_header();
-    _clientInstance->write(msg);
+	for (int i = 0; i != 5; ++i)
+	{
+		_clientInstance->write(msg);
+	}
+	for (int i = 0; i != 3; ++i)
+		PlayScene::msg_to_send_twice.push_back(msg);
 }
 
 void Client::sendMessage(const std::string & code, const std::string & message)
@@ -349,9 +356,55 @@ void Client::RAGetMessage(std::queue<std::string>& vec)
 		_orderList.pop_back();
 		std::string filter_word =temp.substr(0, 4);
 		if (filter_word != PlayScene::_thisScene->_localPlayerName.substr(0, 4)) {
-			std::string real_order = temp.substr(4, temp.size() - 4);
-			temp = real_order;
-			vec.push(temp);
+			int num = stoi(temp.substr(4, 4));
+			if (PlayScene::received_count == num)
+			{
+				std::string real_order = temp.substr(8, temp.size() - 8);
+				vec.push(real_order);
+				PlayScene::received_count++;
+				if (PlayScene::received_count == 9001)
+				{
+					PlayScene::received_count == 0;
+					while (!PlayScene::ins.empty())
+					{
+						PlayScene::ins.pop();
+					}
+				}
+				while (true)
+				{
+					while (!PlayScene::ins.empty() && PlayScene::ins.top().count < PlayScene::received_count)
+					{
+						PlayScene::ins.pop();
+					}
+					if (!PlayScene::ins.empty() && PlayScene::ins.top().count == PlayScene::received_count)
+					{
+						vec.push(PlayScene::ins.top().msg);
+						PlayScene::received_count++;
+						if (PlayScene::received_count == 9001)
+						{
+							PlayScene::received_count = 0;
+							while (!PlayScene::ins.empty())
+							{
+								PlayScene::ins.pop();
+							}
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				int dif = (PlayScene::received_count - num);
+				if (dif < 0/* || dif>6000*/)
+				{
+					std::string real_order = temp.substr(8, temp.size() - 8);
+					instruction oneins(num, real_order);
+					PlayScene::ins.push(oneins);
+				}
+			}
 		}
 	}
 	t_lock.unlock();
