@@ -103,7 +103,7 @@ bool RoomScene::initForClient()
     _selectLevelIndex = 0;
     
     //====================================room list==============================
-    auto room = Sprite::create("Room.png");
+    auto room = Sprite::create("emptyBg.png");
     room->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
     this->addChild(room);
     room->setVisible(false);
@@ -117,7 +117,13 @@ bool RoomScene::initForClient()
     this->addChild(role_layer, 2);
     
     //Add roleSelectore menu
-    auto role_selector = Sprite::create("roleSelector.png");
+	auto label = Label::createWithTTF("Choose Nation", "fonts/Marker Felt.ttf", 30);
+	label->setPosition(Vec2(origin.x + visibleSize.width / 2,
+		origin.y + visibleSize.height * 0.7));
+	this->addChild(label,2);
+
+
+    auto role_selector = Sprite::create("emptyBg.png");
     role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
     role_layer->addChild(role_selector);
     
@@ -125,7 +131,7 @@ bool RoomScene::initForClient()
 
     auto red_player_button = Button::create("player_down.png");
     auto black_player_button = Button::create("player2_down.png");
-    
+	
     //Add role select button and back button
     role_layer->addChild(red_player_button);
     role_layer->addChild(black_player_button);
@@ -134,10 +140,13 @@ bool RoomScene::initForClient()
     float widthMargin = visibleSize.width/2 - role_selector->getContentSize().width/2;
     float heightMargin = visibleSize.height/2 - role_selector->getContentSize().height/2;
     
+	red_player_button->setScale(4.0f);
+	black_player_button->setScale(4.0f);
+
     
-    red_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width/4, origin.y + role_layer->getContentSize().height / 2));
+    red_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width * 2 / 5, origin.y + role_layer->getContentSize().height * 3 / 5));
     
-    black_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width * 3 / 4, origin.y + role_layer->getContentSize().height / 2));
+    black_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width * 4 / 5, origin.y + role_layer->getContentSize().height * 3 / 5));
     
     //Choose red role
     red_player_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
@@ -255,7 +264,12 @@ bool RoomScene::initForServer()
     _selectLevelIndex = 0;
     
     //====================================room list==============================
-    auto room = Sprite::create("Room.png");
+	auto label = Label::createWithTTF("Room Scene", "fonts/Marker Felt.ttf", 40);
+	label->setPosition(Vec2(origin.x + visibleSize.width / 2,
+		origin.y + visibleSize.height - label->getContentSize().height));
+
+	this->addChild(label, 1);
+    auto room = Sprite::create("emptyBg.png");
     room->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
     this->addChild(room);
     room->setVisible(false);
@@ -264,8 +278,8 @@ bool RoomScene::initForServer()
     _chatWindow = cocos2d::ui::TextField::create("input words here", "Arial", 30);
     _chatWindow->setMaxLengthEnabled(true);
     _chatWindow->setMaxLength(20);
-    _chatWindow->setPosition(Point(_room_ptr->getContentSize().width/3 * 1.2,
-                                   (_room_ptr->getContentSize().height - 90)/6 * 1));
+    _chatWindow->setPosition(Point(_room_ptr->getContentSize().width / 2,
+										_room_ptr->getContentSize().height * 0.3));
     _chatWindow->addEventListener(CC_CALLBACK_2(RoomScene::textFieldEvent, this));
     
     room->addChild(_chatWindow,2);
@@ -275,7 +289,7 @@ bool RoomScene::initForServer()
     start_game_button->cocos2d::Node::setScale(0.7);
     start_game_button->setPosition(Vec2(
                                         _room_ptr->getContentSize().width/2,
-                                        (_room_ptr->getContentSize().height - 90)/6 * 0.35));
+                                        _room_ptr->getContentSize().height * 0.2));
     start_game_button->setTitleText("START GAME");
     start_game_button->setTitleFontSize(20);
     
@@ -285,7 +299,7 @@ bool RoomScene::initForServer()
     send_message_button->cocos2d::Node::setScale(0.7);
     send_message_button->setPosition(Vec2(
                                           _room_ptr->getContentSize().width/2 * 1.7,
-                                          (_room_ptr->getContentSize().height - 90)/6 * 1));
+                                          _room_ptr->getContentSize().height * 0.3));
     send_message_button->setTitleText("send message");
     send_message_button->setTitleFontSize(20);
     send_message_button->addTouchEventListener([&](Ref* pSender, Widget::TouchEventType type) {
@@ -296,8 +310,8 @@ bool RoomScene::initForServer()
         }
     });
     auto inputBar = Sprite::create("InputBar.png");
-    inputBar->setPosition(Point(_room_ptr->getContentSize().width/3 * 1.2,
-                                (_room_ptr->getContentSize().height - 90)/6 * 1));
+    inputBar->setPosition(Point(_room_ptr->getContentSize().width / 2,
+                                _room_ptr->getContentSize().height * 0.3));
     room->addChild(inputBar,1);
     
     
@@ -407,7 +421,7 @@ bool RoomScene::initForServer()
             board_bg->setVisible(false);
             
             //Add roleSelectore menu
-            auto role_selector = Sprite::create("roleSelector.png");
+            auto role_selector = Sprite::create("emptyBg.png");
             role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
             role_layer->addChild(role_selector);
             
@@ -423,9 +437,9 @@ bool RoomScene::initForServer()
             float widthMargin = visibleSize.width/2 - role_selector->getContentSize().width/2;
             float heightMargin = visibleSize.height/2 - role_selector->getContentSize().height/2;
             
-            red_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width/4, origin.y + role_layer->getContentSize().height / 2));
+            red_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width/4, origin.y + role_layer->getContentSize().height * 0.6));
             
-            black_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width * 3 / 4, origin.y + role_layer->getContentSize().height / 2));
+            black_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width * 3 / 4, origin.y + role_layer->getContentSize().height * 0.6));
             
             back_button->setPosition(Vec2(origin.x + visibleSize.width - widthMargin, origin.y + role_selector->getContentSize().height * 7.5 / 9 + heightMargin));
             
