@@ -820,7 +820,7 @@ void RAMap::changeOilTile(cocos2d::Point pos)
 	{
 		for (int y = 0; y < 4; y++)
 		{
-			_tiledMap->getLayer("oil")->removeTileAt(Point(pos.x - x, pos.y - y));
+			_tiledMap->getLayer("oil")->getTileAt(Point(pos.x - x, pos.y - y))->setOpacity(0);
 		}
 	}
 }
@@ -831,7 +831,7 @@ void RAMap::recoverOilTile(cocos2d::Point pos)
 	{
 		for (int y = 0; y < 4; y++)
 		{
-			_tiledMap->getLayer("oil")->setTileGID(15, Point(pos.x - x, pos.y - y));
+			_tiledMap->getLayer("oil")->getTileAt(Point(pos.x - x, pos.y - y))->setOpacity(255);
 		}
 	}
 }
