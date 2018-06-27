@@ -12,9 +12,7 @@
   "textures": [
     "Base0.plist"
   ],
-  "texturesPng": [
-    "Base0.png"
-  ],
+  "texturesPng": [],
   "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",

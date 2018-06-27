@@ -50,7 +50,7 @@ bool RABuilding::initWithIdAndLocation(int id,Point location)
 	RAObject::initWithSpriteFrameNameAndLocation(appearances[0], location);
 	//initial UI
 	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id, "UIFile").asCString());
-	UI_->setPosition(Point(0, 0));
+	UI_->setPosition(Point(50.0, 0));
 	UI_->retain();
 	//initial buttons
 	auto u = RAUtility::RAgetProperty(id, "UI");

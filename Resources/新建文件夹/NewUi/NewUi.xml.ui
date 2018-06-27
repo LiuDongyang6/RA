@@ -16,12 +16,8 @@
   <filePath>D:\codes\RA\RA\Resources\新建文件夹\NewUi\NewUi.xml.ui</filePath>
   <ProjectType>UIProject</ProjectType>
   <ResRelativePath />
-  <imageFileList>
-    <string>NewUi0.plist</string>
-  </imageFileList>
-  <imagePngList>
-    <string>NewUi0.png</string>
-  </imagePngList>
+  <imageFileList />
+  <imagePngList />
   <JsonSuffix>.json</JsonSuffix>
   <CurrentUIJson>NewUi_1.json</CurrentUIJson>
 </UIProject>

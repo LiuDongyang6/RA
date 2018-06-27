@@ -474,6 +474,7 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
 	if (soldier_dests[id].first != dest_tile)
 	{
+		old.clear(); 
 		soldier_dests[id].first = dest_tile;
 		if (collision[dest_tile] ||
 			soldier_collision[dest_tile] ||
@@ -602,7 +603,6 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 			cam_list[a.first] = 1;
 		}
 	}
-	log("id %d dest %f, %f", id, dest_tile.x, dest_tile.y);
 	if (dest_tile == so_tilecoord)
 	{
 		answer[0] = so_related_coord.x;
