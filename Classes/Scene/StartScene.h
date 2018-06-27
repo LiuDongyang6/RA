@@ -5,6 +5,9 @@
 
 class Start : public cocos2d::Layer
 {
+private:
+	void onEnter();
+
 public:
 	static cocos2d::Scene* createScene();
 
