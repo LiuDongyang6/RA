@@ -58,7 +58,7 @@ bool PlayScene::init()
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("roshambo/roshambo.plist");
 	RARoshambo::startCompete();
 	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
-	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("raroshambo.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("roshambobgm.mp3");
 }
 
 

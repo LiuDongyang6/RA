@@ -340,12 +340,13 @@ std::string Client::executeOrder (void)
     
     return temp;
 }
+
 void Client::RAGetMessage(std::queue<std::string>& vec)
 {
 	t_lock.lock();
 	while (_orderList.size() != 0) {
-		auto temp = _orderList.front();
-		_orderList.pop_front();
+		auto temp = _orderList.back();
+		_orderList.pop_back();
 		std::string filter_word =temp.substr(0, 4);
 		if (filter_word != PlayScene::_thisScene->_localPlayerName.substr(0, 4)) {
 			std::string real_order = temp.substr(4, temp.size() - 4);

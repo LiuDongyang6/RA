@@ -31,72 +31,72 @@
     }, {
         "id": 3,
         "name": "Fairy",
-        "original_hp": 300,
+        "original_hp": 800,
         "power": 0,
         "capital": 150,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
         "range": 400,
         "speed": 200,
-        "hit": 100,
+        "hit": 200,
         "attack_speed": 0.5,
-        "covering": 2
+        "covering": 1
     },
     {
         "id": 4,
         "name": "Assassin",
-        "original_hp": 100,
+        "original_hp": 400,
         "power": 0,
         "capital": 150,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
-        "range": 100,
+        "range": 180,
         "speed": 400,
         "hit": 500,
         "attack_speed": 0.5,
-        "covering": 2
+        "covering": 1
     },
     {
         "id": 5,
         "name": "Lancer",
-        "original_hp": 700,
+        "original_hp": 1500,
         "power": 0,
         "capital": 150,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
-        "range": 100,
-        "speed": 150,
-        "hit": 80,
+        "range": 300,
+        "speed": 200,
+        "hit": 200,
         "attack_speed": 0.5,
-        "covering": 2
+        "covering": 1
     },
     {
         "id": 6,
         "name": "General",
-        "original_hp": 1000,
+        "original_hp": 2500,
         "power": 0,
         "capital": 150,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
-        "range": 100,
-        "speed": 150,
+        "range": 200,
+        "speed": 80,
         "hit": 100,
         "attack_speed": 0.5,
-        "covering": 2
+        "covering": 1
     },
     {
         "id": 7,
         "name": "AtomicBomb",
-        "original_hp": 400,
+        "original_hp": 600,
         "power": 0,
-        "capital": 300,
+        "capital": 1000,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
         "range": 100,
         "speed": 200,
         "hit": 100000,
         "attack_speed": 0.5,
-        "covering": 2
+        "covering": 1
     },
     {
         "id": 8,
@@ -110,7 +110,7 @@
         "speed": 150,
         "hit": 200,
         "attack_speed": 0.5,
-        "covering": 2
+        "covering": 1
     },
     {
         "id": 9,
@@ -120,11 +120,11 @@
         "capital": 150,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
-        "range": 100,
-        "speed": 150,
-        "hit": 100,
+        "range": 300,
+        "speed": 200,
+        "hit": 300,
         "attack_speed": 2,
-        "covering": 2
+        "covering": 1
     },
     {
         "id": 10,
@@ -135,22 +135,22 @@
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
         "range": 100,
-        "speed": 150,
+        "speed": 200,
         "hit": 100,
         "attack_speed": 0.5,
-        "covering": 2
+        "covering": 1
     },
     {
         "id": 11,
         "name": "WinterSoldier",
         "original_hp": 1000,
         "power": 0,
-        "capital": 150,
+        "capital": 400,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
         "range": 300,
         "speed": 300,
-        "hit": 400,
+        "hit": 100,
         "attack_speed": 0.25,
         "covering": 2
     },
@@ -159,12 +159,12 @@
         "name": "Witch",
         "original_hp": 1000,
         "power": 0,
-        "capital": 150,
+        "capital": 400,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
-        "range": 100,
-        "speed": 150,
-        "hit": 100,
+        "range": 300,
+        "speed": 350,
+        "hit": 200,
         "attack_speed": 0.5,
         "covering": 2
     },
@@ -173,7 +173,7 @@
         "name": "Wizzard",
         "original_hp": 1000,
         "power": 0,
-        "capital": 150,
+        "capital": 3000,
         "frame_upper_bound": [5, 9, 18], //die move attack
         "UIFile": "Wizzard/WizzardUi.ExportJson",
         "category": 101,
@@ -218,7 +218,7 @@
         "UI": [7],
         "UIFile": "NuclearSilo/NuclearSilo.ExportJson",
         "category": 100,
-        "covering": 5
+        "covering": 7
     },
     {
         "id": 17,
@@ -229,6 +229,6 @@
         "UI": [13],
         "UIFile": "Manhattan/Manhattan.ExportJson",
         "category": 100,
-        "covering": 3
+        "covering": 4
     }
 ]
