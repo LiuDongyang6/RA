@@ -19,6 +19,9 @@ USING_NS_CC_EXT;
 */
 class NetMenu : public cocos2d::Layer,public EditBoxDelegate
 {
+private:
+	void onEnter();
+
 protected:
     int             _selectLevelIndex;      ///地图对应的索引
 

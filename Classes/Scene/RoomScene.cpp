@@ -3,6 +3,8 @@
 #include "RoomScene.h"
 #include "NetMenu.h"
 #include "../NetWork/MessageCode.h"
+#include "GameAudio.h"
+#include "Settings.h"
 
 USING_NS_CC;
 using namespace ui;
@@ -824,4 +826,10 @@ int RoomScene::findPlayerId()
     }
     
     return 1;
+}
+
+void RoomScene::onEnter()
+{
+	Layer::onEnter();
+	GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
 }

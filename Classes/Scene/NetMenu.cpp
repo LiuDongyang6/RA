@@ -3,6 +3,8 @@
 #include "SearchScene.h"
 #include "ui/CocosGUI.h"
 #include "StartScene.h"
+#include "GameAudio.h"
+#include "Settings.h"
 
 USING_NS_CC;
 
@@ -421,5 +423,9 @@ void NetMenu::editBoxReturn(EditBox* editBox){
     
 }
 
-
+void NetMenu::onEnter()
+{
+	Layer::onEnter();
+	GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
+}
 

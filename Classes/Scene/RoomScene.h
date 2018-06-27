@@ -15,6 +15,9 @@
  */
 class RoomScene : public cocos2d::Layer
 {
+private:
+	void onEnter();
+
 protected:
     Vector<Sprite*>     _exist_player;             ///目前房间里的Player
     int                 _selectLevelIndex;         ///目前选择的地图索引

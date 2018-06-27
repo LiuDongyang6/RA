@@ -3,6 +3,7 @@
 #include "SettingScene.h"
 #include "StartScene.h"
 #include "GameAudio.h"
+#include "Settings.h"
 
 USING_NS_CC;
 
@@ -165,6 +166,12 @@ void Hello::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
+}
+
+void Hello::onEnter()
+{
+	Layer::onEnter();
+	GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
 }
 
 void Hello::menuItemSettingCallback(Ref* pSender)
