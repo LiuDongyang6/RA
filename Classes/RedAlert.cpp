@@ -172,8 +172,8 @@ void RedAlert::catcher(std::string message)
 	default:
 	{
 		RAPlayer::master_table_[aim]->followInstruction(message,instruction_kind);
-		std::ofstream os("arecords.txt",std::ofstream::app);
-		os << message << ' ' << instruction_kind << endl;
+		//std::ofstream os("arecords.txt",std::ofstream::app);
+		//os << message << ' ' << instruction_kind << endl;
 	}
 		break;
 	}

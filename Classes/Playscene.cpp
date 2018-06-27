@@ -11,6 +11,7 @@ using namespace cocos2d::ui;
 
 static std::string splayerName;
 static Client* clients;
+static std::queue<std::string> msgs;
 PlayScene* PlayScene::_thisScene;
 
 static LevelData* ptr = NULL;
@@ -106,7 +107,7 @@ void PlayScene::gameStart(bool topSide)
 	this->addChild(littleMap::getLittleMap(), 20);
 
 	auto sch = [&](float dt) {
-		std::queue<std::string> msgs;
+		auto& msgs=PlayScene::msgs;
 		PlayScene::_thisScene->_client->RAGetMessage(msgs);
 		while (!msgs.empty())
 		{

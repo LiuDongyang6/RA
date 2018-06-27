@@ -228,6 +228,7 @@ void RAOilField::changeControl(bool mine)
 bool RAOilField::annihilation()
 {
 	unschedule("Income");
+	RAMap::destroyOilBuildings(getPosition(),4);
 	return RABuilding::annihilation();
 }
 //
