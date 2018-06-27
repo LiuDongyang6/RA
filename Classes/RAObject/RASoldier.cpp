@@ -154,6 +154,14 @@ void RASoldier::findRoadAndLetGo()
 	RAMap::removeSoldierCollision(getPosition(), covering_);
 	auto vec = RAMap::findRoutineOneByOne(this,destination,covering_);
 	next_step = Point(vec[0], vec[1]);
+	if (next_step.x < getPosition().x)
+	{
+		setFlippedX(true);
+	}
+	else
+	{
+		setFlippedX(false);
+	}
 	RAMap::setSoldierCollision(next_step, covering_);
 	if (vec[2] == 0)
 	{
@@ -182,6 +190,14 @@ void RASoldier::findRoadAndLetGoForFight()
 		RAMap::removeSoldierCollision(getPosition(), covering_);
 		auto vec = RAMap::findRoutineOneByOne(this, Point(AimEnemy->getPosition()), covering_);
 		next_step = Point(vec[0], vec[1]);
+		if (next_step.x < getPosition().x)
+		{
+			setFlippedX(true);
+		}
+		else
+		{
+			setFlippedX(false);
+		}
 		RAMap::setSoldierCollision(next_step, covering_);
 		if (vec[2] == 0)
 		{
@@ -212,9 +228,9 @@ void RASoldier::doAttack()
 	AimEnemy->sufferAttack(attack_speed_, hit_,this);
 
 	auto func= [&](float dt){
-		if (getPosition().distance(this->AimEnemy->getPosition()) > range_)
+		if (getPosition().distance(this->AimEnemy->getPosition()) > range_+20)
 		{
-			stopCurrentBehavior();
+			findRoadAndLetGoForFight();
 		}
 	};
 	schedule(func, 0.2f, std::string("IN_RANGE_CHECK"));
@@ -416,9 +432,9 @@ void RABomber::doAttack()
 	AimEnemy->sufferAttack(attack_speed_, hit_, this);
 
 	auto func = [&](float dt) {
-		if (getPosition().distance(this->AimEnemy->getCorePoint()) > range_)
+		if (getPosition().distance(this->AimEnemy->getCorePoint()) > range_+20)
 		{
-			stopCurrentBehavior();
+			findRoadAndLetGoForFight();
 		}
 	};
 	schedule(func, 0.2f, std::string("IN_RANGE_CHECK"));
@@ -444,6 +460,13 @@ RAObject* RAEngineer::create(Point location)
 }
 void RAEngineer::runToBuildOilField(Point location)
 {
+	if (under_my_control)
+	{
+		using namespace std;
+		ostringstream os;
+		os << setfill('0') << 's' << setw(6) << object_count_ << 'o'<< RAUtility::coortostr(location);
+		PlayScene::_thisScene->_client->sendMessage(os.str());
+	}
 	stopCurrentBehavior();
 	//保存目的地
 	destination = oil_position_= location;
@@ -460,8 +483,18 @@ void RAEngineer::findRoadAndLetGoForOilField()
 		auto test=RAMap::cannotBuildOil(oil_position_, 4);
 		if (RAMap::cannotBuildOil(oil_position_,4) != Point(-1000.0f, -1000.0f))
 		{
-			RAOilField::create(test);
-			RAMap::sureToBuildOil(test,4);
+			auto oil=RAOilField::create(test);
+			if (under_my_control)
+			{
+				static_cast<RAOilField*>(oil)->initCapitalIncome();
+				oil->setCount(RAPlayer::getCounter());
+				RAPlayer::master_table_.insert({ oil->getCount(),oil });
+				PlayScene::_thisScene->_client->sendMessage(oil->birthMessage());
+			}
+			else
+			{
+				//等待对方消息使建筑出现
+			}
 		}
 	}
 	else
@@ -469,6 +502,14 @@ void RAEngineer::findRoadAndLetGoForOilField()
 		RAMap::removeSoldierCollision(getPosition(), covering_);
 		auto vec = RAMap::findRoutineOneByOne(this, Point(destination), covering_);
 		next_step = Point(vec[0], vec[1]);
+		if (next_step.x < getPosition().x)
+		{
+			setFlippedX(true);
+		}
+		else
+		{
+			setFlippedX(false);
+		}
 		RAMap::setSoldierCollision(next_step, covering_);
 		if (vec[2] == 0)
 		{
@@ -491,14 +532,44 @@ void RAEngineer::doAttack()
 {
 	stopAllActions();
 	//if and only if enemy is a building and is not under my control
-	if (AimEnemy->isBuilding() && !AimEnemy->under_my_control)
+	if (AimEnemy->isBuilding() && (under_my_control!=AimEnemy->under_my_control))
 	{
 		//如果不暂停触摸会有莫名其妙的bug
 		AimEnemy->getEventDispatcher()->pauseEventListenersForTarget(AimEnemy);
 		active_die_ = 1;
 		annihilation();
-		AimEnemy->changeControl(true);
+		AimEnemy->changeControl(under_my_control);
 		AimEnemy->getEventDispatcher()->resumeEventListenersForTarget(AimEnemy);
+	}
+}
+void RAEngineer::followInstruction(std::string instruction, char kind)
+{
+	switch (kind)
+	{
+	case 's':
+	{
+		char command = instruction[0];
+		instruction.erase(0,1);
+		if (command == 'o')
+		{
+			float coords[2];
+			for (int i = 0; i != 2; ++i)
+			{
+				char length = instruction[0];
+				int temp = length - '0';
+				coords[i] = RAUtility::stof(instruction.substr(1, length));
+				instruction.erase(0, length + 1);
+			}
+			Point location(coords);
+			runToBuildOilField(location);
+		}
+	}
+	break;
+	default:
+	{
+		RAObject::followInstruction(instruction, kind);
+	}
+	break;
 	}
 }
 //
@@ -544,7 +615,7 @@ void RAWizzard::initWizzard()
 {
 	//initial UI
 	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id, "UIFile").asCString());
-	UI_->setPosition(Point(0, 0));
+	UI_->setPosition(Point(50.0, 0));
 	UI_->retain();
 	//init onTouch
 	_eventDispatcher->removeEventListenersForTarget(this);
@@ -582,12 +653,35 @@ bool RAWizzard::WizzardOnTouch(Touch* touch, Event* event)
 }
 void RAWizzard::StartSkill()
 {
-	int range = RAUtility::RAgetProperty(id, "skill_range").asInt();
-	for (auto soldier : RAPlayer::all_soldiers_)
+	if (under_my_control)
 	{
-		if (getPosition().distance(soldier->getPosition()) < range)
+		using namespace std;
+		ostringstream os;
+		os << setfill('0') << 's' << setw(6) << object_count_ << 'd';
+		PlayScene::_thisScene->_client->sendMessage(os.str());
+	}
+	int range = RAUtility::RAgetProperty(id, "skill_range").asInt();
+	if (under_my_control)
+	{
+		for (auto soldier : RAPlayer::all_soldiers_)
 		{
-			RAWizzardSkill::create(soldier);
+			if (getPosition().distance(soldier->getPosition()) < range)
+			{
+				RAWizzardSkill::create(soldier);
+			}
+		}
+	}
+	else
+	{
+		for (auto soldier : RAPlayer::enemies)
+		{
+			if (!soldier->isBuilding())
+			{
+				if (getPosition().distance(soldier->getPosition()) < range)
+				{
+					RAWizzardSkill::create(static_cast<RASoldier*>(soldier));
+				}
+			}
 		}
 	}
 }
@@ -602,6 +696,23 @@ bool RAWizzard::annihilation()
 	UI_->release();
 	return RASoldier::annihilation();
 
+}
+void RAWizzard::followInstruction(std::string instruction, char kind)
+{
+	switch (kind)
+	{
+	case 's':
+	{
+		if (instruction[0] == 'd')
+			StartSkill();
+	}
+	break;
+	default:
+	{
+		RAObject::followInstruction(instruction, kind);
+	}
+	break;
+	}
 }
 void RAWizzardSkill::create(RASoldier* soldier)
 {

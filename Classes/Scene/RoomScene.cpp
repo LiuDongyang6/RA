@@ -356,7 +356,7 @@ bool RoomScene::initForServer()
                                            PageView* pageView   =   dynamic_cast<PageView*>(pSender);
                                            _selectLevelIndex    =   pageView->getCurPageIndex();
                                            start_button -> setTitleText(StringUtils::format("map%d", _selectLevelIndex + 1));
-										   map_num = _selectLevelIndex + 1;
+										   RoomScene::map_num = _selectLevelIndex + 1;
                                        }
                                            break;
                                        default:break;

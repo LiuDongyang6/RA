@@ -141,6 +141,7 @@ public:
 	static const int id = 10;
 	void runToBuildOilField(Point pos);
 	void findRoadAndLetGoForOilField();
+	void followInstruction(std::string instruction, char kind) override;
 private:
 	Point oil_position_;
 };
@@ -173,6 +174,7 @@ public:
 	bool WizzardOnTouch(Touch* touch, Event* event);
 	void StartSkill();
 	bool annihilation() override;
+	void followInstruction(std::string instruction, char kind) override;
 private:
 	Widget * UI_;
 };

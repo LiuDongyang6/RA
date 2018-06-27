@@ -2,7 +2,7 @@
 #include"RAObject/RASoldier.h"
 #include "SimpleAudioEngine.h"
 #include "color_egg.h"
-#include "Scene/RoomScene.h"
+#include"Scene\RoomScene.h"
 
 #define random(a,b) (rand()%(b-a+1)+a)
 USING_NS_CC;
@@ -474,6 +474,7 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 	Point so_tilecoord = relatedCoordToTileCoord(soldier->getPosition());
 	if (soldier_dests[id].first != dest_tile)
 	{
+		old.clear(); 
 		soldier_dests[id].first = dest_tile;
 		if (collision[dest_tile] ||
 			soldier_collision[dest_tile] ||
@@ -602,7 +603,6 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 			cam_list[a.first] = 1;
 		}
 	}
-	log("id %d dest %f, %f", id, dest_tile.x, dest_tile.y);
 	if (dest_tile == so_tilecoord)
 	{
 		answer[0] = so_related_coord.x;
@@ -820,7 +820,7 @@ void RAMap::changeOilTile(cocos2d::Point pos)
 	{
 		for (int y = 0; y < 4; y++)
 		{
-			_tiledMap->getLayer("oil")->removeTileAt(Point(pos.x - x, pos.y - y));
+			_tiledMap->getLayer("oil")->getTileAt(Point(pos.x - x, pos.y - y))->setOpacity(0);
 		}
 	}
 }
@@ -831,7 +831,7 @@ void RAMap::recoverOilTile(cocos2d::Point pos)
 	{
 		for (int y = 0; y < 4; y++)
 		{
-			_tiledMap->getLayer("oil")->setTileGID(15, Point(pos.x - x, pos.y - y));
+			_tiledMap->getLayer("oil")->getTileAt(Point(pos.x - x, pos.y - y))->setOpacity(255);
 		}
 	}
 }

@@ -30,6 +30,7 @@ public:
 
 	std::queue<std::string>    _commands;             ///每次读取的命令
 
+	std::queue<std::string>    msgs;
 
 public:
     static cocos2d::Scene* createScene(LevelData &data, Client* client, std::string playerName);

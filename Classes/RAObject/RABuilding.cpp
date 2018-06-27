@@ -50,7 +50,7 @@ bool RABuilding::initWithIdAndLocation(int id,Point location)
 	RAObject::initWithSpriteFrameNameAndLocation(appearances[0], location);
 	//initial UI
 	UI_ = GUIReader::getInstance()->widgetFromJsonFile(RAUtility::RAgetProperty(id, "UIFile").asCString());
-	UI_->setPosition(Point(0, 0));
+	UI_->setPosition(Point(50.0, 0));
 	UI_->retain();
 	//initial buttons
 	auto u = RAUtility::RAgetProperty(id, "UI");
@@ -189,10 +189,11 @@ RAObject* RABarrack::create(Point location)
 //
 RAObject* RAOilField::create(Point location)
 {
+	RAMap::sureToBuildOil(location, 4);
+
 	RAOilField* object = new RAOilField();
 
 	object->initWithIdAndLocation(id, location);
-	object->initCapitalIncome();
 
 	object->autorelease();
 
@@ -200,16 +201,11 @@ RAObject* RAOilField::create(Point location)
 }
 void RAOilField::initCapitalIncome()
 {
-	if (under_my_control)
-	{
-		float dt = RAUtility::RAgetProperty(id, "income_speed").asFloat();
-		auto func = [&](float dt) {
-			this->getIncome(dt);
-		};
-		schedule(func, dt, std::string("Income"));
-	}
-	else
-		unschedule("Income");
+	float dt = RAUtility::RAgetProperty(id, "income_speed").asFloat();
+	auto func = [&](float dt) {
+		this->getIncome(dt);
+	};
+	schedule(func, dt, std::string("Income"));
 }
 
 void RAOilField::getIncome(float dt)
@@ -219,8 +215,21 @@ void RAOilField::getIncome(float dt)
 
 void RAOilField::changeControl(bool mine)
 {
+	if (!mine)//我方被占
+	{
+		unschedule("Income");
+	}
+	else
+	{
+		initCapitalIncome();
+	}
 	RAObject::changeControl(mine);
-	initCapitalIncome();
+}
+bool RAOilField::annihilation()
+{
+	unschedule("Income");
+	RAMap::destroyOilBuildings(getPosition(),4);
+	return RABuilding::annihilation();
 }
 //
 //RANuclearSilo
