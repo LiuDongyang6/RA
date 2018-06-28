@@ -196,7 +196,7 @@
         "category": 90,
         "covering": 4,
         "income": 50,
-        "income_speed": 0.2
+        "income_speed": 1.0
     },
     {
         "id": 15,

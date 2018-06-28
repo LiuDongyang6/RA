@@ -170,8 +170,12 @@ void RAObject::followInstruction(std::string instruction,char kind)
 	break;
 	case 'f':
 	{
-		auto aim = RAPlayer::master_table_[std::stoi(instruction)];
-		static_cast<RASoldier*>(this)->runToFight(aim);
+		int aimID = std::stoi(instruction);
+		if (RAPlayer::master_table_.count(aimID != 0))
+		{
+			auto aim = RAPlayer::master_table_[aimID];
+			static_cast<RASoldier*>(this)->runToFight(aim);
+		}
 	}
 	break;
 	}

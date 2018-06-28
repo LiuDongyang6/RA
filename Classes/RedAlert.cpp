@@ -141,8 +141,11 @@ void RedAlert::catcher(std::string message)
 {
 	using namespace std;
 	char instruction_kind = message[0];
-	int aim = stoi(message.substr(1, 6));
-	message.erase(0,7);
+	int aim = 0;
+	if (message.size() > 2)
+		aim = stoi(message.substr(1, 6));
+
+	message.erase(0, 7);
 	switch (instruction_kind)
 	{
 	case 'a':
@@ -173,7 +176,16 @@ void RedAlert::catcher(std::string message)
 	}
 	case 'v':
 	{
+		//走到这里意味着msgs里至少还有一条消息
+		//在调用结束后还会有一个pop
+		//所以最后添留一个
+		while (!PlayScene::msgs.empty())
+		{
+			PlayScene::msgs.pop();
+		}
+		PlayScene::msgs.push(std::string("FAKE_MSG"));
 		defeat();
+		break;
 	}
 	default:
 	{
@@ -223,10 +235,7 @@ void RedAlert::defeat()
 	{
 		PlayScene::ins.pop();
 	}
-	while (!PlayScene::msgs.empty())
-	{
-		PlayScene::msgs.pop();
-	}
+	//PlayScene::msgs不清空是因为在调用处已经执行
 	PlayScene::_thisScene->removeAllChildrenWithCleanup(true);
 	Director::getInstance()->replaceScene(EndingScene::createScene(0));
 }
