@@ -49,7 +49,8 @@ bool RAObject::annihilation()
 	NotificationCenter::getInstance()->postNotification("DIE", this);
 	//顺序不能颠倒
 	//释放tilemap占地
-	RAMap::destroyNormalBuildings(getPosition(), covering_);
+	if (!id_ == 14)//油田不能释放
+		RAMap::destroyNormalBuildings(getPosition(), covering_);
 	//
 	NotificationCenter::getInstance()->removeAllObservers(this);
 	//

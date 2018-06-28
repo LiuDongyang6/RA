@@ -483,9 +483,9 @@ void RAEngineer::findRoadAndLetGoForOilField()
 		auto test=RAMap::cannotBuildOil(oil_position_, 4);
 		if (RAMap::cannotBuildOil(oil_position_,4) != Point(-1000.0f, -1000.0f))
 		{
-			auto oil=RAOilField::create(test);
 			if (under_my_control)
 			{
+				auto oil=RAOilField::create(test);
 				static_cast<RAOilField*>(oil)->initCapitalIncome();
 				oil->setCount(RAPlayer::getCounter());
 				RAPlayer::master_table_.insert({ oil->getCount(),oil });

@@ -210,7 +210,7 @@ void RAOilField::initCapitalIncome()
 
 void RAOilField::getIncome(float dt)
 {
-	RAPlayer::resumePower(income_value_);
+	RAPlayer::resumeCapital(income_value_);
 }
 
 void RAOilField::changeControl(bool mine)

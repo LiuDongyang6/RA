@@ -134,7 +134,7 @@
         "capital": 150,
         "frame_upper_bound": [5, 9, 14], //die move attack
         "category": 101,
-        "range": 100,
+        "range": 150,
         "speed": 200,
         "hit": 100,
         "attack_speed": 0.5,
@@ -218,7 +218,7 @@
         "UI": [7],
         "UIFile": "NuclearSilo/NuclearSilo.ExportJson",
         "category": 100,
-        "covering": 7
+        "covering": 6
     },
     {
         "id": 17,
