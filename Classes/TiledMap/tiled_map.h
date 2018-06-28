@@ -60,13 +60,14 @@ public:
 
 	static cocos2d::TMXTiledMap* &getMap() { return _tiledMap; };
 
+	static void restart();
+
 protected:
 	static cocos2d::TMXTiledMap *_tiledMap;
 	static cocos2d::Point diff;
 	static std::map<cocos2d::Point, bool> collision;
 	static std::map<cocos2d::Point, bool> oil;
 	static std::map<cocos2d::Point, bool> soldier_collision;
-	static std::vector<cocos2d::Point> routines;
 	static std::map<int, std::vector<cocos2d::Point>> soldier_routines;
 	static std::map<int, std::map<cocos2d::Point, int>> soldier_g;
 	static std::map<int, std::pair<cocos2d::Point, cocos2d::Point>> soldier_dests;

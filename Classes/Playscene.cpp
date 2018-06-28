@@ -128,7 +128,7 @@ void PlayScene::gameStart(bool topSide)
 			PlayScene::msg_to_send_twice.clear();
 		}
 	};
-	_thisScene->schedule(sch,0.1f,std::string("SEND_TWICE"));
+	_thisScene->schedule(send_twice,0.1f,std::string("SEND_TWICE"));
 	if (topSide)
 	{
 		RAPlayer::setEdge(1);
