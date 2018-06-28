@@ -66,8 +66,8 @@ bool Setting::init()
 	auto musicCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type) {
 		GameAudio::getInstance()->setBgmOn(type == ui::CheckBox::EventType::SELECTED);
 	});
-	musicLabel->setPosition(Vec2(origin.x + visibleSize.width * 0.6, visibleSize.height * 0.7f));
-	musicCheckBox->setPosition(Vec2(origin.x + visibleSize.width * 0.6 + 20, visibleSize.height * 0.7f));
+	musicLabel->setPosition(Vec2(origin.x + visibleSize.width * 0.6, visibleSize.height * 0.55f));
+	musicCheckBox->setPosition(Vec2(origin.x + visibleSize.width * 0.6 + 20, visibleSize.height * 0.55f));
 	musicCheckBox->setSelected(GameAudio::getInstance()->getBgmOn());
 	addChild(musicLabel,1);
 	addChild(musicCheckBox,1);
@@ -78,8 +78,8 @@ bool Setting::init()
 	{
 		GameAudio::getInstance()->setEffectOn(type == ui::CheckBox::EventType::SELECTED);
 	});
-	effectLabel->setPosition(Vec2(origin.x + visibleSize.width * 0.6, visibleSize.height * 0.6f));
-	effectCheckBox->setPosition(Vec2(origin.x + visibleSize.width * 0.6 + 20, visibleSize.height * 0.6f));
+	effectLabel->setPosition(Vec2(origin.x + visibleSize.width * 0.6, visibleSize.height * 0.45f));
+	effectCheckBox->setPosition(Vec2(origin.x + visibleSize.width * 0.6 + 20, visibleSize.height * 0.45f));
 	effectCheckBox->setSelected(GameAudio::getInstance()->getBgmOn());
 	addChild(effectLabel,1);
 	addChild(effectCheckBox,1);

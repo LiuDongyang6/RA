@@ -282,7 +282,7 @@ bool NetMenu::init()
     
 	auto label = Label::createWithTTF("Input Your Name: ", "fonts/Marker Felt.ttf", 24);
 	// position the label on the center of the screen
-	label->setPosition(origin / 2 + visibleSize / 2);
+	label->setPosition(Vec2(origin.x + visibleSize.width / 2, visibleSize.height * 0.6f));
 
 	// add the label as a child to this layer
 	this->addChild(label, 1);

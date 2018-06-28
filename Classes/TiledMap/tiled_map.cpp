@@ -1,8 +1,9 @@
  #include "tiled_map.h"
-#include"RAObject/RASoldier.h"
+#include "RAObject/RASoldier.h"
 #include "SimpleAudioEngine.h"
 #include "color_egg.h"
-#include"Scene\RoomScene.h"
+#include "Scene\RoomScene.h"
+#include "RAlittle_map.h"
 
 #define random(a,b) (rand()%(b-a+1)+a)
 USING_NS_CC;
@@ -22,7 +23,6 @@ Point RAMap::diff;
 std::map<Point, bool> RAMap::collision;
 std::map<Point, bool> RAMap::oil;
 std::map<Point, bool> RAMap::soldier_collision;
-std::vector<Point> RAMap::routines;
 std::map<int, std::vector<Point>> RAMap::soldier_routines;
 std::map<int, std::map<Point, int>> RAMap::soldier_g;
 std::map<int, std::pair<Point, Point>> RAMap::soldier_dests;
@@ -677,7 +677,7 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 		soldier_g[id].clear();
 		auto ptr = find(future_dests.begin(), future_dests.end(), dest_tile);
 		if (ptr != future_dests.end())
-		future_dests.erase(ptr);
+			future_dests.erase(ptr);
 		return answer;
 	}
 	if (next_step->second == 10000)
@@ -690,8 +690,8 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 			old.clear();
 			soldier_g[id].clear();
 			auto ptr = find(future_dests.begin(), future_dests.end(), dest_tile);
-			if(ptr!=future_dests.end())
-			future_dests.erase(ptr);
+			if (ptr != future_dests.end())
+				future_dests.erase(ptr);
 		}
 		else
 		{
@@ -836,4 +836,16 @@ void RAMap::recoverOilTile(cocos2d::Point pos)
 			_tiledMap->getLayer("oil")->getTileAt(Point(pos.x - x, pos.y - y))->setOpacity(255);
 		}
 	}
+}
+
+void RAMap::restart()
+{ 
+	collision.clear();
+	oil.clear();
+	soldier_collision.clear();
+	soldier_routines.clear();
+	soldier_g.clear();
+	soldier_dests.clear();
+	future_dests.clear();
+	RoomScene::map_num = 1;
 }
