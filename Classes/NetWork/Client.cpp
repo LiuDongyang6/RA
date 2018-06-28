@@ -366,7 +366,7 @@ void Client::RAGetMessage(std::queue<std::string>& vec)
 				PlayScene::records.push_back(temp);
 				if (PlayScene::received_count == 9001)
 				{
-					PlayScene::received_count == 0;
+					PlayScene::received_count = 0;
 					while (!PlayScene::ins.empty())
 					{
 						PlayScene::ins.pop();

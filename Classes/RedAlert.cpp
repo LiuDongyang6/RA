@@ -194,6 +194,7 @@ void RedAlert::victory()
 	{
 		RAPlayer::master_table_.begin()->second->annihilation();
 	}
+	RAMap::restart();
 	PlayScene::_thisScene->removeAllChildrenWithCleanup(true);
 	PlayScene::records.clear();
 	PlayScene::msg_count = PlayScene::received_count = 0;

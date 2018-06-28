@@ -29,8 +29,8 @@ public:
 	static void consumePower(const int quantity);
 
 	static void init(){
-		RAPlayer::power_ = 200;
-		RAPlayer::capital_ = 300;
+		RAPlayer::power_ = 500;
+		RAPlayer::capital_ = 1000;
 		RAPlayer::unit_counter_ = 1;
 		RAPlayer::current_UI_ = 0;
 	}
