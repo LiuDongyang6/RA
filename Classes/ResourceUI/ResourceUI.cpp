@@ -9,9 +9,9 @@ void RAResourceUI::init()
 	ResourceUI->setPosition(Point(1410,780));
 	ResourceUI->setAnchorPoint(Vec2(0.5, 0.5));
 	ResourceUI->setScale(1.5);
-	capital_ = (TextAtlas*)Helper::seekWidgetByTag(ResourceUI, 3);
+	capital_ = (TextAtlas*)Helper::seekWidgetByTag(ResourceUI, 1);
 	capital_->setString(std::to_string(RAPlayer::getCapital()));
-	power_ = (TextAtlas*)Helper::seekWidgetByTag(ResourceUI, 1);
+	power_ = (TextAtlas*)Helper::seekWidgetByTag(ResourceUI, 3);
 	power_->setString(std::to_string(RAPlayer::getPower()));
 }
 void RAResourceUI::changeCapital(int capital)

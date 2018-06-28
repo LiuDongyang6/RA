@@ -16,7 +16,8 @@ public:
 	void onTouchEnded(Touch* touch, Event* event);
 	static void HostileObjectAppear(int id,Point location,int count);
 	static void catcher (std::string message);
-	static void sender(std::string message);
+	static void victory();
+	static void defeat();
 private:
 	static RedAlert* instance_;
 	Layer* selectBox;

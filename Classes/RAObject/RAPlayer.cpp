@@ -1,8 +1,8 @@
 #include"RAPlayer.h"
 #include"RASoldier.h"
 #include"ResourceUI/ResourceUI.h"
-int RAPlayer::power_ = 200;
-int RAPlayer::capital_ = 10000;
+int RAPlayer::power_;
+int RAPlayer::capital_;
 int RAPlayer::unit_counter_ = 1;
 Widget* RAPlayer::current_UI_ = 0;
 std::vector<RASoldier*> RAPlayer::selected_soldiers_;

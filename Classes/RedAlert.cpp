@@ -1,5 +1,7 @@
 #include"RedAlert.h"
 #include<fstream>
+#include"PlayScene.h"
+#include"Scene\EndingScene.h"
 RedAlert* RedAlert::instance_ = NULL;
 RedAlert* RedAlert::getInstance()
 {
@@ -169,12 +171,61 @@ void RedAlert::catcher(std::string message)
 		}
 		break;
 	}
+	case 'v':
+	{
+		defeat();
+	}
 	default:
 	{
-		RAPlayer::master_table_[aim]->followInstruction(message,instruction_kind);
+		if (!RAPlayer::master_table_.count(aim) == 0)
+			RAPlayer::master_table_[aim]->followInstruction(message, instruction_kind);
+		else
+			log("object called without existence");
 		//std::ofstream os("arecords.txt",std::ofstream::app);
 		//os << message << ' ' << instruction_kind << endl;
 	}
 		break;
 	}
+}
+void RedAlert::victory()
+{
+	PlayScene::_thisScene->unscheduleAllCallbacks();
+	while (!RAPlayer::master_table_.empty())
+	{
+		RAPlayer::master_table_.begin()->second->annihilation();
+	}
+	PlayScene::_thisScene->removeAllChildrenWithCleanup(true);
+	PlayScene::records.clear();
+	PlayScene::msg_count = PlayScene::received_count = 0;
+	while (!PlayScene::ins.empty())
+	{
+		PlayScene::ins.pop();
+	}
+	while (!PlayScene::msgs.empty())
+	{
+		PlayScene::msgs.pop();
+	}
+	PlayScene::_thisScene->removeAllChildrenWithCleanup(true);
+	Director::getInstance()->replaceScene(EndingScene::createScene(1));
+}
+void RedAlert::defeat()
+{
+	PlayScene::_thisScene->unscheduleAllCallbacks();
+	while (!RAPlayer::master_table_.empty())
+	{
+		RAPlayer::master_table_.begin()->second->annihilation();
+	}
+	PlayScene::_thisScene->removeAllChildrenWithCleanup(true);
+	PlayScene::records.clear();
+	PlayScene::msg_count = PlayScene::received_count = 0;
+	while (!PlayScene::ins.empty())
+	{
+		PlayScene::ins.pop();
+	}
+	while (!PlayScene::msgs.empty())
+	{
+		PlayScene::msgs.pop();
+	}
+	PlayScene::_thisScene->removeAllChildrenWithCleanup(true);
+	Director::getInstance()->replaceScene(EndingScene::createScene(0));
 }

@@ -4,6 +4,7 @@
 #include "TiledMap/RAlittle_map.h"
 #include"Roshambo\RARoshambo.h"
 #include "Scene/RoomScene.h"
+#include"Scene/EndingScene.h"
 
 USING_NS_CC;
 using namespace cocostudio;
@@ -17,6 +18,7 @@ int PlayScene::received_count= 0;
 std::priority_queue<instruction, std::vector<instruction>, ins_compare> PlayScene::ins;
 PlayScene* PlayScene::_thisScene;
 std::vector<chat_message> PlayScene::msg_to_send_twice;
+std::vector<std::string> PlayScene::records;
 
 static LevelData* ptr = NULL;
 
@@ -89,6 +91,7 @@ void PlayScene::gameStart(bool topSide)
 	SpriteFrameCache::getInstance()->removeSpriteFramesFromFile("roshambo / roshambo.plist");
 	Director::getInstance()->setAnimationInterval(1.0f / 60);
 	RedAlert::getInstance()->initAll(RoomScene::map_num);
+	RAPlayer::init();
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("rabgm.mp3",1);
@@ -120,6 +123,7 @@ void PlayScene::gameStart(bool topSide)
 		}
 	};
 	_thisScene->schedule(sch, std::string("RAING"));
+	//所有消息发两次，避免丢包
 	auto send_twice = [&](float dt) {
 		while (!PlayScene::msg_to_send_twice.empty())
 		{
@@ -128,7 +132,16 @@ void PlayScene::gameStart(bool topSide)
 			PlayScene::msg_to_send_twice.clear();
 		}
 	};
-	_thisScene->schedule(sch,0.1f,std::string("SEND_TWICE"));
+	_thisScene->schedule(send_twice,0.1f,std::string("SEND_TWICE"));
+	//胜负判断
+	auto win_or_lose = [&](float dt) {
+		if (RAPlayer::enemies.empty())
+		{
+			PlayScene::_thisScene->_client->sendMessage(std::string("v"));
+			RedAlert::victory();
+		}
+	};
+	_thisScene->schedule(win_or_lose, 10.0f, std::string("WIN_LOSE"));
 	if (topSide)
 	{
 		RAPlayer::setEdge(1);

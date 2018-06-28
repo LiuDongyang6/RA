@@ -620,7 +620,9 @@ void RAWizzard::initWizzard()
 	//init onTouch
 	_eventDispatcher->removeEventListenersForTarget(this);
 	auto touch = EventListenerTouchOneByOne::create();
+	touch->setSwallowTouches(true);
 	touch->onTouchBegan=CC_CALLBACK_2(RAWizzard::WizzardOnTouch,this);
+
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(touch, this);
 	//init skill
 	auto button=(Button*)Helper::seekWidgetByTag(UI_, 0);

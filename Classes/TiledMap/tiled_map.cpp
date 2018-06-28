@@ -676,6 +676,7 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 		old.clear();
 		soldier_g[id].clear();
 		auto ptr = find(future_dests.begin(), future_dests.end(), dest_tile);
+		if (ptr != future_dests.end())
 		future_dests.erase(ptr);
 		return answer;
 	}
@@ -689,6 +690,7 @@ std::vector<float> RAMap::findRoutineOneByOne(RASoldier* soldier, Point &dest, c
 			old.clear();
 			soldier_g[id].clear();
 			auto ptr = find(future_dests.begin(), future_dests.end(), dest_tile);
+			if(ptr!=future_dests.end())
 			future_dests.erase(ptr);
 		}
 		else

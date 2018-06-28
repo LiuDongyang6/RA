@@ -83,6 +83,7 @@ void RARoshambo::showCard(bool isMe, int num)
 				PlayScene::_thisScene->unschedule("COMPETING");
 				RARoshambo::cards[contrast[1] - 1]->removeFromParent();
 				opponent->removeFromParent();
+				RARoshambo::contrast[0] = RARoshambo::contrast[1] = 0;
 				PlayScene::_thisScene->gameStart(true);
 			};
 			call = CallFunc::create(func);
@@ -94,6 +95,7 @@ void RARoshambo::showCard(bool isMe, int num)
 				PlayScene::_thisScene->unschedule("COMPETING");
 				RARoshambo::cards[contrast[1] - 1]->removeFromParent();
 				opponent->removeFromParent();
+				RARoshambo::contrast[0] = RARoshambo::contrast[1] = 0;
 				PlayScene::_thisScene->gameStart(false);
 			};
 			call = CallFunc::create(func);

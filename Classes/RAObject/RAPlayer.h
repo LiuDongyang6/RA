@@ -28,6 +28,12 @@ public:
 	//player's power will decrease by quantity
 	static void consumePower(const int quantity);
 
+	static void init(){
+		RAPlayer::power_ = 200;
+		RAPlayer::capital_ = 300;
+		RAPlayer::unit_counter_ = 1;
+		RAPlayer::current_UI_ = 0;
+	}
 	static Widget*& currentUI() { return current_UI_; }
 
 	static std::vector<RASoldier*> selected_soldiers_;

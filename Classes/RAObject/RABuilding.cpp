@@ -205,7 +205,7 @@ void RAOilField::initCapitalIncome()
 	auto func = [&](float dt) {
 		this->getIncome(dt);
 	};
-	schedule(func, dt, std::string("Income"));
+	schedule(func, dt, "Income");
 }
 
 void RAOilField::getIncome(float dt)

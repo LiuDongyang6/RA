@@ -352,16 +352,18 @@ void Client::RAGetMessage(std::queue<std::string>& vec)
 {
 	t_lock.lock();
 	while (_orderList.size() != 0) {
-		auto temp = _orderList.back();
-		_orderList.pop_back();
+		const auto temp = _orderList.front();
+		_orderList.pop_front();
 		std::string filter_word =temp.substr(0, 4);
-		if (filter_word != PlayScene::_thisScene->_localPlayerName.substr(0, 4)) {
+		if (filter_word != PlayScene::_thisScene->_localPlayerName.substr(0, 4)) 
+		{
 			int num = stoi(temp.substr(4, 4));
 			if (PlayScene::received_count == num)
 			{
 				std::string real_order = temp.substr(8, temp.size() - 8);
 				vec.push(real_order);
 				PlayScene::received_count++;
+				PlayScene::records.push_back(temp);
 				if (PlayScene::received_count == 9001)
 				{
 					PlayScene::received_count == 0;
@@ -378,8 +380,10 @@ void Client::RAGetMessage(std::queue<std::string>& vec)
 					}
 					if (!PlayScene::ins.empty() && PlayScene::ins.top().count == PlayScene::received_count)
 					{
-						vec.push(PlayScene::ins.top().msg);
+						std::string real_order = PlayScene::ins.top().msg.substr(8, PlayScene::ins.top().msg.size() - 8);
+						vec.push(real_order);
 						PlayScene::received_count++;
+						PlayScene::records.push_back(PlayScene::ins.top().msg);
 						if (PlayScene::received_count == 9001)
 						{
 							PlayScene::received_count = 0;
@@ -400,8 +404,7 @@ void Client::RAGetMessage(std::queue<std::string>& vec)
 				int dif = (PlayScene::received_count - num);
 				if (dif < 0/* || dif>6000*/)
 				{
-					std::string real_order = temp.substr(8, temp.size() - 8);
-					instruction oneins(num, real_order);
+					instruction oneins(num, temp);
 					PlayScene::ins.push(oneins);
 				}
 			}
